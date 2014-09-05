@@ -1,9 +1,16 @@
 #pragma once
 
 #include "Event.h"
+#include "EventObserver.h"
+#include <memory>
+
+using std::shared_ptr;
+
+class EventObserver;
 
 class EventSubscriber
 {
-	void handleEvent(Event event);
-	void subscribeTo(EventObserver o);
+public:
+	virtual void handleEvent(Event event) = 0;
+	virtual void subscribeTo(shared_ptr<EventObserver> o) = 0;
 };
