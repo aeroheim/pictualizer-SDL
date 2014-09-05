@@ -5,4 +5,5 @@
 class EventSubscriber
 {
 	void handleEvent(Event event);
+	void subscribeTo(EventObserver o);
 };

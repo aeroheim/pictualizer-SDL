@@ -5,8 +5,7 @@
 class EventObserver
 {
 public:
-	template<typename Data>
-	virtual void notify(Data data);
+	virtual void notify(Event e);
 
 private:
 	std::vector<std::shared_ptr<EventSubscriber>> subscribers;

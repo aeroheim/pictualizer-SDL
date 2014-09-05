@@ -11,4 +11,5 @@ class Event
 {
 public:
 	EventID id;
+	bool handled;
 };
