@@ -15,30 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EventObserver.h">
+    <ClInclude Include="io\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Event.h">
+    <ClInclude Include="io\EventObserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EventSubscriber.h">
+    <ClInclude Include="io\EventSubscriber.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowIOController.h">
+    <ClInclude Include="io\WindowIOController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="io\EventObserver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowIOController.cpp">
+    <ClCompile Include="io\EventSubscriber.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EventSubscriber.cpp">
+    <ClCompile Include="io\WindowIOController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EventObserver.cpp">
+    <ClCompile Include="main\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

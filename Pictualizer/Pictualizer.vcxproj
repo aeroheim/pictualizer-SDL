@@ -11,16 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="EventObserver.h" />
-    <ClInclude Include="EventSubscriber.h" />
-    <ClInclude Include="WindowIOController.h" />
+    <ClInclude Include="io\Event.h" />
+    <ClInclude Include="io\EventObserver.h" />
+    <ClInclude Include="io\EventSubscriber.h" />
+    <ClInclude Include="io\WindowIOController.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EventObserver.cpp" />
-    <ClCompile Include="EventSubscriber.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="WindowIOController.cpp" />
+    <ClCompile Include="io\EventObserver.cpp" />
+    <ClCompile Include="io\EventSubscriber.cpp" />
+    <ClCompile Include="main\main.cpp" />
+    <ClCompile Include="io\WindowIOController.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C667C7C3-2851-4F64-9E02-3659DB6373E0}</ProjectGuid>
