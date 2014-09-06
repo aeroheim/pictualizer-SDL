@@ -9,8 +9,8 @@ enum class EventID
 
 class Event 
 {
-public:
-	Event(EventID id);
-	EventID id;
-	bool handled;
+	public:
+		Event(EventID id);
+		EventID id;
+		bool handled;
 };

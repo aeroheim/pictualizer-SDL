@@ -1,19 +1,20 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include "EventSubscriber.h"
+#include <algorithm>
+#include <vector>
 
 using std::vector;
-using std::shared_ptr;
 
 class EventSubscriber;
 
 class EventObserver
 {
-public:
-	virtual void notify(Event e) = 0;
+	public:
+		virtual void addSubscriber(EventSubscriber* s);
+		virtual void removeSubscriber(EventSubscriber* s);
 
-private:
-	vector<shared_ptr<EventSubscriber>> subscribers;
+	private:
+		vector<EventSubscriber*> subscribers;
+		virtual void notify(Event e);
 };

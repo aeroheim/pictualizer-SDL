@@ -2,15 +2,15 @@
 
 #include "Event.h"
 #include "EventObserver.h"
-#include <memory>
-
-using std::shared_ptr;
 
 class EventObserver;
 
 class EventSubscriber
 {
-public:
-	virtual void handleEvent(Event event) = 0;
-	virtual void subscribeTo(shared_ptr<EventObserver> o) = 0;
+	public:
+		virtual void handleEvent(Event e) = 0;
+
+	private:
+		virtual void subscribeTo(EventObserver* o);
+		virtual void unsubscribeFrom(EventObserver* o);
 };
