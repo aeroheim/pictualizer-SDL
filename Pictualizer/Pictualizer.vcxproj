@@ -17,6 +17,8 @@
     <ClInclude Include="WindowIOController.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EventObserver.cpp" />
+    <ClCompile Include="EventSubscriber.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WindowIOController.cpp" />
   </ItemGroup>

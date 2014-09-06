@@ -9,6 +9,7 @@ using std::shared_ptr;
 
 int main(int argc, char** argv)
 {
+	// Init
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		cout << "SDL_Init Error: " << SDL_GetError() << endl;
@@ -16,7 +17,7 @@ int main(int argc, char** argv)
 	}
 
 	// Create window
-	SDL_Window* win = SDL_CreateWindow("Hello World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_BORDERLESS);
+	SDL_Window* win = SDL_CreateWindow("Pictualizer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_BORDERLESS);
 	if (win == nullptr)
 	{
 		cout << "Window Error: " << SDL_GetError << endl;
@@ -33,7 +34,9 @@ int main(int argc, char** argv)
 		SDL_Quit();
 		return 1;
 	}
+
 	WindowIOController windowIOController(win);
+
 	while (true)
 	{
 		windowIOController.pollEvents();

@@ -2,43 +2,44 @@
 
 #include "EventObserver.h"
 #include <SDL.h>
-#include <memory>
-#include <Windows.h>
 
-using std::shared_ptr;
-
-class WindowIOController : public EventObserver
+class WindowIOController : EventObserver
 {
-public:
-	WindowIOController(SDL_Window* win);
-	~WindowIOController();
-	void pollEvents();
-	void notify(Event e);
-private:
-	const int DRAG_ZONE_DIST = 15;
+	public:
+		WindowIOController(SDL_Window* win);
+		~WindowIOController();
 
-	SDL_Window* win;
-	SDL_Event e;
+		void pollEvents();
 
-	int mouseDownX, mouseDownY;
-	int globalMouseDownX, globalMouseDownY;
-	bool dragResizing;
+	private:
+		const int DRAG_ZONE_DIST = 15;
+		SDL_Window* win;
+		SDL_Event e;
+		SDL_Cursor* ARROW;
+		SDL_Cursor* SIZEN;
+		SDL_Cursor* SIZENW;
+		SDL_Cursor* SIZENE;
+		SDL_Cursor* SIZES;
+		SDL_Cursor* SIZESE;
+		SDL_Cursor* SIZESW;
+		SDL_Cursor* SIZEW;
+		SDL_Cursor* SIZEE;
 
-	int prevWinWidth, prevWinHeight;
-	int winWidth, winHeight;
+		void OnDrop(SDL_DropEvent& e);
+		void OnMouseButtonDown(SDL_MouseButtonEvent& e);
+		void OnMouseButtonUp(SDL_MouseButtonEvent& e);
+		void OnMouseMotion(SDL_MouseMotionEvent& e);
+		void OnWindowResized(SDL_WindowEvent& e);
 
-	SDL_Cursor* ARROW;
-	SDL_Cursor* SIZEN;
-	SDL_Cursor* SIZENW;
-	SDL_Cursor* SIZENE;
-	SDL_Cursor* SIZES;
-	SDL_Cursor* SIZESE;
-	SDL_Cursor* SIZESW;
-	SDL_Cursor* SIZEW;
-	SDL_Cursor* SIZEE;
+		int mouseDownX, mouseDownY;
+		int globalMouseDownX, globalMouseDownY;
+		int winWidth, winHeight;
+		int prevWinWidth, prevWinHeight;
 
-	void setDragCursor(SDL_MouseMotionEvent& e); 
-	void doDragResize(POINT& newpt);
+		bool dragging;
+		bool dragResizing;
+		bool mouseDownInResizeZone();
 
-	bool mouseInResizeZone();
+		void setDragCursor(SDL_MouseMotionEvent& e);
+		void doDragResize();
 };
