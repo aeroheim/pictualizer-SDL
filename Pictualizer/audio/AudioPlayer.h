@@ -13,8 +13,13 @@ public:
 	void play();
 	void pause();
 	void stop();
-	void repeat(bool on);
-	void shuffle(bool on);
+
+	void setRepeat(bool on);
+	bool getRepeat();
+	
+	void setShuffle(bool on);
+	bool getShuffle();
+
 	void playSong(std::wstring file);
 	void playSong(int index);
 	void enqueueSong(std::wstring file);
@@ -36,12 +41,14 @@ public:
 
 	State getState();
 
-	bool repeat = false;
-	bool shuffle = false;
 private:
 	std::vector<std::wstring> playlist;
 	std::vector<int> shuffleList;
 
+	bool repeat = false;
+	bool shuffle = false;
+
 	HCHANNEL channel;
 	DWORD tagFormat;
 };
+

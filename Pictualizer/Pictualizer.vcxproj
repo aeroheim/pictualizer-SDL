@@ -11,12 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio\AudioPlayer.h" />
     <ClInclude Include="io\Event.h" />
     <ClInclude Include="io\EventObserver.h" />
     <ClInclude Include="io\EventSubscriber.h" />
     <ClInclude Include="io\WindowIOController.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="io\EventObserver.cpp" />
     <ClCompile Include="io\EventSubscriber.cpp" />
     <ClCompile Include="main\main.cpp" />
