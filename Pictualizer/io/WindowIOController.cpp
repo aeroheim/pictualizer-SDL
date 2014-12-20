@@ -1,10 +1,9 @@
 #include "WindowIOController.h"
-#include "iostream"
 
 /*
  *  Insert comment here.
  */
-WindowIOController::WindowIOController(SDL_Window* window)
+WindowIOController :: WindowIOController(SDL_Window* window)
 {
 	win = window;
 
@@ -161,7 +160,7 @@ bool WindowIOController :: mouseDownInResizeZone()
 /*
  * Insert comment here.
  */
-void WindowIOController::setDragCursor(SDL_MouseMotionEvent &motion)
+void WindowIOController :: setDragCursor(SDL_MouseMotionEvent &motion)
 {
 	if ((motion.x < DRAG_ZONE_DIST) && (motion.y < DRAG_ZONE_DIST))
 		SDL_SetCursor(SIZENW);

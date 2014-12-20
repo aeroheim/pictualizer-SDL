@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EventObserver.h"
+#include "iostream"
 #include <SDL.h>
 
 class WindowIOController : EventObserver
