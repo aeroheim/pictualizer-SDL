@@ -14,8 +14,8 @@ using std::vector;
 using std::wstring;
 
 /*
- *  The AudioPlayer class serves as the main internal audio player for pictualizer. Objects may interact with
- *  and query the AudioPlayer by calling its public methods. Audio related IO must be routed through this class as well.
+ *	The AudioPlayer class serves as the main internal audio player for pictualizer. Objects may interact with
+ *	and query the AudioPlayer by calling its public methods. Audio related IO must be routed through this class as well.
  */
 class AudioPlayer : EventObserver
 {
@@ -30,15 +30,15 @@ class AudioPlayer : EventObserver
 		HSTREAM* getStream();
 
 		/*
-		 *  The main states of AudioPlayer are defined in AudioPlayerStates.h. The state is modified when appropriate
-		 *  by the methods within the AudioPlayer class.
+		 *	The main states of AudioPlayer are defined in AudioPlayerStates.h. The state is modified when appropriate
+		 *	by the methods within the AudioPlayer class.
 		 */
 		AudioPlayerState getPlayerState();
 
 		/*	
 		 *	AudioPlayer plays tracks based on its current AudioPlaylist. The AudioPlayer class provides methods that allow
-		 *  users to navigate through and add/remove AudioPlaylists. Since AudioPlaylist is the main container class for
-		 *  AudioTracks, users must first retrieve the current AudioPlaylist from the AudioPlayer in order to add/remove tracks.
+		 *	users to navigate through and add/remove AudioPlaylists. Since AudioPlaylist is the main container class for
+		 *	AudioTracks, users must first retrieve the current AudioPlaylist from the AudioPlayer in order to add/remove tracks.
 		 */
 		AudioPlaylist& getCurrentPlaylist();
 		AudioPlaylist& getPlaylistByIndex();
@@ -49,9 +49,9 @@ class AudioPlayer : EventObserver
 		void prevPlaylist();
 
 		/*
-		 *  Among AudioPlayer's basic track navigation functionality, AudioPlayer also allows user to retrieve the current AudioTrack
-		 *  instead of having to first retrieve the current AudioPlaylist. Widgets or UI objects may use the playTrack() method to
-		 *  select a song to play by index.
+		 *	Among AudioPlayer's basic track navigation functionality, AudioPlayer also allows user to retrieve the current AudioTrack
+		 *	instead of having to first retrieve the current AudioPlaylist. Widgets or UI objects may use the playTrack() method to
+		 *	select a song to play by index.
 		 */
 		AudioTrack& getCurrentTrack();
 		int getCurrentTrackIndex();
@@ -63,15 +63,15 @@ class AudioPlayer : EventObserver
 		void stop();
 
 		/*
-		 *  The Repeat states of AudioPlayer are defined in AudioPlayerStates.h. 
-		 *  When PLAYLIST repeat is set, the current playlist becomes circular.
+		 *	The Repeat states of AudioPlayer are defined in AudioPlayerStates.h. 
+		 *	When PLAYLIST repeat is set, the current playlist becomes circular.
 		 */
 		RepeatState getRepeat();
 		void setRepeat(RepeatState s);
 	
 		/*
-	  	 *  The Shuffle states of AudioPlayer are defined in AudioPlayerStates.h.
-		 *  AudioPlayer supports shuffling of the main playlist by the following categories: track, folder (TODO), album (TODO).
+	  	 *	The Shuffle states of AudioPlayer are defined in AudioPlayerStates.h.
+		 *	AudioPlayer supports shuffling of the main playlist by the following categories: track, folder (TODO), album (TODO).
 		 */
 		ShuffleState getShuffle();
 		void setShuffle(ShuffleState s);
