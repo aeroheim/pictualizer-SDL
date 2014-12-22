@@ -1,8 +1,7 @@
 #pragma once
 
-#include <Taglib.h>
-
-using std::wstring;
+#include <fileref.h>
+#include <taglib.h>
 
 /*
  *	The AudioTrack class serves as the default object representation of tracks in pictualizer.
@@ -11,21 +10,21 @@ using std::wstring;
 class AudioTrack
 {
 	public:
-		AudioTrack(wstring filePath);
+		AudioTrack(std::wstring path);
 
 		/*
 		 *	AudioTrack metadata should be lazy-initialized in order to maintain reasonable 
 		 *	performance when loading large playlists. Only when a view requests metadata should
-		 *	the respective metadata be retrieved.
+		 *	the respective metadata be retrieved. (TODO)
 		 */
-		wstring getPath();
-		wstring getTitle();
-		wstring getArtist();
-		wstring getAlbum();
+		std::wstring getPath();
+		std::wstring getTitle();
+		std::wstring getArtist();
+		std::wstring getAlbum();
 
 	private:
-		wstring path;
-		wstring title;
-		wstring artist;
-		wstring album;
+		std::wstring filePath;
+		std::wstring title;
+		std::wstring artist;
+		std::wstring album;
 };
