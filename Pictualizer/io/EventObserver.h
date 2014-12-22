@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <vector>
 
-using std::vector;
-
 class EventSubscriber;
 
 class EventObserver
@@ -15,6 +13,6 @@ class EventObserver
 		virtual void removeSubscriber(EventSubscriber* s);
 
 	private:
-		vector<EventSubscriber*> subscribers;
+		std::vector<EventSubscriber*> subscribers;
 		virtual void notify(Event e);
 };

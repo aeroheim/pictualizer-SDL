@@ -10,9 +10,6 @@
 #include <vector>
 #include <random>
 
-using std::vector;
-using std::wstring;
-
 /*
  *	The AudioPlayer class serves as the main internal audio player for pictualizer. Objects may interact with
  *	and query the AudioPlayer by calling its public methods. Audio related IO must be routed through this class as well.
@@ -91,11 +88,11 @@ class AudioPlayer : EventObserver
 		HSTREAM stream;
 
 		// AudioPlayer keeps a list of AudioPlaylists for multiple playlist management and playlist history support.
-		vector<AudioPlaylist*> playlists;
+		std::vector<AudioPlaylist*> playlists;
 		int playlistIndex;
 
 		// A shuffled list of the current AudioPlaylist is kept to store the shuffled playlist order.
-		vector<int> shuffledPlaylist;
+		std::vector<int> shuffledPlaylist;
 		int shuffleIndex;
 
 		RepeatState repeatState;

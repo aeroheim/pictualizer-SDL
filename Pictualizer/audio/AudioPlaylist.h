@@ -2,9 +2,7 @@
 
 #include "AudioTrack.h"
 #include <vector>
-
-using std::vector;
-using std::wstring;
+#include <string>
 
 /*
  *	The AudioPlaylist class serves as a container for AudioTracks. Objects may enqueue or remove
@@ -25,17 +23,17 @@ class AudioPlaylist
 
 		AudioTrack& getTrack(int index);
 
-		wstring getName();
+		std::wstring getName();
 		void setName();
 
-		void enqueueTrack(wstring file);
-		wstring removeTrack(int index);
+		void enqueueTrack(std::wstring file);
+		std::wstring removeTrack(int index);
 
 		int getDuration();
 		int getSize();
 
 	private:
-		vector<AudioTrack*> playlist;
-		wstring name;
+		std::vector<AudioTrack*> playlist;
+		std::wstring name;
 		int duration;
 };
