@@ -18,16 +18,16 @@
 class AudioPlaylist
 {
 	public:
-		AudioPlaylist();
-		~AudioPlaylist();
+		AudioPlaylist(std::wstring name);
 
 		AudioTrack& getTrack(int index);
 
 		std::wstring getName();
-		void setName();
+		void setName(std::wstring name); 
 
 		void enqueueTrack(std::wstring file);
-		std::wstring removeTrack(int index);
+		AudioTrack& removeTrack(int index);
+		void removeAllTracks();
 
 		int getDuration();
 		int getSize();

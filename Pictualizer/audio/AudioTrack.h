@@ -21,10 +21,12 @@ class AudioTrack
 		std::wstring getTitle();
 		std::wstring getArtist();
 		std::wstring getAlbum();
+		int getDuration();
 
 	private:
 		std::wstring filePath;
 		std::wstring title;
 		std::wstring artist;
 		std::wstring album;
+		int duration;
 };

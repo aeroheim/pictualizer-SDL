@@ -7,7 +7,7 @@ void EventObserver::addSubscriber(EventSubscriber* s)
 
 void EventObserver::removeSubscriber(EventSubscriber* s)
 {
-	subscribers.erase(remove(subscribers.begin(), subscribers.end(), s), subscribers.end());
+	subscribers.erase(std::remove(subscribers.begin(), subscribers.end(), s), subscribers.end());
 }
 
 void EventObserver::notify(Event e)
