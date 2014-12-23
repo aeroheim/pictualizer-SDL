@@ -38,10 +38,11 @@ class AudioPlayer : EventObserver
 		 *	AudioTracks, users must first retrieve the current AudioPlaylist from the AudioPlayer in order to add/remove tracks.
 		 */
 		AudioPlaylist& getCurrentPlaylist();
-		AudioPlaylist& getPlaylistByIndex();
+		AudioPlaylist& getPlaylist(int index);
 		int getCurrentPlaylistIndex();
 		void addPlaylist(AudioPlaylist* playlist);
 		void removePlaylist(int index);
+		void setPlaylist(int index);
 		void nextPlaylist();
 		void prevPlaylist();
 
@@ -78,14 +79,17 @@ class AudioPlayer : EventObserver
 		float getVolume();
 	
 		// Seeking
-		void setPosition(float pos);
-		float getPosition();
+		void setPosition(double pos);
+		double getPosition();
 
 		// BASS callbacks 
 		void OnSongEnd();
 
 	private:
 		HSTREAM stream;
+		
+		// Index of the current track in the current playlist.
+		int trackIndex;
 
 		// AudioPlayer keeps a list of AudioPlaylists for multiple playlist management and playlist history support.
 		std::vector<AudioPlaylist*> playlists;
