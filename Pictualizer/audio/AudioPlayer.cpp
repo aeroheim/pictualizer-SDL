@@ -57,7 +57,7 @@ void AudioPlayer::removePlaylist(int index)
 	playlists.erase(playlists.begin() + index);
 }
 
-void AudioPlayer::setPlaylist(int index)
+void AudioPlayer::setCurrentPlaylist(int index)
 {
 	if (playlists.size() > (size_t) 0 && index >= 0 && (size_t) index < playlists.size())
 		playlistIndex = index;

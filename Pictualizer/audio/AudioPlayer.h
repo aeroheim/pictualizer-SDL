@@ -42,7 +42,7 @@ class AudioPlayer : EventObserver
 		int getCurrentPlaylistIndex();
 		void addPlaylist(AudioPlaylist* playlist);
 		void removePlaylist(int index);
-		void setPlaylist(int index);
+		void setCurrentPlaylist(int index);
 		void nextPlaylist();
 		void prevPlaylist();
 
