@@ -30,6 +30,15 @@
     <ClInclude Include="audio\AudioPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="audio\AudioPlayerStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="audio\AudioPlaylist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="audio\AudioTrack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -41,10 +50,16 @@
     <ClCompile Include="io\WindowIOController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main\main.cpp">
+    <ClCompile Include="audio\AudioPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="audio\AudioPlayer.cpp">
+    <ClCompile Include="audio\AudioTrack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="audio\AudioPlaylist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
