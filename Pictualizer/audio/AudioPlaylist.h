@@ -19,6 +19,7 @@ class AudioPlaylist
 {
 	public:
 		AudioPlaylist(std::wstring name);
+		virtual ~AudioPlaylist();
 
 		AudioTrack& getTrack(int index);
 

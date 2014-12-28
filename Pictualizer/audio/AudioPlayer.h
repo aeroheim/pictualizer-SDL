@@ -18,7 +18,7 @@ class AudioPlayer : EventObserver
 {
 	public:
 		AudioPlayer();
-		~AudioPlayer();
+		virtual ~AudioPlayer();
 
 		/* 
 		 *	The internal HSTREAM can be retrieved to allow for querying of audio data using BASS. Objects should not

@@ -2,6 +2,10 @@
 
 AudioPlaylist::AudioPlaylist(std::wstring n) : name(n) {}
 
+AudioPlaylist::~AudioPlaylist()
+{
+}
+
 AudioTrack& AudioPlaylist::getTrack(int index)
 {
 	return *playlist.at(index);

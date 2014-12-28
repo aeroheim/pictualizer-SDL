@@ -11,6 +11,7 @@ class AudioTrack
 {
 	public:
 		AudioTrack(std::wstring path);
+		virtual ~AudioTrack();
 
 		/*
 		 *	AudioTrack metadata should be lazy-initialized in order to maintain reasonable 
