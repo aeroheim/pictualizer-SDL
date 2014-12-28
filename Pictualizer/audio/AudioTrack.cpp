@@ -11,10 +11,14 @@ AudioTrack::AudioTrack(std::wstring path) : filePath(path)
 
 	title = track.tag()->title().toCWString();
 	artist = track.tag()->artist().toCWString();
-	album = track.tag()->artist().toCWString();
+	album = track.tag()->album().toCWString();
 
 	// Duration is ignored for now.
 	duration = 0;
+}
+
+AudioTrack::~AudioTrack()
+{
 }
 
 std::wstring AudioTrack::getPath()
