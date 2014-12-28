@@ -19,6 +19,7 @@
     <ClInclude Include="io\EventObserver.h" />
     <ClInclude Include="io\EventSubscriber.h" />
     <ClInclude Include="io\WindowIOController.h" />
+    <ClInclude Include="util\utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\AudioPlayer.cpp" />
@@ -28,11 +29,13 @@
     <ClCompile Include="io\EventSubscriber.cpp" />
     <ClCompile Include="io\WindowIOController.cpp" />
     <ClCompile Include="main\main.cpp" />
+    <ClCompile Include="util\utils.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C667C7C3-2851-4F64-9E02-3659DB6373E0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Pictualizer</RootNamespace>
+    <ProjectName>pictualizer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -72,13 +75,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include;../Dependencies/gtest-1.7.0/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/;../Dependencies/gtest-1.7.0</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;tag.lib;gtest_main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;tag.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
