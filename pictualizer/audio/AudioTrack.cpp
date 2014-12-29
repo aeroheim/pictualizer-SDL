@@ -7,7 +7,10 @@ AudioTrack::AudioTrack(std::wstring path) : filePath(path)
 	 *	editing more detailed tags. For now it will suffice, but we should eventually move on to
 	 *	using Taglib's format specific subclasses for handling tags. (TODO)
 	 */
+
 	TagLib::FileRef track(path.c_str());
+
+	assert(!track.isNull());
 
 	title = track.tag()->title().toCWString();
 	artist = track.tag()->artist().toCWString();
@@ -44,4 +47,9 @@ std::wstring AudioTrack::getAlbum()
 int AudioTrack::getDuration()
 {
 	return duration;
+}
+
+bool operator==(AudioTrack& lhs, AudioTrack& rhs)
+{
+	return lhs.filePath == rhs.filePath;
 }

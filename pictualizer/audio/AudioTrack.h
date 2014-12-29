@@ -1,13 +1,15 @@
 #pragma once
 
+#include "../io/EventObserver.h"
 #include <fileref.h>
 #include <taglib.h>
+#include <assert.h>
 
 /*
  *	The AudioTrack class serves as the default object representation of tracks in pictualizer.
  *	AudioTracks contain metadata related to the track, queried using Taglib.
  */
-class AudioTrack
+class AudioTrack : EventObserver
 {
 	public:
 		AudioTrack(std::wstring path);
@@ -23,6 +25,7 @@ class AudioTrack
 		std::wstring getArtist();
 		std::wstring getAlbum();
 		int getDuration();
+		friend bool operator== (AudioTrack& lhs, AudioTrack& rhs);
 
 	private:
 		std::wstring filePath;

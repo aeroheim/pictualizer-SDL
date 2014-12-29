@@ -6,9 +6,12 @@ AudioPlaylist::~AudioPlaylist()
 {
 }
 
-AudioTrack& AudioPlaylist::getTrack(int index)
+AudioTrack* AudioPlaylist::getTrack(int index)
 {
-	return *playlist.at(index);
+	if (index >= 0 && (size_t) index < playlist.size())
+		return &playlist.at(index);
+
+	return NULL;
 }
 
 std::wstring AudioPlaylist::getName()
@@ -21,21 +24,19 @@ void AudioPlaylist::setName(std::wstring n)
 	name = n;
 }
 
-void AudioPlaylist::enqueueTrack(std::wstring file)
+void AudioPlaylist::enqueueTrack(AudioTrack track)
 {
-	AudioTrack track(file);
 	duration += track.getDuration();
-	playlist.push_back(&track);
+	playlist.push_back(track);
 }
 
-AudioTrack& AudioPlaylist::removeTrack(int index)
+void AudioPlaylist::removeTrack(int index)
 {
-	AudioTrack* track = playlist.at(index);
-	duration -= track->getDuration();
-
-	playlist.erase(playlist.begin() + index);
-
-	return *track;
+	if (index >= 0 && (size_t) index < playlist.size())
+	{
+		duration -= playlist.at(index).getDuration();
+		playlist.erase(playlist.begin() + index);;
+	}
 }
 
 void AudioPlaylist::removeAllTracks()

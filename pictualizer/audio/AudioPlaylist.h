@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../io/EventObserver.h"
 #include "AudioTrack.h"
 #include <vector>
 #include <string>
@@ -15,26 +16,26 @@
  *
  *	AudioPlaylists must support serialization/deserialization into .m3u playlists. (TODO)
  */
-class AudioPlaylist
+class AudioPlaylist : EventObserver
 {
 	public:
 		AudioPlaylist(std::wstring name);
 		virtual ~AudioPlaylist();
 
-		AudioTrack& getTrack(int index);
+		AudioTrack* getTrack(int index);
 
 		std::wstring getName();
 		void setName(std::wstring name); 
 
-		void enqueueTrack(std::wstring file);
-		AudioTrack& removeTrack(int index);
+		void enqueueTrack(AudioTrack track);
+		void removeTrack(int index);
 		void removeAllTracks();
 
 		int getDuration();
 		int getSize();
 
 	private:
-		std::vector<AudioTrack*> playlist;
+		std::vector<AudioTrack> playlist;
 		std::wstring name;
 		int duration;
 };
