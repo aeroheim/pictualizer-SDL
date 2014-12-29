@@ -10,7 +10,7 @@ class EventSubscriber
 	public:
 		virtual void handleEvent(Event e) = 0;
 
-	private:
+	protected:
 		virtual void subscribeTo(EventObserver* o);
 		virtual void unsubscribeFrom(EventObserver* o);
 };
