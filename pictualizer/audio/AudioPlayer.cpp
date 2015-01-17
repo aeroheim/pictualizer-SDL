@@ -37,17 +37,23 @@ AudioPlayerState AudioPlayer::getPlayerState()
 	}
 }
 
-AudioPlaylist& AudioPlayer::getCurrentPlaylist()
+AudioPlaylist* AudioPlayer::getCurrentPlaylist()
 {
-	return *playlists.at(playlistIndex);
+	if (playlistIndex >= 0 && (size_t) playlistIndex < playlists.size())
+		return &playlists.at(playlistIndex);
+
+	return NULL;
 }
 
-AudioPlaylist& AudioPlayer::getPlaylist(int index)
+AudioPlaylist* AudioPlayer::getPlaylist(int index)
 {
-	return *playlists.at(index);
+	if (index >= 0 && (size_t) index < playlists.size())
+		return &playlists.at(index);
+
+	return NULL;
 }
 
-void AudioPlayer::addPlaylist(AudioPlaylist* playlist)
+void AudioPlayer::addPlaylist(AudioPlaylist playlist)
 {
 	playlists.push_back(playlist);
 }
@@ -75,9 +81,14 @@ void AudioPlayer::prevPlaylist()
 		--playlistIndex;
 }
 
-AudioTrack& AudioPlayer::getCurrentTrack()
+AudioTrack* AudioPlayer::getCurrentTrack()
 {
-	return playlists.at(playlistIndex)->getTrack(trackIndex);
+	AudioPlaylist* currentPlaylist = getCurrentPlaylist();
+
+	if (currentPlaylist)
+		return playlists.at(playlistIndex).getTrack(trackIndex);
+
+	return NULL;
 }
 
 int AudioPlayer::getCurrentTrackIndex()
@@ -87,18 +98,23 @@ int AudioPlayer::getCurrentTrackIndex()
 
 void AudioPlayer::playTrack(int index)
 {
-	// Setup new HSTREAM.
-	BASS_StreamFree(stream);
-	stream = BASS_StreamCreateFile(0, playlists.at(playlistIndex)->getTrack(index).getPath().c_str(), 0, 0, 0);
-	BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
+	AudioPlaylist* currentPlaylist = getCurrentPlaylist();
+	
+	if (currentPlaylist && index >= 0 && index < currentPlaylist->getSize())
+	{
+		// Setup new HSTREAM.
+		BASS_StreamFree(stream);
+		stream = BASS_StreamCreateFile(0, playlists.at(playlistIndex).getTrack(index)->getPath().c_str(), 0, 0, 0);
+		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
-	// Play the new song.
-	play();
+		// Play the new song.
+		play();
+	}
 }
 
 void AudioPlayer::nextTrack()
 {
-	int playlistSize = playlists.at(playlistIndex)->getSize();
+	int playlistSize = playlists.at(playlistIndex).getSize();
 
 	if (playlistSize > 1)
 	{
@@ -130,7 +146,7 @@ void AudioPlayer::nextTrack()
 
 void AudioPlayer::prevTrack()
 {
-	int playlistSize = playlists.at(playlistIndex)->getSize();
+	int playlistSize = playlists.at(playlistIndex).getSize();
 
 	if (playlistSize > 1)
 	{
@@ -234,7 +250,7 @@ void AudioPlayer::shuffle()
 {
 	std::default_random_engine rng;
 
-	int playlistSize = playlists.at(playlistIndex)->getSize();
+	int playlistSize = playlists.at(playlistIndex).getSize();
 
 	for (int i = 0; i < playlistSize; i++)
 		shuffledPlaylist[i] = i;

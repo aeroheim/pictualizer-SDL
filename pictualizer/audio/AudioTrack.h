@@ -9,7 +9,7 @@
  *	The AudioTrack class serves as the default object representation of tracks in pictualizer.
  *	AudioTracks contain metadata related to the track, queried using Taglib.
  */
-class AudioTrack : EventObserver
+class AudioTrack : public EventObserver
 {
 	public:
 		AudioTrack(std::wstring path);

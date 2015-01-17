@@ -16,7 +16,7 @@
  *
  *	AudioPlaylists must support serialization/deserialization into .m3u playlists. (TODO)
  */
-class AudioPlaylist : EventObserver
+class AudioPlaylist : public EventObserver
 {
 	public:
 		AudioPlaylist(std::wstring name);

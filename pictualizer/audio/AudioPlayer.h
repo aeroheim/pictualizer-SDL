@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../io/EventObserver.h"
+#include "../io/InputListener.h"
 #include "AudioPlayerStates.h"
 #include "AudioPlaylist.h"
 #include "AudioTrack.h"
-#include <algorithm>
 #include <bass.h>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <random>
@@ -14,7 +15,7 @@
  *	The AudioPlayer class serves as the main internal audio player for pictualizer. Objects may interact with
  *	and query the AudioPlayer by calling its public methods. Audio related IO must be routed through this class as well.
  */
-class AudioPlayer : EventObserver
+class AudioPlayer : public EventObserver
 {
 	public:
 		AudioPlayer();
@@ -37,10 +38,10 @@ class AudioPlayer : EventObserver
 		 *	users to navigate through and add/remove AudioPlaylists. Since AudioPlaylist is the main container class for
 		 *	AudioTracks, users must first retrieve the current AudioPlaylist from the AudioPlayer in order to add/remove tracks.
 		 */
-		AudioPlaylist& getCurrentPlaylist();
-		AudioPlaylist& getPlaylist(int index);
+		AudioPlaylist* getCurrentPlaylist();
+		AudioPlaylist* getPlaylist(int index);
 		int getCurrentPlaylistIndex();
-		void addPlaylist(AudioPlaylist* playlist);
+		void addPlaylist(AudioPlaylist playlist);
 		void removePlaylist(int index);
 		void setCurrentPlaylist(int index);
 		void nextPlaylist();
@@ -51,7 +52,7 @@ class AudioPlayer : EventObserver
 		 *	instead of having to first retrieve the current AudioPlaylist. Widgets or UI objects may use the playTrack() method to
 		 *	select a song to play by index.
 		 */
-		AudioTrack& getCurrentTrack();
+		AudioTrack* getCurrentTrack();
 		int getCurrentTrackIndex();
 		void playTrack(int index);
 		void nextTrack();
@@ -92,7 +93,7 @@ class AudioPlayer : EventObserver
 		int trackIndex;
 
 		// AudioPlayer keeps a list of AudioPlaylists for multiple playlist management and playlist history support.
-		std::vector<AudioPlaylist*> playlists;
+		std::vector<AudioPlaylist> playlists;
 		int playlistIndex;
 
 		// A shuffled list of the current AudioPlaylist is kept to store the shuffled playlist order.
