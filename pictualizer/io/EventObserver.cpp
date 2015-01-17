@@ -10,8 +10,9 @@ void EventObserver::removeSubscriber(EventSubscriber* s)
 	subscribers.erase(std::remove(subscribers.begin(), subscribers.end(), s), subscribers.end());
 }
 
-void EventObserver::notify(Event e)
+void EventObserver::notify(Event* e)
 {
 	for (EventSubscriber* s : subscribers)
-		s->handleEvent(e);
+		if (!e->handled)
+			s->handleEvent(e);
 }

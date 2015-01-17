@@ -8,7 +8,7 @@ class EventObserver;
 class EventSubscriber
 {
 	public:
-		virtual void handleEvent(Event e) = 0;
+		virtual void handleEvent(Event* e) = 0;
 
 	protected:
 		virtual void subscribeTo(EventObserver* o);

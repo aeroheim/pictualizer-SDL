@@ -14,5 +14,5 @@ class EventObserver
 
 	protected:
 		std::vector<EventSubscriber*> subscribers;
-		virtual void notify(Event e);
+		virtual void notify(Event* e);
 };
