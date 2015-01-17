@@ -1,8 +1,5 @@
 #include "WindowIOController.h"
 
-/*
- *  Insert comment here.
- */
 WindowIOController::WindowIOController(SDL_Window* window)
 {
 	win = window;
@@ -26,9 +23,6 @@ WindowIOController::WindowIOController(SDL_Window* window)
 	SIZEE = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
 }
 
-/*
- * Insert comment here.
- */
 WindowIOController::~WindowIOController()
 {
 	SDL_FreeCursor(ARROW);
@@ -42,9 +36,6 @@ WindowIOController::~WindowIOController()
 	SDL_FreeCursor(SIZEE);
 }
 
-/*
- * Insert comment here.
- */
 void WindowIOController::pollEvents()
 {
 	while (SDL_PollEvent(&e))
@@ -54,14 +45,20 @@ void WindowIOController::pollEvents()
 			case SDL_DROPFILE:
 				OnDrop(e.drop);
 				break;
-			case SDL_WINDOWEVENT:
-				OnWindowResized(e.window);
+			case SDL_KEYDOWN:
+				OnKeyDown(e.key);
+				break;
+			case SDL_KEYUP:
+				OnKeyUp(e.key);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				OnMouseButtonDown(e.button);
 				break;
 			case SDL_MOUSEBUTTONUP:
 				OnMouseButtonUp(e.button);
+				break;
+			case SDL_MOUSEWHEEL:
+				OnMouseWheel(e.wheel);
 				break;
 			// TODO: Mouse cursor is sometimes reset by the OS when outside the SDL window.
 			case SDL_MOUSEMOTION:
@@ -71,83 +68,128 @@ void WindowIOController::pollEvents()
 	}
 }
 
-/*
- * Insert comment here.
- */
 void WindowIOController::OnDrop(SDL_DropEvent& e)
 {
-	// Handle drag & drop here
+	Event* fileDropEvent = new FileDropEvent(e);
+	notify(fileDropEvent);
+
+	SDL_free(e.file);
+	delete fileDropEvent;
 }
 
-/*
- * Insert comment here.
- */
+void WindowIOController::OnKeyDown(SDL_KeyboardEvent& e)
+{
+	Event* keyDownEvent = new KeyDownEvent(e);
+	notify(keyDownEvent);
+
+	delete keyDownEvent;
+}
+
+void WindowIOController::OnKeyUp(SDL_KeyboardEvent& e)
+{
+	Event* keyUpEvent = new KeyUpEvent(e);
+	notify(keyUpEvent);
+
+	delete keyUpEvent;
+}
+
 void WindowIOController::OnMouseButtonDown(SDL_MouseButtonEvent& e)
 {
-	if (e.button == SDL_BUTTON_LEFT)
+	Event* mouseDownEvent = new MouseDownEvent(e);
+	notify(mouseDownEvent);
+
+	if (!mouseDownEvent->handled)
 	{
-		// Register global mouse events and deny mouse input to other windows for dragging.
-		SDL_CaptureMouse(SDL_TRUE);
+		if (e.button == SDL_BUTTON_LEFT)
+		{
+			// Register global mouse events and deny mouse input to other windows for dragging.
+			SDL_CaptureMouse(SDL_TRUE);
 
-		mouseDownX = e.x;
-		mouseDownY = e.y;
-		SDL_GetGlobalMouseState(&globalMouseDownX, &globalMouseDownY);
+			mouseDownX = e.x;
+			mouseDownY = e.y;
+			SDL_GetGlobalMouseState(&globalMouseDownX, &globalMouseDownY);
 
-		prevWinWidth = winWidth;
-		prevWinHeight = winHeight;
+			prevWinWidth = winWidth;
+			prevWinHeight = winHeight;
 
-		// Window enters drag state when left mouse button is down.
-		if (mouseDownInResizeZone())
-			dragResizing = true;
-		else
-			dragging = true;
+			// Window enters drag state when left mouse button is down.
+			if (mouseDownInResizeZone())
+				dragResizing = true;
+			else
+				dragging = true;
+		}
 	}
+
+	delete mouseDownEvent;
 }
 
-/*
- * Insert comment here.
- */
 void WindowIOController::OnMouseButtonUp(SDL_MouseButtonEvent& e)
 {
-	if (e.button == SDL_BUTTON_LEFT)
-	{
-		// Stop registering global mouse events.
-		SDL_CaptureMouse(SDL_FALSE);
+	Event* mouseUpEvent = new MouseUpEvent(e);
+	notify(mouseUpEvent);
 
-		dragging = false;
-		dragResizing = false;
+	if (!mouseUpEvent->handled)
+	{
+		if (e.button == SDL_BUTTON_LEFT)
+		{
+			// Stop registering global mouse events.
+			SDL_CaptureMouse(SDL_FALSE);
+
+			dragging = false;
+			dragResizing = false;
+		}
 	}
+
+	delete mouseUpEvent;
 }
 
-/*
- * Insert comment here.
- */
+void WindowIOController::OnMouseWheel(SDL_MouseWheelEvent& e)
+{
+	int mx = 0;
+	int my = 0;
+
+	SDL_GetMouseState(&mx, &my);
+
+	Event* mouseWheelEvent = new MouseWheelEvent(e, mx, my);
+	notify(mouseWheelEvent);
+
+	delete mouseWheelEvent;
+}
+
 void WindowIOController::OnMouseMotion(SDL_MouseMotionEvent& e)
 {
-	if (dragging)
+	Event* mouseMotionEvent = new MouseMotionEvent(e);
+	notify(mouseMotionEvent);
+
+	if (!mouseMotionEvent->handled)
 	{
-		SDL_GetGlobalMouseState(&globalMouseDownX, &globalMouseDownY);
-		SDL_SetWindowPosition(win, globalMouseDownX - mouseDownX, globalMouseDownY - mouseDownY);
+		if (dragging)
+		{
+			SDL_GetGlobalMouseState(&globalMouseDownX, &globalMouseDownY);
+			SDL_SetWindowPosition(win, globalMouseDownX - mouseDownX, globalMouseDownY - mouseDownY);
+		}
+		else if (dragResizing)
+		{
+			doDragResize();
+			OnWindowResized();
+		}
+		else
+			setDragCursor(e);
 	}
-	else if (dragResizing)
-	{
-		doDragResize();
-	}
-	else
-		setDragCursor(e);
+
+	delete mouseMotionEvent;
 }
 
-/*
- * Insert comment here.
- */
-void WindowIOController::OnWindowResized(SDL_WindowEvent& e)
+void WindowIOController::OnWindowResized()
 {
 	SDL_GetWindowSize(win, &winWidth, &winHeight);
+
+	Event* windowResizeEvent = new WindowResizeEvent(winWidth, winHeight);
+	notify(windowResizeEvent);
+
+	delete windowResizeEvent;
 }
 
-/*
- * Insert comment here.
- */
 bool WindowIOController::mouseDownInResizeZone()
 {
 	if (mouseDownX < DRAG_ZONE_DIST || mouseDownX > winWidth - DRAG_ZONE_DIST ||
@@ -157,9 +199,6 @@ bool WindowIOController::mouseDownInResizeZone()
 	return false;
 }
 
-/*
- * Insert comment here.
- */
 void WindowIOController::setDragCursor(SDL_MouseMotionEvent &motion)
 {
 	if ((motion.x < DRAG_ZONE_DIST) && (motion.y < DRAG_ZONE_DIST))
@@ -182,9 +221,6 @@ void WindowIOController::setDragCursor(SDL_MouseMotionEvent &motion)
 		SDL_SetCursor(ARROW);
 }
 
-/*
- * Insert comment here.
- */
 void WindowIOController::doDragResize()
 {
 	int globalMouseX, globalMouseY;

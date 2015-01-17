@@ -1,10 +1,13 @@
 #pragma once
 
+#include "../audio/AudioTrack.h"
 #include "EventObserver.h"
 #include "iostream"
 #include <SDL.h>
+#include <locale>
+#include <codecvt>
 
-class WindowIOController : EventObserver
+class WindowIOController : public EventObserver
 {
 	public:
 		WindowIOController(SDL_Window* win);
@@ -27,10 +30,13 @@ class WindowIOController : EventObserver
 		SDL_Cursor* SIZEE;
 
 		void OnDrop(SDL_DropEvent& e);
+		void OnKeyDown(SDL_KeyboardEvent& e);
+		void OnKeyUp(SDL_KeyboardEvent& e);
 		void OnMouseButtonDown(SDL_MouseButtonEvent& e);
 		void OnMouseButtonUp(SDL_MouseButtonEvent& e);
+		void OnMouseWheel(SDL_MouseWheelEvent& e);
 		void OnMouseMotion(SDL_MouseMotionEvent& e);
-		void OnWindowResized(SDL_WindowEvent& e);
+		void OnWindowResized();
 
 		int mouseDownX, mouseDownY;
 		int globalMouseDownX, globalMouseDownY;
