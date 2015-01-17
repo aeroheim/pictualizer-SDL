@@ -3,12 +3,6 @@
 #include "AudioTrack.h"
 #include "utils.h"
 
-TEST(AudioTrack, Initialization)
-{
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
-	AudioTrack track(path);
-}
-
 TEST(AudioTrack, getPath)
 {
 	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
@@ -46,19 +40,19 @@ TEST(AudioTrack, getEmptyTitle)
 {
 	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
-	EXPECT_STREQ(track.getTitle().c_str(), L"");
+	EXPECT_STREQ(L"", track.getTitle().c_str());
 }
 
 TEST(AudioTrack, getEmptyArtist)
 {
 	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
-	EXPECT_STREQ(track.getArtist().c_str(), L"");
+	EXPECT_STREQ(L"", track.getArtist().c_str());
 }
 
 TEST(AudioTrack, getEmptyAlbum)
 {
 	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
-	EXPECT_STREQ(track.getAlbum().c_str(), L"");
+	EXPECT_STREQ(L"", track.getAlbum().c_str());
 }
