@@ -40,15 +40,15 @@ AudioPlayerState AudioPlayer::getPlayerState()
 AudioPlaylist* AudioPlayer::getCurrentPlaylist()
 {
 	if (playlistIndex >= 0 && (size_t) playlistIndex < playlists.size())
-		return &playlists.at(playlistIndex);
+		return &playlists[playlistIndex];
 
 	return NULL;
 }
 
 AudioPlaylist* AudioPlayer::getPlaylist(int index)
 {
-	if (index >= 0 && (size_t) index < playlists.size())
-		return &playlists.at(index);
+	if (index >= 0 && (size_t)index < playlists.size())
+		return &playlists[index];
 
 	return NULL;
 }
@@ -86,7 +86,7 @@ AudioTrack* AudioPlayer::getCurrentTrack()
 	AudioPlaylist* currentPlaylist = getCurrentPlaylist();
 
 	if (currentPlaylist)
-		return playlists.at(playlistIndex).getTrack(trackIndex);
+		return playlists[playlistIndex].getTrack(trackIndex);
 
 	return NULL;
 }
@@ -104,7 +104,7 @@ void AudioPlayer::playTrack(int index)
 	{
 		// Setup new HSTREAM.
 		BASS_StreamFree(stream);
-		stream = BASS_StreamCreateFile(0, playlists.at(playlistIndex).getTrack(index)->getPath().c_str(), 0, 0, 0);
+		stream = BASS_StreamCreateFile(0, playlists[playlistIndex].getTrack(index)->getPath().c_str(), 0, 0, 0);
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
 		// Play the new song.
@@ -114,7 +114,7 @@ void AudioPlayer::playTrack(int index)
 
 void AudioPlayer::nextTrack()
 {
-	int playlistSize = playlists.at(playlistIndex).getSize();
+	int playlistSize = playlists[playlistIndex].getSize();
 
 	if (playlistSize > 1)
 	{
@@ -146,7 +146,7 @@ void AudioPlayer::nextTrack()
 
 void AudioPlayer::prevTrack()
 {
-	int playlistSize = playlists.at(playlistIndex).getSize();
+	int playlistSize = playlists[playlistIndex].getSize();
 
 	if (playlistSize > 1)
 	{
@@ -250,7 +250,7 @@ void AudioPlayer::shuffle()
 {
 	std::default_random_engine rng;
 
-	int playlistSize = playlists.at(playlistIndex).getSize();
+	int playlistSize = playlists[playlistIndex].getSize();
 
 	for (int i = 0; i < playlistSize; i++)
 		shuffledPlaylist[i] = i;

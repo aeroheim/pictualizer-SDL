@@ -4,6 +4,8 @@
 #include "EventObserver.h"
 #include "iostream"
 #include <SDL.h>
+#pragma once
+
 #include <locale>
 #include <codecvt>
 

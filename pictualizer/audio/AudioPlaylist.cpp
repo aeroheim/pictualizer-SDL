@@ -8,8 +8,8 @@ AudioPlaylist::~AudioPlaylist()
 
 AudioTrack* AudioPlaylist::getTrack(int index)
 {
-	if (index >= 0 && (size_t) index < playlist.size())
-		return &playlist.at(index);
+	if (index >= 0 && (size_t)index < playlist.size())
+		return &playlist[index];
 
 	return NULL;
 }
@@ -34,8 +34,8 @@ void AudioPlaylist::removeTrack(int index)
 {
 	if (index >= 0 && (size_t) index < playlist.size())
 	{
-		duration -= playlist.at(index).getDuration();
-		playlist.erase(playlist.begin() + index);;
+		duration -= playlist[index].getDuration();
+		playlist.erase(playlist.begin() + index);
 	}
 }
 
