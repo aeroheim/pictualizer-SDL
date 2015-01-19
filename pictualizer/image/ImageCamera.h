@@ -1,7 +1,7 @@
 #pragma once
 
-#include <float.h>
 #include "ImageCameraStates.h"
+#include "ImageTexture.h"
 #include "../io/EventSubscriber.h"
 #include "../io/InputListener.h"
 
@@ -13,21 +13,21 @@ class ImageCamera : public EventSubscriber, public InputListener
 
 		const float& getScale();
 
-		const SDL_Rect* getView();
+		SDL_Rect* getView();
 		void updateView();
 
 		ImageCameraState getState();
 		void setState(ImageCameraState s);
 
 		void resetCamera();
-		void setView(SDL_Texture* img);
+		void setView(ImageTexture* image);
 		void handleEvent(Event* e); 
 
 	private:
 		ImageCameraState state;
 		SDL_Rect view;
-		const float SCROLL_SPEED = 0.01f;
-		const SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
+		float SCROLL_SPEED = 0.01f;
+		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
 		float maxScale;
 		float scale;
 		int ww;

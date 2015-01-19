@@ -1,5 +1,4 @@
 #include "ImageCamera.h"
-#include <iostream>
 
 ImageCamera::ImageCamera(int w, int h)
 {
@@ -13,7 +12,6 @@ ImageCamera::ImageCamera(int w, int h)
 	maxScale = 1.0f;
 	state = ImageCameraState::MANUAL;
 
-	// TODO: Remove hard-coded key bindings
 	registerKey(ACCESS_KEY);
 }
 
@@ -24,7 +22,7 @@ const float& ImageCamera::getScale()
 	return scale;
 }
 
-const SDL_Rect* ImageCamera::getView()
+SDL_Rect* ImageCamera::getView()
 {
 	return &view;
 }
@@ -54,9 +52,10 @@ void ImageCamera::resetCamera()
 	view.h = (int) std::floor(wh * scale);
 }
 
-void ImageCamera::setView(SDL_Texture* img)
+void ImageCamera::setView(ImageTexture* image)
 {
-	SDL_QueryTexture(img, NULL, NULL, &iw, &ih);
+	iw = image->getWidth();
+	ih = image->getHeight();
 	resetCamera();
 }
 

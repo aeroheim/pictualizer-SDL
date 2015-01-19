@@ -1,40 +1,78 @@
 #include "ImageBackground.h"
 
-ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), camera(ww, wh)
+ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), imageCamera(ww, wh), tempCamera(ww, wh)
 {
-	bg = NULL;
 	imgIndex = -1;
 	slideshow = false;
-	addSubscriber(&camera);
+	fading = false;
+	addSubscriber(&imageCamera);
+	registerKey(ACCESS_KEY);
 }
 
 ImageBackground::~ImageBackground() {}
 
 void ImageBackground::draw()
 {
-	SDL_RenderCopy(ren, bg, camera.getView(), NULL);
+	image.draw(ren, imageCamera.getView());
+
+	if (fading)
+	{
+		fadeImage(temp, false, true);
+		temp.draw(ren, tempCamera.getView());
+	}
 }
 
 void ImageBackground::setImage(std::string path)
 {
-	// Destroy previous texture
-	if (bg)
-		SDL_DestroyTexture(bg);
+	// Fade to the new ImageTexture, if there exists an image to fade to.
+	if (images.size() > 1)
+	{
+		fading = true;
+		tempCamera = imageCamera;
+		temp = image;
+	}
 
-	// Load new texture
-	bg = IMG_LoadTexture(ren, path.c_str());
+	image.setImage(ren, path);
+	image.setBlendMode(SDL_BLENDMODE_BLEND);
+	imageCamera.setView(&image);
+}
 
-	camera.setView(bg);
+void ImageBackground::setImage(int index)
+{
+	if (index >= 0 && (size_t)index < images.size())
+	{
+		setImage(images[index]);
+		imgIndex = index;
+	}
+}
+
+void ImageBackground::nextImage()
+{
+	if (imgIndex + 1 >= 0 && (size_t) (imgIndex + 1) < images.size())
+	{
+		imgIndex += 1;
+		setImage(images[imgIndex]);
+	}
+}
+
+void ImageBackground::prevImage()
+{
+	if (imgIndex - 1 >= 0 && (size_t)(imgIndex - 1) < images.size())
+	{
+		imgIndex -= 1;
+		setImage(images[imgIndex]);
+	}
 }
 
 void ImageBackground::enqueueImage(std::string path)
 {
-
+	images.push_back(path);
 }
 
 void ImageBackground::removeImage(int index)
 {
-
+	if (index >= 0 && (size_t)index < images.size())
+		images.erase(images.begin() + index);
 }
 
 void ImageBackground::handleEvent(Event* e)
@@ -46,11 +84,58 @@ void ImageBackground::handleEvent(Event* e)
 		if (dynamic_cast<FileDropEvent*>(e))
 		{
 			FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e);
-			if (utils::pathIsImage(fileDropEvent->path))
+			if (utils::pathIsImage(fileDropEvent->path) && !fading)
 			{
-				setImage(fileDropEvent->path);
+				enqueueImage(fileDropEvent->path);
+				setImage(images.size() - 1);
 				e->handled = true;
 			}
 		}
+		else  if (dynamic_cast<KeyDownEvent*>(e))
+		{
+			KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e);
+			setKeyHeld(keyDownEvent->key);
+		}
+		else if (dynamic_cast<KeyUpEvent*>(e))
+		{
+			KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e);
+			setKeyReleased(keyUpEvent->key);
+
+			if (keyHeld(ACCESS_KEY))
+			{
+				if (keyUpEvent->key == PREV_IMG_KEY && !fading)
+					prevImage();
+				else if (keyUpEvent->key == NEXT_IMG_KEY && !fading)
+					nextImage();
+			}
+		}
+	}
+}
+
+void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
+{
+	Uint8 alpha;
+	img.getAlpha(&alpha);
+
+	if (in)
+		alpha = alpha + FADE_DELTA <= 255 ? alpha + FADE_DELTA : 255;
+	else
+		alpha = alpha - FADE_DELTA > 0 ? alpha - FADE_DELTA : 0;
+
+	img.setAlpha(alpha);
+
+	if (!in && alpha == 0)
+	{
+		fading = false;
+
+		if (free)
+			img.freeImage();
+	}
+	else if (in && alpha == 255)
+	{
+		fading = false;
+
+		if (free)
+			img.freeImage();
 	}
 }

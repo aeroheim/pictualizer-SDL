@@ -1,5 +1,12 @@
 #include "ImageTexture.h"
 
+ImageTexture::ImageTexture()
+{
+	image = NULL;
+	iw = 0;
+	ih = 0;
+}
+
 ImageTexture::~ImageTexture()
 {
 	if (image)
@@ -7,8 +14,19 @@ ImageTexture::~ImageTexture()
 }
 
 void ImageTexture::draw(SDL_Renderer* ren, SDL_Rect* view)
+{ 
+	if (image)
+		SDL_RenderCopy(ren, image, view, NULL);
+}
+
+int ImageTexture::getWidth()
 {
-	SDL_RenderCopy(ren, image, view, NULL);
+	return iw;
+}
+
+int ImageTexture::getHeight()
+{
+	return ih;
 }
 
 bool ImageTexture::setImage(SDL_Renderer* ren, std::string path)
@@ -26,6 +44,17 @@ bool ImageTexture::setImage(SDL_Renderer* ren, std::string path)
 	return false;
 }
 
+void ImageTexture::freeImage()
+{
+	if (image)
+	{
+		SDL_DestroyTexture(image);
+		image = NULL;
+		iw = 0;
+		ih = 0;
+	}
+}
+
 void ImageTexture::setColor(Uint8 r, Uint8 g, Uint8 b)
 {
 	SDL_SetTextureColorMod(image, r, g, b);
@@ -39,6 +68,11 @@ void ImageTexture::setTint(Uint8 rgb)
 void ImageTexture::setBlur(int level)
 {
 
+}
+
+void ImageTexture::getAlpha(Uint8* alpha)
+{
+	SDL_GetTextureAlphaMod(image, alpha);
 }
 
 void ImageTexture::setAlpha(Uint8 alpha)
