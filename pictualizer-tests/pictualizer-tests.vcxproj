@@ -83,6 +83,8 @@
     <ClCompile Include="..\pictualizer\io\EventObserver.cpp" />
     <ClCompile Include="..\pictualizer\io\EventSubscriber.cpp" />
     <ClCompile Include="..\pictualizer\util\utils.cpp" />
+    <ClCompile Include="audio\test_AudioPlayer.cpp" />
+    <ClCompile Include="audio\test_AudioPlaylist.cpp" />
     <ClCompile Include="audio\test_AudioTrack.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../Pictualizer/util;../Pictualizer/audio;../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include;../Dependencies/gtest-1.7.0/include;../Dependencies/gmock-1.7.0/include</AdditionalIncludeDirectories>
     </ClCompile>

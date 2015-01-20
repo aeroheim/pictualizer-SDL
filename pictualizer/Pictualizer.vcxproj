@@ -15,9 +15,14 @@
     <ClInclude Include="audio\AudioPlayerStates.h" />
     <ClInclude Include="audio\AudioPlaylist.h" />
     <ClInclude Include="audio\AudioTrack.h" />
+    <ClInclude Include="image\ImageBackground.h" />
+    <ClInclude Include="image\ImageCameraStates.h" />
+    <ClInclude Include="image\ImageCamera.h" />
+    <ClInclude Include="image\ImageTexture.h" />
     <ClInclude Include="io\Event.h" />
     <ClInclude Include="io\EventObserver.h" />
     <ClInclude Include="io\EventSubscriber.h" />
+    <ClInclude Include="io\InputListener.h" />
     <ClInclude Include="io\WindowIOController.h" />
     <ClInclude Include="util\utils.h" />
   </ItemGroup>
@@ -25,8 +30,13 @@
     <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="audio\AudioPlaylist.cpp" />
     <ClCompile Include="audio\AudioTrack.cpp" />
+    <ClCompile Include="image\ImageBackground.cpp" />
+    <ClCompile Include="image\ImageCamera.cpp" />
+    <ClCompile Include="image\ImageTexture.cpp" />
+    <ClCompile Include="io\Event.cpp" />
     <ClCompile Include="io\EventObserver.cpp" />
     <ClCompile Include="io\EventSubscriber.cpp" />
+    <ClCompile Include="io\InputListener.cpp" />
     <ClCompile Include="io\WindowIOController.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="util\utils.cpp" />
