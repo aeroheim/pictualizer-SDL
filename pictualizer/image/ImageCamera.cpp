@@ -13,6 +13,8 @@ ImageCamera::ImageCamera(int w, int h)
 	state = ImageCameraState::MANUAL;
 
 	registerKey(ACCESS_KEY);
+
+	srand(time(NULL));
 }
 
 ImageCamera::~ImageCamera() {}
@@ -29,7 +31,25 @@ SDL_Rect* ImageCamera::getView()
 
 void ImageCamera::updateView()
 {
-
+	switch (panningState)
+	{
+	case CameraPanningState::LEFT:
+		break;
+	case CameraPanningState::RIGHT:
+		break;
+	case CameraPanningState::TOP:
+		break;
+	case CameraPanningState::BOTTOM:
+		break;
+	case CameraPanningState::BOTTOM_RIGHT:
+		break;
+	case CameraPanningState::BOTTOM_LEFT:
+		break;
+	case CameraPanningState::TOP_RIGHT:
+		break;
+	case CameraPanningState::TOP_LEFT:
+		break;
+	}
 }
 
 ImageCameraState ImageCamera::getState()
@@ -40,6 +60,8 @@ ImageCameraState ImageCamera::getState()
 void ImageCamera::setState(ImageCameraState s)
 {
 	state = s;
+	if (s == ImageCameraState::ROAMING)
+		generateNewPanningStyle();
 }
 
 void ImageCamera::resetCamera()
@@ -47,9 +69,37 @@ void ImageCamera::resetCamera()
 	view.x = 0;
 	view.y = 0;
 	calculateMaxScale();
+	calculateFadeZone();
 	scale = maxScale;
 	view.w = (int) std::floor(ww * scale);
 	view.h = (int) std::floor(wh * scale);
+}
+
+void ImageCamera::resetPanningCamera()
+{
+	switch (panningState)
+	{
+	case CameraPanningState::LEFT:
+		break;
+	case CameraPanningState::RIGHT:
+		view.x = (int) std::floor(rand() % iw * MAX_START_X_PCT);
+		view.y = (int) std::floor(rand() % (ih - view.h));
+		calculatePanningScales(iw - (view.x + view.w));
+		// TODO: calculate fade zone?
+		break;
+	case CameraPanningState::TOP:
+		break;
+	case CameraPanningState::BOTTOM:
+		break;
+	case CameraPanningState::BOTTOM_RIGHT:
+		break;
+	case CameraPanningState::BOTTOM_LEFT:
+		break;
+	case CameraPanningState::TOP_RIGHT:
+		break;
+	case CameraPanningState::TOP_LEFT:
+		break;
+	}
 }
 
 void ImageCamera::setView(ImageTexture* image)
@@ -63,9 +113,9 @@ void ImageCamera::handleEvent(Event* e)
 {
 	if (!e->handled)
 	{
-		if (dynamic_cast<KeyDownEvent*>(e))
+		if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
 		{
-			KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e);
+			
 			setKeyHeld(keyDownEvent->key);
 		}
 		else if (dynamic_cast<KeyUpEvent*>(e))
@@ -129,6 +179,15 @@ void ImageCamera::calculateMaxScale()
 	float hRatio = (float) ih / (float) wh;
 
 	maxScale = wRatio < hRatio ? wRatio : hRatio;
+}
+
+void ImageCamera::calculatePanningScales(int dist)
+{
+	float maxDistanceCovered = MAX_PAN_DURATION * PAN_SPEED;
+	maxPanScale = dist / maxDistanceCovered;
+
+	float minDistanceCovered = MIN_PAN_DURATION * PAN_SPEED;
+	minPanScale = dist / minDistanceCovered;
 }
 
 void ImageCamera::OnMouseWheel(MouseWheelEvent* e)

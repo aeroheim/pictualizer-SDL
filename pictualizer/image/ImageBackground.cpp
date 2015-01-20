@@ -14,8 +14,10 @@ ImageBackground::~ImageBackground() {}
 void ImageBackground::draw()
 {
 	image.draw(ren, imageCamera.getView());
-
-	if (fading)
+	
+	if (imageCamera.getState() == ImageCameraState::ROAMING)
+		imageCamera.updateView();
+	else if (fading)
 	{
 		fadeImage(temp, false, true);
 		temp.draw(ren, tempCamera.getView());
