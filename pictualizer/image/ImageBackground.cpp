@@ -1,12 +1,16 @@
 #include "ImageBackground.h"
+#include <iostream>
+using namespace std;
 
 ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), imageCamera(ww, wh), tempCamera(ww, wh)
 {
 	imgIndex = -1;
 	slideshow = false;
 	fading = false;
+	tempAlpha = 255;
 	addSubscriber(&imageCamera);
 	registerKey(ACCESS_KEY);
+	imageCamera.setState(ImageCameraState::ROAMING);
 }
 
 ImageBackground::~ImageBackground() {}
@@ -16,7 +20,26 @@ void ImageBackground::draw()
 	image.draw(ren, imageCamera.getView());
 	
 	if (imageCamera.getState() == ImageCameraState::ROAMING)
+	{
 		imageCamera.updateView();
+		if (fading)
+		{
+			if (imageCamera.inFadeZone())
+			{
+				cout << "In Fade Zone!" << endl;
+				tempCamera = imageCamera;
+				imageCamera.resetPanning();
+			}
+
+			image.setAlpha(tempAlpha);
+			fadeImage(image, false);
+			image.draw(ren, tempCamera.getView());
+			image.getAlpha(&tempAlpha);
+			image.setAlpha(255);
+			tempCamera.updateView();
+		}
+
+	}
 	else if (fading)
 	{
 		fadeImage(temp, false, true);
@@ -120,9 +143,9 @@ void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 	img.getAlpha(&alpha);
 
 	if (in)
-		alpha = alpha + FADE_DELTA <= 255 ? alpha + FADE_DELTA : 255;
+		alpha = alpha + imageCamera.getFadeDelta() <= 255 ? alpha + imageCamera.getFadeDelta() : 255;
 	else
-		alpha = alpha - FADE_DELTA > 0 ? alpha - FADE_DELTA : 0;
+		alpha = alpha - imageCamera.getFadeDelta() > 0 ? alpha - imageCamera.getFadeDelta() : 0;
 
 	img.setAlpha(alpha);
 

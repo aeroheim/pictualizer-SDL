@@ -33,10 +33,10 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
 		SDL_Keycode PREV_IMG_KEY = SDLK_LEFT;
 		SDL_Keycode NEXT_IMG_KEY = SDLK_RIGHT;
-		Uint8 FADE_DELTA = 15;
 		
 		bool slideshow;
 		bool fading;
+		Uint8 tempAlpha;
 
 		void fadeImage(ImageTexture& img, bool in, bool free = false);
 };
