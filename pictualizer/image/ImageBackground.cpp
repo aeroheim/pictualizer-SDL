@@ -17,34 +17,40 @@ ImageBackground::~ImageBackground() {}
 
 void ImageBackground::draw()
 {
-	image.draw(ren, imageCamera.getView());
-	
-	if (imageCamera.getState() == ImageCameraState::ROAMING)
+	if (images.size() > 0)
 	{
-		imageCamera.updateView();
-		if (fading)
+		image.draw(ren, imageCamera.getView());
+
+		if (imageCamera.getState() == ImageCameraState::ROAMING)
 		{
+			imageCamera.updateView();
+
 			if (imageCamera.inFadeZone())
 			{
-				cout << "In Fade Zone!" << endl;
+				cout << "ImageBackground in fade zone." << endl;
+				fading = true;
+				tempAlpha = 255;
 				tempCamera = imageCamera;
 				imageCamera.resetPanning();
 			}
 
-			image.setAlpha(tempAlpha);
-			fadeImage(image, false);
-			image.draw(ren, tempCamera.getView());
-			image.getAlpha(&tempAlpha);
-			image.setAlpha(255);
-			tempCamera.updateView();
+			if (fading)
+			{
+				image.setAlpha(tempAlpha);
+				fadeImage(image, false);
+				image.draw(ren, tempCamera.getView());
+				image.getAlpha(&tempAlpha);
+				image.setAlpha(255);
+				tempCamera.updateView();
+			}
 		}
+		else if (fading)
+		{
+			fadeImage(temp, false, true);
+			temp.draw(ren, tempCamera.getView());
+		}
+	}
 
-	}
-	else if (fading)
-	{
-		fadeImage(temp, false, true);
-		temp.draw(ren, tempCamera.getView());
-	}
 }
 
 void ImageBackground::setImage(std::string path)
@@ -60,6 +66,7 @@ void ImageBackground::setImage(std::string path)
 	image.setImage(ren, path);
 	image.setBlendMode(SDL_BLENDMODE_BLEND);
 	imageCamera.setView(&image);
+
 }
 
 void ImageBackground::setImage(int index)

@@ -44,24 +44,18 @@ class ImageCamera : public EventSubscriber, public InputListener
 		int iw;
 		int ih;
 
-		float x;
-		float y;
-
 		int fadeZone;
 		Uint8 fadeDelta;
 		
-		float MAX_START_X_PCT = .25;
-		float MAX_START_Y_PCT = .25;
-		float PAN_SPEED = .33;
+		float MAX_START_XY_PCT = .25;
+		float PAN_SPEED = 0.33f;
 		int MAX_PAN_DURATION = 15;
 		int MIN_PAN_DURATION = 10;
-		float maxPanScale;
-		float minPanScale;
-		float panScale;
+		float panX;
+		float panY;
 
 		void calculateMaxScale();
 		void calculateFadeZone();
-		void calculatePanningScales(int dist);
 
 		void generateNewPanningStyle();
 		
