@@ -8,8 +8,10 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	imgIndex = -1;
 	slideshow = false;
 	fading = false;
+
 	tempAlpha = SDL_ALPHA_OPAQUE;
-	fadeDelta = 15;
+	fadeDelta = 5;
+	fadeStyle = ImageFadeStyle::ALPHA;
 
 	addSubscriber(&imageCamera);
 	registerKey(ACCESS_KEY);
@@ -32,7 +34,6 @@ void ImageBackground::draw()
 
 			if (viewInFadeZone(imageCamera, image))
 			{
-				cout << "ImageBackground in fade zone." << endl;
 				fading = true;
 				tempAlpha = SDL_ALPHA_OPAQUE;
 				tempCamera = imageCamera;
@@ -50,7 +51,11 @@ void ImageBackground::draw()
 
 				image.draw(ren, tempCamera.getView());
 
-				image.getAlpha(&tempAlpha);
+				if (fadeStyle == ImageFadeStyle::ALPHA)
+					image.getAlpha(&tempAlpha);
+				else if (fadeStyle == ImageFadeStyle::TINT)
+					image.getColor(&tempAlpha, &tempAlpha, &tempAlpha);
+
 				image.setAlpha(SDL_ALPHA_OPAQUE);
 
 				tempCamera.updateView();
@@ -233,7 +238,10 @@ void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 	else
 		alpha = alpha - fadeDelta > 0 ? alpha - fadeDelta : 0;
 
-	img.setAlpha(alpha);
+	if (fadeStyle == ImageFadeStyle::ALPHA)
+		img.setAlpha(alpha);
+	else if (fadeStyle == ImageFadeStyle::TINT)
+		img.setTint(alpha);
 
 	if (!in && alpha == 0)
 	{

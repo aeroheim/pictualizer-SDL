@@ -60,6 +60,11 @@ void ImageTexture::setColor(Uint8 r, Uint8 g, Uint8 b)
 	SDL_SetTextureColorMod(image, r, g, b);
 }
 
+void ImageTexture::getColor(Uint8* r, Uint8* g, Uint8* b)
+{
+	SDL_GetTextureColorMod(image, r, g, b);
+}
+
 void ImageTexture::setTint(Uint8 rgb)
 {
 	setColor(rgb, rgb, rgb);

@@ -16,6 +16,7 @@ class ImageTexture
 		bool setImage(SDL_Renderer* ren, std::string path);
 		void freeImage();
 		void setColor(Uint8 r, Uint8 g, Uint8 b);
+		void getColor(Uint8* r, Uint8* g, Uint8* b);
 		void setTint(Uint8 rgb);
 		void setBlur(int level);
 		void getAlpha(Uint8* alpha);

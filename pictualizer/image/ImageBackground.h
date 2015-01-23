@@ -4,6 +4,7 @@
 #include <SDL_image.h>
 #include "ImageCamera.h"
 #include "ImageTexture.h"
+#include "ImageBackgroundStates.h"
 #include "../io/EventSubscriber.h"
 #include "../util/utils.h"
 
@@ -38,6 +39,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		bool fading;
 
 		Uint8 tempAlpha;
+		ImageFadeStyle fadeStyle;
 		Uint8 fadeDelta;
 		int fadeZone;
 
