@@ -40,7 +40,7 @@ void ImageBackground::draw()
 
 				imageCamera.resetPanning();
 
-				calculateFadeZone(imageCamera, image);
+				calculateFadeDist(imageCamera.getPanSpeed());
 			}
 
 			if (fading)
@@ -83,7 +83,7 @@ void ImageBackground::setImage(std::string path)
 	image.setImage(ren, path);
 	image.setBlendMode(SDL_BLENDMODE_BLEND);
 	imageCamera.setView(&image);
-	calculateFadeZone(imageCamera, image);
+	calculateFadeDist(imageCamera.getPanSpeed());
 
 }
 
@@ -162,34 +162,10 @@ void ImageBackground::handleEvent(Event* e)
 	}
 }
 
-void ImageBackground::calculateFadeZone(ImageCamera& camera, ImageTexture& img)
+void ImageBackground::calculateFadeDist(float panSpeed)
 {
 	int framesToFade = (int) std::round(SDL_ALPHA_OPAQUE / (float) fadeDelta);
-	int fadeDist = (int) std::round(framesToFade * camera.getPanSpeed());
-
-	switch (camera.getPanningState())
-	{
-		case CameraPanningState::LEFT:
-			fadeZone = fadeDist;
-			break;
-		case CameraPanningState::RIGHT:
-			fadeZone = img.getWidth() - fadeDist;
-			break;
-		case CameraPanningState::TOP:
-			fadeZone = fadeDist;
-			break;
-		case CameraPanningState::BOTTOM:
-			fadeZone = img.getHeight() - fadeDist;
-			break;
-		case CameraPanningState::BOTTOM_RIGHT:
-			break;
-		case CameraPanningState::BOTTOM_LEFT:
-			break;
-		case CameraPanningState::TOP_RIGHT:
-			break;
-		case CameraPanningState::TOP_LEFT:
-			break;
-	}
+	fadeDist = (int) std::round(framesToFade * panSpeed);
 }
 
 bool ImageBackground::viewInFadeZone(ImageCamera& camera, ImageTexture& img)
@@ -199,28 +175,36 @@ bool ImageBackground::viewInFadeZone(ImageCamera& camera, ImageTexture& img)
 	switch (camera.getPanningState())
 	{
 		case CameraPanningState::LEFT:
-			if (view.x <= fadeZone)
+			if (view.x <= fadeDist)
 				return true;
 			break;
 		case CameraPanningState::RIGHT:
-			if (view.x + view.w >= fadeZone)
+			if (view.x + view.w >= img.getWidth() - fadeDist)
 				return true;
 			break;
 		case CameraPanningState::TOP:
-			if (view.y <= fadeZone)
+			if (view.y <= fadeDist)
 				return true;
 			break;
 		case CameraPanningState::BOTTOM:
-			if (view.y + view.h >= fadeZone)
+			if (view.y + view.h >= img.getHeight() - fadeDist)
 				return true;
 			break;
 		case CameraPanningState::BOTTOM_RIGHT:
+			if (view.y + view.h >= img.getHeight() - fadeDist || view.x + view.w >= img.getWidth() - fadeDist)
+				return true;
 			break;
 		case CameraPanningState::BOTTOM_LEFT:
+			if (view.y + view.h >= img.getHeight() - fadeDist || view.x <= fadeDist)
+				return true;
 			break;
 		case CameraPanningState::TOP_RIGHT:
+			if (view.y <= fadeDist || view.x + view.w >= img.getWidth() - fadeDist)
+				return true;
 			break;
 		case CameraPanningState::TOP_LEFT:
+			if (view.y <= fadeDist || view.x <= fadeDist)
+				return true;
 			break;
 	}
 

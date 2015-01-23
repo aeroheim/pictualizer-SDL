@@ -41,9 +41,9 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		Uint8 tempAlpha;
 		ImageFadeStyle fadeStyle;
 		Uint8 fadeDelta;
-		int fadeZone;
+		int fadeDist;
 
-		void calculateFadeZone(ImageCamera& camera, ImageTexture& img);
+		void calculateFadeDist(float panSpeed);
 		bool viewInFadeZone(ImageCamera& camera, ImageTexture& img);
 
 		void fadeImage(ImageTexture& img, bool in, bool free = false);
