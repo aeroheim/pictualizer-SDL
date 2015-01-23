@@ -1,5 +1,6 @@
 #include "ImageBackground.h"
 #include <iostream>
+
 using namespace std;
 
 ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), imageCamera(ww, wh), tempCamera(ww, wh)
@@ -7,9 +8,13 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	imgIndex = -1;
 	slideshow = false;
 	fading = false;
-	tempAlpha = 255;
+	tempAlpha = SDL_ALPHA_OPAQUE;
+	fadeDelta = 15;
+
 	addSubscriber(&imageCamera);
 	registerKey(ACCESS_KEY);
+
+	imageCamera.setPanSpeed(0.33f);
 	imageCamera.setState(ImageCameraState::ROAMING);
 }
 
@@ -17,7 +22,7 @@ ImageBackground::~ImageBackground() {}
 
 void ImageBackground::draw()
 {
-	if (images.size() > 0)
+	if (!images.empty())
 	{
 		image.draw(ren, imageCamera.getView());
 
@@ -25,22 +30,29 @@ void ImageBackground::draw()
 		{
 			imageCamera.updateView();
 
-			if (imageCamera.inFadeZone())
+			if (viewInFadeZone(imageCamera, image))
 			{
 				cout << "ImageBackground in fade zone." << endl;
 				fading = true;
-				tempAlpha = 255;
+				tempAlpha = SDL_ALPHA_OPAQUE;
 				tempCamera = imageCamera;
+
 				imageCamera.resetPanning();
+
+				calculateFadeZone(imageCamera, image);
 			}
 
 			if (fading)
 			{
 				image.setAlpha(tempAlpha);
+
 				fadeImage(image, false);
+
 				image.draw(ren, tempCamera.getView());
+
 				image.getAlpha(&tempAlpha);
-				image.setAlpha(255);
+				image.setAlpha(SDL_ALPHA_OPAQUE);
+
 				tempCamera.updateView();
 			}
 		}
@@ -66,6 +78,7 @@ void ImageBackground::setImage(std::string path)
 	image.setImage(ren, path);
 	image.setBlendMode(SDL_BLENDMODE_BLEND);
 	imageCamera.setView(&image);
+	calculateFadeZone(imageCamera, image);
 
 }
 
@@ -144,15 +157,81 @@ void ImageBackground::handleEvent(Event* e)
 	}
 }
 
+void ImageBackground::calculateFadeZone(ImageCamera& camera, ImageTexture& img)
+{
+	int framesToFade = (int) std::round(SDL_ALPHA_OPAQUE / (float) fadeDelta);
+	int fadeDist = (int) std::round(framesToFade * camera.getPanSpeed());
+
+	switch (camera.getPanningState())
+	{
+		case CameraPanningState::LEFT:
+			fadeZone = fadeDist;
+			break;
+		case CameraPanningState::RIGHT:
+			fadeZone = img.getWidth() - fadeDist;
+			break;
+		case CameraPanningState::TOP:
+			fadeZone = fadeDist;
+			break;
+		case CameraPanningState::BOTTOM:
+			fadeZone = img.getHeight() - fadeDist;
+			break;
+		case CameraPanningState::BOTTOM_RIGHT:
+			break;
+		case CameraPanningState::BOTTOM_LEFT:
+			break;
+		case CameraPanningState::TOP_RIGHT:
+			break;
+		case CameraPanningState::TOP_LEFT:
+			break;
+	}
+}
+
+bool ImageBackground::viewInFadeZone(ImageCamera& camera, ImageTexture& img)
+{
+	SDL_Rect view = *camera.getView();
+
+	switch (camera.getPanningState())
+	{
+		case CameraPanningState::LEFT:
+			if (view.x <= fadeZone)
+				return true;
+			break;
+		case CameraPanningState::RIGHT:
+			if (view.x + view.w >= fadeZone)
+				return true;
+			break;
+		case CameraPanningState::TOP:
+			if (view.y <= fadeZone)
+				return true;
+			break;
+		case CameraPanningState::BOTTOM:
+			if (view.y + view.h >= fadeZone)
+				return true;
+			break;
+		case CameraPanningState::BOTTOM_RIGHT:
+			break;
+		case CameraPanningState::BOTTOM_LEFT:
+			break;
+		case CameraPanningState::TOP_RIGHT:
+			break;
+		case CameraPanningState::TOP_LEFT:
+			break;
+	}
+
+	return false;
+}
+
+
 void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 {
 	Uint8 alpha;
 	img.getAlpha(&alpha);
 
 	if (in)
-		alpha = alpha + imageCamera.getFadeDelta() <= 255 ? alpha + imageCamera.getFadeDelta() : 255;
+		alpha = alpha + fadeDelta <= SDL_ALPHA_OPAQUE ? alpha + fadeDelta : SDL_ALPHA_OPAQUE;
 	else
-		alpha = alpha - imageCamera.getFadeDelta() > 0 ? alpha - imageCamera.getFadeDelta() : 0;
+		alpha = alpha - fadeDelta > 0 ? alpha - fadeDelta : 0;
 
 	img.setAlpha(alpha);
 
@@ -163,7 +242,7 @@ void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 		if (free)
 			img.freeImage();
 	}
-	else if (in && alpha == 255)
+	else if (in && alpha == SDL_ALPHA_OPAQUE)
 	{
 		fading = false;
 

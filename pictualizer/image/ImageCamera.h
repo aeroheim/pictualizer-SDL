@@ -21,15 +21,17 @@ class ImageCamera : public EventSubscriber, public InputListener
 		ImageCameraState getState();
 		void setState(ImageCameraState s);
 
+		CameraPanningState getPanningState();
+
 		void resetCamera();
 		void setView(ImageTexture* image);
-		void handleEvent(Event* e); 
 
-		Uint8 getFadeDelta();
-		void setFadeDelta(Uint8 delta);
+		float getPanSpeed();
+		void setPanSpeed(float speed);
+
 		void resetPanning();
 
-		bool inFadeZone();
+		void handleEvent(Event* e);
 
 	private:
 		ImageCameraState state;
@@ -44,19 +46,14 @@ class ImageCamera : public EventSubscriber, public InputListener
 		int iw;
 		int ih;
 
-		int fadeZone;
-		Uint8 fadeDelta;
-		
 		float MAX_START_XY_PCT = .25;
-		float PAN_SPEED = 0.33f;
+		float panSpeed;
 		int MAX_PAN_RANGE = 5;
 		int MIN_PAN_DURATION = 10;
 		float panX;
 		float panY;
 
 		void calculateMaxScale();
-		void calculateFadeZone();
-
 		void generateNewPanningStyle();
 		
 		void OnMouseWheel(MouseWheelEvent* e);

@@ -36,7 +36,13 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		
 		bool slideshow;
 		bool fading;
+
 		Uint8 tempAlpha;
+		Uint8 fadeDelta;
+		int fadeZone;
+
+		void calculateFadeZone(ImageCamera& camera, ImageTexture& img);
+		bool viewInFadeZone(ImageCamera& camera, ImageTexture& img);
 
 		void fadeImage(ImageTexture& img, bool in, bool free = false);
 };
