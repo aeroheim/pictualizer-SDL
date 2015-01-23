@@ -39,28 +39,44 @@ void ImageCamera::updateView()
 	switch (panningState)
 	{
 		case CameraPanningState::LEFT:
-			panX -= panSpeed;
+			panX = (int) std::round(panX - panSpeed) >= 0 ? panX - panSpeed : 0;
 			view.x = (int) std::round(panX);
 			break;
 		case CameraPanningState::RIGHT:
-			panX += panSpeed;
+			panX = (int) std::round(panX + panSpeed) + view.w <= iw ? panX + panSpeed : panX;
 			view.x = (int) std::round(panX);
 			break;
 		case CameraPanningState::TOP:
-			panY -= panSpeed;
+			panY = (int) std::round(panY - panSpeed) >= 0 ? panY - panSpeed : 0;
 			view.y = (int) std::round(panY);
 			break;
 		case CameraPanningState::BOTTOM:
-			panY += panSpeed;
+			panY = (int) std::round(panY + panSpeed) + view.h <= ih ? panY + panSpeed : panY;
 			view.y = (int) std::round(panY);
 			break;
 		case CameraPanningState::BOTTOM_RIGHT:
+			panX = (int) std::round(panX + panSpeed) + view.w <= iw ? panX + panSpeed : panX;
+			panY = (int) std::round(panY + panSpeed) + view.h <= ih ? panY + panSpeed : panY;
+			view.x = (int) std::round(panX);
+			view.y = (int) std::round(panY);
 			break;
 		case CameraPanningState::BOTTOM_LEFT:
-			break;
+			panX = (int) std::round(panX - panSpeed) >= 0 ? panX - panSpeed : 0;
+			panY = (int) std::round(panY + panSpeed) + view.h <= ih ? panY + panSpeed : panY;
+			view.x = (int) std::round(panX);
+			view.y = (int) std::round(panY);
+;			break;
 		case CameraPanningState::TOP_RIGHT:
+			panX = (int) std::round(panX + panSpeed) + view.w <= iw ? panX + panSpeed : panX;
+			panY = (int) std::round(panY - panSpeed) >= 0 ? panY - panSpeed : 0;
+			view.x = (int) std::floor(panX);
+			view.y = (int) std::floor(panY);
 			break;
 		case CameraPanningState::TOP_LEFT:
+			panX = (int) std::round(panX - panSpeed) >= 0 ? panX - panSpeed : 0;
+			panY = (int) std::round(panY - panSpeed) >= 0 ? panY - panSpeed : 0;
+			view.x = (int) std::floor(panX);
+			view.y = (int) std::floor(panY);
 			break;
 	}
 }
@@ -195,7 +211,7 @@ void ImageCamera::resetPanning()
 	float whratio = (float) ww / (float) wh;
 	int maxScaleW = (int) std::floor(ww * maxScale);
 	int maxScaleH = (int) std::floor(wh * maxScale);
-	int minPanDist = (int)std::floor(MIN_PAN_DURATION * panSpeed * 60);
+	int minPanDist = (int) std::floor(MIN_PAN_DURATION * panSpeed * 60);
 
 	switch (panningState)
 	{
@@ -256,6 +272,9 @@ void ImageCamera::resetPanning()
 			}
 			break;
 		case CameraPanningState::BOTTOM_RIGHT:
+			{
+
+			}
 			break;
 		case CameraPanningState::BOTTOM_LEFT:
 			break;
