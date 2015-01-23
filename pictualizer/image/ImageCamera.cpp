@@ -218,52 +218,68 @@ void ImageCamera::resetPanning()
 	// Randomize a new panning direction.
 	generateNewPanningStyle();
 
-	// Find the maximum possible view width/height.
-	int maxPanDist = (int)std::floor(MAX_PAN_DURATION * PAN_SPEED * 60);
+	float whratio = (float) ww / (float) wh;
+	int maxScaleW = (int) std::floor(ww * maxScale);
+	int maxScaleH = (int) std::floor(wh * maxScale);
 	int minPanDist = (int)std::floor(MIN_PAN_DURATION * PAN_SPEED * 60);
-	int dist = minPanDist + rand() % (maxPanDist - minPanDist);
-
-	// std::cout << "minPanDist: " << minPanDist << ", maxPanDist: " << maxPanDist << ", dist: " << dist << std::endl;
-
-	float whratio = (float) iw / (float) ih;
 
 	switch (panningState)
 	{
-		case CameraPanningState::LEFT:
+		case CameraPanningState::LEFT:		
 			{
-				int maxW = (int) std::floor(iw - dist);
-				view.x = iw - maxW; 
-				view.w = iw - view.x - rand() % (int)std::floor(maxW * MAX_START_XY_PCT);
+				int dist = (iw - maxScaleW) > minPanDist ? iw - maxScaleW : minPanDist;			
+				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * PAN_SPEED * 60);
+
+				dist += rand() % (maxPanDist - dist);
+
+				view.x = dist + rand() % (int) std::floor((iw - dist) * MAX_START_XY_PCT);
+				view.w = iw - view.x;
 
 				view.h = (int) std::floor((float) view.w / whratio);
 				view.y = rand() % (ih - view.h);
 			}
 			break;
 		case CameraPanningState::RIGHT:
-			// Assign view x, and then set view width based on the x.
-			view.x = rand() % (int) std::floor((iw - dist) * MAX_START_XY_PCT);
-			view.w = (iw - dist) - view.x;
+			{
+				int dist = (iw - maxScaleW) > minPanDist ? iw - maxScaleW : minPanDist;
+				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * PAN_SPEED * 60);
 
-			// Set view height appropriately based on dimension ratio of the image, and then y.
-			view.h = (int) std::floor((float) view.w / whratio);
-			view.y = rand() % (ih - view.h);
+				dist += rand() % (maxPanDist - dist);
+
+				view.x = rand() % (int) std::floor((iw - dist) * MAX_START_XY_PCT);
+				view.w = (iw - dist) - view.x;
+
+				view.h = (int) std::floor((float) view.w / whratio);
+				view.y = rand() % (ih - view.h);
+			}
 			break;
 		case CameraPanningState::TOP:
 			{
-				int maxH = (int) std::floor(ih - dist);
-				view.y = ih - maxH;
-				view.h = ih - view.y - rand() % (int) std::floor(maxH * MAX_START_XY_PCT);
+				int dist = (ih - maxScaleH) > minPanDist ? ih - maxScaleH : minPanDist;
+				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * PAN_SPEED * 60);
+
+				dist += rand() % (maxPanDist - dist);
+
+				view.y = dist + rand() % (int) std::floor((ih - dist) * MAX_START_XY_PCT);
+				view.h = ih - view.y;
 
 				view.w = (int) std::floor((float) view.h * whratio);
 				view.x = rand() % (iw - view.w);
 			}
 			break;
 		case CameraPanningState::BOTTOM:
-			view.y = rand() % (int) std::floor((ih - dist) * MAX_START_XY_PCT);
-			view.h = (ih - dist) - view.y;
+			{
+				int dist = (ih - maxScaleH) > minPanDist ? ih - maxScaleH : minPanDist;
+				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * PAN_SPEED * 60);
 
-			view.w = (int) std::floor((float) view.h * whratio);
-			view.x = rand() % (iw - view.w);
+				dist += rand() % (maxPanDist - dist);
+
+				view.y = rand() % (int) std::floor((ih - dist) * MAX_START_XY_PCT);
+				view.h = (ih - dist) - view.y;
+
+				view.w = (int) std::floor((float) view.h * whratio);
+				view.x = rand() % (iw - view.w);
+			}
 			break;
 		case CameraPanningState::BOTTOM_RIGHT:
 			break;
@@ -274,10 +290,6 @@ void ImageCamera::resetPanning()
 		case CameraPanningState::TOP_LEFT:
 			break;
 	}
-
-	float viewratio = (float) view.w / (float) view.h;
-	std::cout << "wh ratio: " << whratio << std::endl;
-	std::cout << "view ratio: " << viewratio << std::endl;
 
 	panX = (float)view.x;
 	panY = (float)view.y;
@@ -290,8 +302,6 @@ void ImageCamera::calculateFadeZone()
 	int framesToFade = (int) std::round(255.0 / (float) fadeDelta);
 	int fadeDist = (int) std::round(framesToFade * PAN_SPEED);
 
-	// std::cout << "framesToFade: " << framesToFade << ", fadeDist: " << fadeDist << std::endl;
-
 	switch (panningState)
 	{
 		case CameraPanningState::LEFT:
@@ -299,7 +309,6 @@ void ImageCamera::calculateFadeZone()
 			break;
 		case CameraPanningState::RIGHT:
 			fadeZone = iw - fadeDist;
-			// std::cout << "fadeZone: " << fadeZone << std::endl;
 			break;
 		case CameraPanningState::TOP:
 			fadeZone = fadeDist;
@@ -322,7 +331,7 @@ void ImageCamera::generateNewPanningStyle()
 {
 	panningState = (CameraPanningState) (rand() % 4);
 
-	// panningState = CameraPanningState::LEFT;
+	// panningState = CameraPanningState::TOP;
 }
 
 void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
@@ -375,6 +384,10 @@ void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
 			view.x = 0;
 		if (view.y < 0)
 			view.y = 0;
+
+		std::cout << "view.x: " << view.x << ", view.y: " << view.y << std::endl;
+		std::cout << "view.w: " << view.w << ", view.h: " << view.h << std::endl;
+		std::cout << "maxScale: " << maxScale << std::endl;
 	}
 }
 
