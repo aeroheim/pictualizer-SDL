@@ -46,10 +46,10 @@ class ImageCamera : public EventSubscriber, public InputListener
 		int iw;
 		int ih;
 
-		float MAX_START_XY_PCT = .25;
+		float MAX_START_XY_PCT = .10f;
 		float panSpeed;
-		int MAX_PAN_RANGE = 5;
-		int MIN_PAN_DURATION = 10;
+		int MAX_PAN_RANGE = 0;
+		int MIN_PAN_DURATION = 5;
 		float panX;
 		float panY;
 

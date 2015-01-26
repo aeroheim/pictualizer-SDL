@@ -1,5 +1,6 @@
 #include "ImageCamera.h"
 #include <iostream>
+#include <assert.h>
 
 using namespace std;
 
@@ -7,12 +8,15 @@ ImageCamera::ImageCamera(int w, int h)
 {
 	ww = w;
 	wh = h;
+	iw = 0;
+	ih = 0;
 	view.w = ww;
 	view.h = wh;
 	view.x = 0;
 	view.y = 0;
 	panX = 0.0f;
 	panY = 0.0f;
+	panSpeed = 0.0f;
 	scale = 1.0f;
 	maxScale = 1.0f;
 	state = ImageCameraState::MANUAL;
@@ -65,7 +69,7 @@ void ImageCamera::updateView()
 			panY = (int) std::round(panY + panSpeed) + view.h <= ih ? panY + panSpeed : panY;
 			view.x = (int) std::round(panX);
 			view.y = (int) std::round(panY);
-;			break;
+			break;
 		case CameraPanningState::TOP_RIGHT:
 			panX = (int) std::round(panX + panSpeed) + view.w <= iw ? panX + panSpeed : panX;
 			panY = (int) std::round(panY - panSpeed) >= 0 ? panY - panSpeed : 0;
@@ -211,76 +215,130 @@ void ImageCamera::resetPanning()
 	float whratio = (float) ww / (float) wh;
 	int maxScaleW = (int) std::floor(ww * maxScale);
 	int maxScaleH = (int) std::floor(wh * maxScale);
+
 	int minPanDist = (int) std::floor(MIN_PAN_DURATION * panSpeed * 60);
+	int maxPanRangeDist = (int) std::floor(MAX_PAN_RANGE * panSpeed * 60);
+
+	int wdist = (iw - maxScaleW) > minPanDist ? iw - maxScaleW : minPanDist;
+	int hdist = (ih - maxScaleH) > minPanDist ? ih - maxScaleH : minPanDist;
 
 	switch (panningState)
 	{
 		case CameraPanningState::LEFT:		
 			{
-				int dist = (iw - maxScaleW) > minPanDist ? iw - maxScaleW : minPanDist;			
-				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * panSpeed * 60);
-
-				dist += rand() % (maxPanDist - dist);
-
-				view.x = dist + rand() % (int) std::floor((iw - dist) * MAX_START_XY_PCT);
-				view.w = iw - view.x;
-
-				view.h = (int) std::floor((float) view.w / whratio);
+				wdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+				view.x = wdist;
+				view.w = (int) std::floor((iw - wdist) * MAX_START_XY_PCT) > 0 ? iw - view.x - rand() % (int) std::floor((iw - wdist) * MAX_START_XY_PCT) : iw - view.x;
+				view.h = (int) std::round((float) view.w / whratio);
 				view.y = rand() % (ih - view.h);
 			}
 			break;
 		case CameraPanningState::RIGHT:
 			{
-				int dist = (iw - maxScaleW) > minPanDist ? iw - maxScaleW : minPanDist;
-				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * panSpeed * 60);
-
-				dist += rand() % (maxPanDist - dist);
-
-				view.x = rand() % (int) std::floor((iw - dist) * MAX_START_XY_PCT);
-				view.w = (iw - dist) - view.x;
-
-				view.h = (int) std::floor((float) view.w / whratio);
+				wdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+				view.x = (int) std::floor((iw - wdist) * MAX_START_XY_PCT) > 0 ? rand() % (int) std::floor((iw - wdist) * MAX_START_XY_PCT) : 0;
+				view.w = (iw - wdist) - view.x;
+				view.h = (int) std::round((float) view.w / whratio);
 				view.y = rand() % (ih - view.h);
 			}
 			break;
 		case CameraPanningState::TOP:
 			{
-				int dist = (ih - maxScaleH) > minPanDist ? ih - maxScaleH : minPanDist;
-				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * panSpeed * 60);
-
-				dist += rand() % (maxPanDist - dist);
-
-				view.y = dist + rand() % (int) std::floor((ih - dist) * MAX_START_XY_PCT);
-				view.h = ih - view.y;
-
-				view.w = (int) std::floor((float) view.h * whratio);
+				hdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+				view.y = hdist;
+				view.h = (int) std::floor((ih - hdist) * MAX_START_XY_PCT) > 0 ? ih - view.y - rand() % (int) std::floor((ih - hdist) * MAX_START_XY_PCT) : ih - view.y;
+				view.w = (int) std::round((float) view.h * whratio);
 				view.x = rand() % (iw - view.w);
 			}
 			break;
 		case CameraPanningState::BOTTOM:
 			{
-				int dist = (ih - maxScaleH) > minPanDist ? ih - maxScaleH : minPanDist;
-				int maxPanDist = dist + (int) std::floor(MAX_PAN_RANGE * panSpeed * 60);
-
-				dist += rand() % (maxPanDist - dist);
-
-				view.y = rand() % (int) std::floor((ih - dist) * MAX_START_XY_PCT);
-				view.h = (ih - dist) - view.y;
-
-				view.w = (int) std::floor((float) view.h * whratio);
+				hdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+				view.y = (int) std::floor((ih - hdist) * MAX_START_XY_PCT) > 0 ? rand() % (int) std::floor((ih - hdist) * MAX_START_XY_PCT) : 0;
+				view.h = (ih - hdist) - view.y;
+				view.w = (int) std::round((float) view.h * whratio);
 				view.x = rand() % (iw - view.w);
 			}
 			break;
 		case CameraPanningState::BOTTOM_RIGHT:
 			{
-
+				if (wdist < hdist)
+				{
+					wdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.x = (int) std::floor((iw - wdist) * MAX_START_XY_PCT) > 0 ? rand() % (int) std::floor((iw - wdist) * MAX_START_XY_PCT) : 0;
+					view.w = (iw - wdist) - view.x;
+					view.h = (int) std::round((float) view.w / whratio);
+					view.y = (ih - view.h - wdist) > 0 ? rand() % (ih - view.h - wdist) : 0;
+				}
+				else
+				{
+					hdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.y = (int)std::floor((ih - hdist) * MAX_START_XY_PCT) > 0 ? rand() % (int)std::floor((ih - hdist) * MAX_START_XY_PCT) : 0;
+					view.h = (ih - hdist) - view.y;
+					view.w = (int) std::round((float) view.h * whratio);
+					view.x = (iw - view.w - hdist) > 0 ? rand() % (iw - view.w - hdist) : 0;
+				}
 			}
 			break;
 		case CameraPanningState::BOTTOM_LEFT:
+			{
+				if (wdist < hdist)
+				{
+					wdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.x = wdist;
+					view.w = (int)std::floor((iw - wdist) * MAX_START_XY_PCT) > 0 ? iw - view.x - rand() % (int)std::floor((iw - wdist) * MAX_START_XY_PCT) : iw - view.x;
+					view.h = (int)std::round((float) view.w / whratio);
+					view.y = (ih - view.h - wdist) > 0 ? rand() % (ih - view.h - wdist) : 0;
+				}
+				else
+				{
+					hdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.y = (int) std::floor((ih - hdist) * MAX_START_XY_PCT) > 0 ? rand() % (int) std::floor((ih - hdist) * MAX_START_XY_PCT) : 0;
+					view.h = (ih - hdist) - view.y;
+					view.w = (int) std::round((float) view.h * whratio);
+					view.x = (iw - view.w + hdist) > 0 ? hdist + rand() % (iw - view.w - hdist) : hdist;
+				}
+			}
 			break;
 		case CameraPanningState::TOP_RIGHT:
+			{
+				if (wdist < hdist)
+				{
+					wdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.x = (int) std::floor((iw - wdist) * MAX_START_XY_PCT) > 0 ? rand() % (int) std::floor((iw - wdist) * MAX_START_XY_PCT) : 0;
+					view.w = (iw - wdist) - view.x;
+					view.h = (int) std::round((float) view.w / whratio);
+					view.y = (ih - view.h - wdist) > 0 ? wdist + rand() % (ih - view.h - wdist) : wdist;
+				}
+				else
+				{
+					hdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.y = hdist;
+					view.h = (int) std::floor((ih - hdist) * MAX_START_XY_PCT) > 0 ? ih - view.y - rand() % (int) std::floor((ih - hdist) * MAX_START_XY_PCT) : ih - view.y;
+					view.w = (int) std::round((float) view.h * whratio);
+					view.x = (iw - view.w - hdist) > 0 ? rand() % (iw - view.w - hdist) : 0;
+				}
+			}
 			break;
 		case CameraPanningState::TOP_LEFT:
+			{
+				if (wdist < hdist)
+				{
+					wdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.x = wdist;
+					view.w = (int) std::floor((iw - wdist) * MAX_START_XY_PCT) > 0 ? iw - view.x - rand() % (int) std::floor((iw - wdist) * MAX_START_XY_PCT) : iw - view.x;
+					view.h = (int) std::round((float) view.w / whratio);
+					view.y = (ih - view.h - wdist) > 0 ? wdist + rand() % (ih - view.h - wdist) : wdist;
+				}
+				else
+				{
+					hdist += maxPanRangeDist > 0 ? rand() % maxPanRangeDist : 0;
+					view.y = hdist;
+					view.h = (int) std::floor((ih - hdist) * MAX_START_XY_PCT) > 0 ? ih - view.y - rand() % (int) std::floor((ih - hdist) * MAX_START_XY_PCT) : ih - view.y;
+					view.w = (int) std::round((float) view.h * whratio);
+					view.x = (iw - view.w + hdist) > 0 ? hdist + rand() % (iw - view.w - hdist) : hdist;
+				}
+			}
 			break;
 	}
 
@@ -290,9 +348,7 @@ void ImageCamera::resetPanning()
 
 void ImageCamera::generateNewPanningStyle()
 {
-	panningState = (CameraPanningState) (rand() % 4);
-
-	// panningState = CameraPanningState::RIGHT;
+	panningState = (CameraPanningState) (rand() % 8);
 }
 
 void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
