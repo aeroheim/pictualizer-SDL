@@ -342,6 +342,8 @@ void ImageCamera::resetPanning()
 			break;
 	}
 
+	scale = (float) view.w / ww;
+
 	panX = (float) view.x;
 	panY = (float) view.y;
 }
@@ -374,6 +376,9 @@ void ImageCamera::generateNewPanningStyle()
 
 void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
 {
+	if (state == ImageCameraState::ROAMING)
+		state = ImageCameraState::MANUAL;
+
 	float newScale = scale - (float) (SCROLL_SPEED * e->y);
 
 	if (newScale > maxScale)
@@ -427,6 +432,9 @@ void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
 
 void ImageCamera::OnMouseMotion(MouseMotionEvent* e)
 {
+	if (state == ImageCameraState::ROAMING)
+		state = ImageCameraState::MANUAL;
+
 	int newPosX = view.x - e->xrel;
 	int newPosY = view.y - e->yrel;
 
