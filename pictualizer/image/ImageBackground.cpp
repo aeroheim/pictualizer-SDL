@@ -17,7 +17,7 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	registerKey(ACCESS_KEY);
 
 	imageCamera.setPanSpeed(0.33f);
-	imageCamera.setState(ImageCameraState::ROAMING);
+	// imageCamera.setState(ImageCameraState::ROAMING);
 }
 
 ImageBackground::~ImageBackground() {}
@@ -107,7 +107,7 @@ void ImageBackground::nextImage()
 
 void ImageBackground::prevImage()
 {
-	if (imgIndex - 1 >= 0 && (size_t)(imgIndex - 1) < images.size())
+	if (imgIndex - 1 >= 0 && (size_t) (imgIndex - 1) < images.size())
 	{
 		imgIndex -= 1;
 		setImage(images[imgIndex]);
@@ -134,8 +134,12 @@ void ImageBackground::handleEvent(Event* e)
 		if (dynamic_cast<FileDropEvent*>(e))
 		{
 			FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e);
-			if (utils::pathIsImage(fileDropEvent->path) && !fading)
+			if (utils::pathIsImage(fileDropEvent->path))
 			{
+				// Free the currently fading texture if we load a new texture during fading.
+				if (fading)
+					temp.freeImage();
+
 				enqueueImage(fileDropEvent->path);
 				setImage(images.size() - 1);
 				e->handled = true;
@@ -153,9 +157,13 @@ void ImageBackground::handleEvent(Event* e)
 
 			if (keyHeld(ACCESS_KEY))
 			{
-				if (keyUpEvent->key == PREV_IMG_KEY && !fading)
+				// Avoid freeing the temp fade texture when going back or forward on the first or last image respectively.
+				if (fading && !(imgIndex == 0 && keyUpEvent->key == PREV_IMG_KEY) && !(imgIndex == images.size() - 1 && keyUpEvent->key == NEXT_IMG_KEY))
+					temp.freeImage();
+
+				if (keyUpEvent->key == PREV_IMG_KEY)
 					prevImage();
-				else if (keyUpEvent->key == NEXT_IMG_KEY && !fading)
+				else if (keyUpEvent->key == NEXT_IMG_KEY)
 					nextImage();
 			}
 		}
