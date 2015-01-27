@@ -14,6 +14,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		ImageBackground(SDL_Renderer* ren, int ww, int wh);
 		~ImageBackground();
 		void draw();
+		void setState(ImageBackgroundState s);
 		void setImage(std::string path);
 		void setImage(int index);
 		void nextImage();
@@ -24,18 +25,20 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 
 	private:
 		std::vector<std::string> images;
-		int imgIndex;
+		int imageIndex;
 		SDL_Renderer* ren;
 		ImageCamera imageCamera;
 		ImageCamera tempCamera;
 		ImageTexture image;
-		ImageTexture temp;
+		ImageTexture tempImage;
 
 		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
 		SDL_Keycode PREV_IMG_KEY = SDLK_LEFT;
 		SDL_Keycode NEXT_IMG_KEY = SDLK_RIGHT;
 		
-		bool slideshow;
+		ImageBackgroundState state;
+		int slideshowTimer;
+		int frameCount;
 		bool fading;
 
 		Uint8 tempAlpha;
@@ -46,5 +49,6 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		void calculateFadeDist(float panSpeed);
 		bool viewInFadeZone(ImageCamera& camera, ImageTexture& img);
 
+		void checkSlideshowTimer();
 		void fadeImage(ImageTexture& img, bool in, bool free = false);
 };

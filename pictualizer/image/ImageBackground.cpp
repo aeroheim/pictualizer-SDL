@@ -5,12 +5,14 @@ using namespace std;
 
 ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), imageCamera(ww, wh), tempCamera(ww, wh)
 {
-	imgIndex = -1;
-	slideshow = false;
+	imageIndex = -1;
+	setState(ImageBackgroundState::SLIDESHOW);
+	slideshowTimer = 30;
+	frameCount = 0;
 	fading = false;
 
 	tempAlpha = SDL_ALPHA_OPAQUE;
-	fadeDelta = 10;
+	fadeDelta = 15;
 	fadeStyle = ImageFadeStyle::ALPHA;
 
 	addSubscriber(&imageCamera);
@@ -28,71 +30,87 @@ void ImageBackground::draw()
 {
 	if (!images.empty())
 	{
+		// Render the current image.
 		image.draw(ren, imageCamera.getView());
 
 		if (imageCamera.getState() == ImageCameraState::ROAMING)
 		{
 			imageCamera.updateView();
 
+			// Begin fading when the roaming imageCamera hits a fade zone; tempImage is used to facilitate the fade effect.
 			if (viewInFadeZone(imageCamera, image) && !fading)
 			{
 				fading = true;
 				tempAlpha = SDL_ALPHA_OPAQUE;
 				tempCamera = imageCamera;
-				temp = image;
+				tempImage = image;
 				imageCamera.resetPanning();
 			}
 
+			// For roaming mode fading, we need to both modify tempImage's alpha and tempCamera's position.
 			if (fading)
 			{
-				temp.setAlpha(tempAlpha);
+				// When fading only with the current image, tempImage and image are the same, so we need tempAlpha to store our 
+				// current fading alpha value while we draw image with SDL_ALPHA_OPAQUE.
+				tempImage.setAlpha(tempAlpha);
+				fadeImage(tempImage, false, !(tempImage == image));
 
-				fadeImage(temp, false, !(temp == image));
-
-				if (temp.hasImage())
+				if (tempImage.hasImage())
 				{
-					temp.draw(ren, tempCamera.getView());
-
-					if (fadeStyle == ImageFadeStyle::ALPHA)
-						temp.getAlpha(&tempAlpha);
-					else if (fadeStyle == ImageFadeStyle::TINT)
-						temp.getColor(&tempAlpha, &tempAlpha, &tempAlpha);
-
+					tempImage.draw(ren, tempCamera.getView());
+					tempImage.getAlpha(&tempAlpha);
 					image.setAlpha(SDL_ALPHA_OPAQUE);
-
 					tempCamera.updateView();
 				}
 			}
 		}
+		// Manual mode fade case, which is only initiated by setImage().
 		else if (fading)
 		{
-			fadeImage(temp, false, true);
-			temp.draw(ren, tempCamera.getView());
-		}
-	}
+			// We free image's old texture, which was shallow copied to tempImage, after tempImage fully fades out.
+			fadeImage(tempImage, false, true);
 
+			if (tempImage.hasImage())
+				tempImage.draw(ren, tempCamera.getView());
+		}
+
+		// Check every frame against the slideshow timer when in slideshow mode.
+		if (state == ImageBackgroundState::SLIDESHOW)
+			checkSlideshowTimer();
+	}
+}
+
+void ImageBackground::setState(ImageBackgroundState s)
+{
+	state = s;
+
+	if (s == ImageBackgroundState::SLIDESHOW)
+		frameCount = 0;
 }
 
 void ImageBackground::setImage(std::string path)
 {
 	// Free the currently fading texture if we load a new texture during fading.
 	if (fading)
-		temp.freeImage();
+		tempImage.freeImage();
 
-	// Fade to the new ImageTexture, if there exists an image to fade to.
+	// Initiate fading to the new image, if there exists an image to fade to.
 	if (images.size() > 1)
 	{
 		fading = true;
 		tempCamera = imageCamera;
-		temp = image;
+		tempImage = image;
 	}
+
+	// Reset slideshow timer count.
+	frameCount = 0;
 
 	image.setImage(ren, path);
 	image.setBlendMode(SDL_BLENDMODE_BLEND);
 	imageCamera.setView(&image);
 
-	// Additional fade logic required if camera is roaming.
-	if (imageCamera.getState() == ImageCameraState::ROAMING && !viewInFadeZone(tempCamera, temp))
+	// When fading during roaming mode without having entered a fade zone, tempAlpha must be reset for tempImage to fade correctly.
+	if (imageCamera.getState() == ImageCameraState::ROAMING && !viewInFadeZone(tempCamera, tempImage))
 		tempAlpha = SDL_ALPHA_OPAQUE;
 }
 
@@ -101,25 +119,25 @@ void ImageBackground::setImage(int index)
 	if (index >= 0 && (size_t)index < images.size())
 	{
 		setImage(images[index]);
-		imgIndex = index;
+		imageIndex = index;
 	}
 }
 
 void ImageBackground::nextImage()
 {
-	if (imgIndex + 1 >= 0 && (size_t) (imgIndex + 1) < images.size())
+	if (imageIndex + 1 >= 0 && (size_t) (imageIndex + 1) < images.size())
 	{
-		imgIndex += 1;
-		setImage(images[imgIndex]);
+		imageIndex += 1;
+		setImage(images[imageIndex]);
 	}
 }
 
 void ImageBackground::prevImage()
 {
-	if (imgIndex - 1 >= 0 && (size_t) (imgIndex - 1) < images.size())
+	if (imageIndex - 1 >= 0 && (size_t) (imageIndex - 1) < images.size())
 	{
-		imgIndex -= 1;
-		setImage(images[imgIndex]);
+		imageIndex -= 1;
+		setImage(images[imageIndex]);
 	}
 }
 
@@ -130,8 +148,15 @@ void ImageBackground::enqueueImage(std::string path)
 
 void ImageBackground::removeImage(int index)
 {
-	if (index >= 0 && (size_t)index < images.size())
+	if (index >= 0 && (size_t) index < images.size())
+	{
+		if (imageIndex == index)
+			setImage(index - 1);
+		else if (imageIndex < index)
+			--imageIndex;
+
 		images.erase(images.begin() + index);
+	}
 }
 
 void ImageBackground::handleEvent(Event* e)
@@ -220,6 +245,22 @@ bool ImageBackground::viewInFadeZone(ImageCamera& camera, ImageTexture& img)
 	return false;
 }
 
+void ImageBackground::checkSlideshowTimer()
+{
+	if (images.size() > 1)
+	{
+		++frameCount;
+
+		// Advance to the next image (circular) if the timer has been reached.
+		if ((frameCount / 60) == slideshowTimer)
+		{
+			if ((size_t) (imageIndex + 1) < images.size())
+				nextImage();
+			else
+				setImage(0);
+		}
+	}
+}
 
 void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 {
@@ -231,10 +272,7 @@ void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 	else
 		alpha = alpha - fadeDelta > 0 ? alpha - fadeDelta : 0;
 
-	if (fadeStyle == ImageFadeStyle::ALPHA)
-		img.setAlpha(alpha);
-	else if (fadeStyle == ImageFadeStyle::TINT)
-		img.setTint(alpha);
+	img.setAlpha(alpha);
 
 	if (!in && alpha == 0)
 	{
