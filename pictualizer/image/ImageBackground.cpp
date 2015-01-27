@@ -10,7 +10,7 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	fading = false;
 
 	tempAlpha = SDL_ALPHA_OPAQUE;
-	fadeDelta = 5;
+	fadeDelta = 10;
 	fadeStyle = ImageFadeStyle::ALPHA;
 
 	addSubscriber(&imageCamera);
@@ -18,6 +18,8 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 
 	imageCamera.setPanSpeed(0.33f);
 	imageCamera.setState(ImageCameraState::ROAMING);
+
+	calculateFadeDist(imageCamera.getPanSpeed());
 }
 
 ImageBackground::~ImageBackground() {}
@@ -32,33 +34,34 @@ void ImageBackground::draw()
 		{
 			imageCamera.updateView();
 
-			if (viewInFadeZone(imageCamera, image))
+			if (viewInFadeZone(imageCamera, image) && !fading)
 			{
 				fading = true;
 				tempAlpha = SDL_ALPHA_OPAQUE;
 				tempCamera = imageCamera;
-
+				temp = image;
 				imageCamera.resetPanning();
-
-				calculateFadeDist(imageCamera.getPanSpeed());
 			}
 
 			if (fading)
 			{
-				image.setAlpha(tempAlpha);
+				temp.setAlpha(tempAlpha);
 
-				fadeImage(image, false);
+				fadeImage(temp, false, !(temp == image));
 
-				image.draw(ren, tempCamera.getView());
+				if (temp.hasImage())
+				{
+					temp.draw(ren, tempCamera.getView());
 
-				if (fadeStyle == ImageFadeStyle::ALPHA)
-					image.getAlpha(&tempAlpha);
-				else if (fadeStyle == ImageFadeStyle::TINT)
-					image.getColor(&tempAlpha, &tempAlpha, &tempAlpha);
+					if (fadeStyle == ImageFadeStyle::ALPHA)
+						temp.getAlpha(&tempAlpha);
+					else if (fadeStyle == ImageFadeStyle::TINT)
+						temp.getColor(&tempAlpha, &tempAlpha, &tempAlpha);
 
-				image.setAlpha(SDL_ALPHA_OPAQUE);
+					image.setAlpha(SDL_ALPHA_OPAQUE);
 
-				tempCamera.updateView();
+					tempCamera.updateView();
+				}
 			}
 		}
 		else if (fading)
@@ -87,7 +90,10 @@ void ImageBackground::setImage(std::string path)
 	image.setImage(ren, path);
 	image.setBlendMode(SDL_BLENDMODE_BLEND);
 	imageCamera.setView(&image);
-	calculateFadeDist(imageCamera.getPanSpeed());
+
+	// Additional fade logic required if camera is roaming.
+	if (imageCamera.getState() == ImageCameraState::ROAMING && !viewInFadeZone(tempCamera, temp))
+		tempAlpha = SDL_ALPHA_OPAQUE;
 }
 
 void ImageBackground::setImage(int index)

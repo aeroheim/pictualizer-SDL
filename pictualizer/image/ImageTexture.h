@@ -14,6 +14,7 @@ class ImageTexture
 		int getWidth();
 		int getHeight();
 		bool setImage(SDL_Renderer* ren, std::string path);
+		bool hasImage();
 		void freeImage();
 		void setColor(Uint8 r, Uint8 g, Uint8 b);
 		void getColor(Uint8* r, Uint8* g, Uint8* b);
@@ -22,6 +23,8 @@ class ImageTexture
 		void getAlpha(Uint8* alpha);
 		void setAlpha(Uint8 alpha);
 		void setBlendMode(SDL_BlendMode blend);
+
+		bool operator==(const ImageTexture& imageTexture);
 
 	private:
 		SDL_Texture* image;

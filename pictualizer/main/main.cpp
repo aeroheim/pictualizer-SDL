@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	}
 
 	// Create window
-	SDL_Window* win = SDL_CreateWindow("Pictualizer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1088, 530, SDL_WINDOW_BORDERLESS);
+	SDL_Window* win = SDL_CreateWindow("Pictualizer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1080, 530, SDL_WINDOW_BORDERLESS);
 	if (win == nullptr)
 	{
 		cout << "Window Error: " << SDL_GetError << endl;

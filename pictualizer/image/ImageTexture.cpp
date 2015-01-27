@@ -44,6 +44,14 @@ bool ImageTexture::setImage(SDL_Renderer* ren, std::string path)
 	return false;
 }
 
+bool ImageTexture::hasImage()
+{
+	if (image)
+		return true;
+
+	return false;
+}
+
 void ImageTexture::freeImage()
 {
 	if (image)
@@ -88,4 +96,9 @@ void ImageTexture::setAlpha(Uint8 alpha)
 void ImageTexture::setBlendMode(SDL_BlendMode blend)
 {
 	SDL_SetTextureBlendMode(image, blend);
+}
+
+bool ImageTexture::operator==(const ImageTexture& imageTexture)
+{
+	return imageTexture.image == image;
 }
