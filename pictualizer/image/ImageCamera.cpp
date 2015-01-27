@@ -348,7 +348,28 @@ void ImageCamera::resetPanning()
 
 void ImageCamera::generateNewPanningStyle()
 {
-	panningState = (CameraPanningState) (rand() % 8);
+	if (panningState == CameraPanningState::LEFT || panningState == CameraPanningState::RIGHT)
+	{
+		std::vector<CameraPanningState> newStates = { CameraPanningState::TOP, CameraPanningState::BOTTOM, 
+										   CameraPanningState::BOTTOM_LEFT, CameraPanningState::BOTTOM_RIGHT, 
+										   CameraPanningState::TOP_LEFT, CameraPanningState::TOP_RIGHT };
+
+		panningState = newStates[rand() % newStates.size()];
+	}
+	else if (panningState == CameraPanningState::BOTTOM || panningState == CameraPanningState::TOP)
+	{
+		std::vector<CameraPanningState> newStates = { CameraPanningState::LEFT, CameraPanningState::RIGHT,
+													  CameraPanningState::BOTTOM_LEFT, CameraPanningState::BOTTOM_RIGHT,
+													  CameraPanningState::TOP_LEFT, CameraPanningState::TOP_RIGHT };
+
+		panningState = newStates[rand() % newStates.size()];
+	}
+	else
+	{
+		std::vector<CameraPanningState> newStates = { CameraPanningState::LEFT, CameraPanningState::RIGHT, CameraPanningState::BOTTOM, CameraPanningState::TOP };
+
+		panningState = newStates[rand() % newStates.size()];
+	}
 }
 
 void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
