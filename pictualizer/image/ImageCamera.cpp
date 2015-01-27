@@ -451,10 +451,12 @@ void ImageCamera::OnWindowResize(WindowResizeEvent* e)
 	view.w = ww;
 	view.h = wh;
 
+	float prevMaxScale = maxScale;
+
 	calculateMaxScale();
 
-	if (scale > maxScale)
-		scale = maxScale;
+	// Apply max scale delta to current scale.
+	scale += (maxScale - prevMaxScale);
 
 	view.w = (int) std::floor(view.w * scale);
 	view.h = (int) std::floor(view.h * scale);
