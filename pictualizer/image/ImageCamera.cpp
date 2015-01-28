@@ -145,18 +145,11 @@ void ImageCamera::handleEvent(Event* e)
 	if (!e->handled)
 	{
 		if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
-		{
-			
 			setKeyHeld(keyDownEvent->key);
-		}
-		else if (dynamic_cast<KeyUpEvent*>(e))
-		{
-			KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e);
+		else if (KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
 			setKeyReleased(keyUpEvent->key);
-		}
-		else if (dynamic_cast<MouseDownEvent*>(e))
+		else if (MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(e))
 		{
-			MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(e);
 			if (!lMouseHeld && mouseDownEvent->button == SDL_BUTTON_LEFT)
 			{
 				lMouseHeld = true;
@@ -164,28 +157,25 @@ void ImageCamera::handleEvent(Event* e)
 				mDownY = mouseDownEvent->y;
 			}
 		}
-		else if (dynamic_cast<MouseUpEvent*> (e))
+		else if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
 		{
-			MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e);
 			if (mouseUpEvent->button == SDL_BUTTON_LEFT)
 				lMouseHeld = false;
 		}
-		else if (dynamic_cast<MouseWheelEvent*>(e))
+		else if (MouseWheelEvent* mouseWheelEvent = dynamic_cast<MouseWheelEvent*>(e))
 		{
 			if (keyHeld(ACCESS_KEY))
-			{
-				MouseWheelEvent* mouseWheelEvent = dynamic_cast<MouseWheelEvent*>(e);
+			{	
 				OnMouseWheel(mouseWheelEvent);
 				e->handled = true;
 			}
 		}
-		else if (dynamic_cast<MouseMotionEvent*>(e))
+		else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
 		{
 			if (keyHeld(ACCESS_KEY) && lMouseHeld)
 			{
 				SDL_ShowCursor(SDL_DISABLE);
 				SDL_SetRelativeMouseMode(SDL_TRUE);
-				MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e);
 				OnMouseMotion(mouseMotionEvent);
 				e->handled = true;
 			}
@@ -195,9 +185,8 @@ void ImageCamera::handleEvent(Event* e)
 				SDL_SetRelativeMouseMode(SDL_FALSE);
 			}
 		}
-		else if (dynamic_cast<WindowResizeEvent*>(e))
+		else if (WindowResizeEvent* windowResizeEvent = dynamic_cast<WindowResizeEvent*>(e))
 		{
-			WindowResizeEvent* windowResizeEvent = dynamic_cast<WindowResizeEvent*>(e);
 			OnWindowResize(windowResizeEvent);
 			e->handled = true;
 		}

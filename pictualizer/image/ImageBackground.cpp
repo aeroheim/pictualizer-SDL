@@ -165,9 +165,8 @@ void ImageBackground::handleEvent(Event* e)
 
 	if (!e->handled)
 	{
-		if (dynamic_cast<FileDropEvent*>(e))
+		if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
 		{
-			FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e);
 			if (utils::pathIsImage(fileDropEvent->path))
 			{
 				enqueueImage(fileDropEvent->path);
@@ -175,14 +174,10 @@ void ImageBackground::handleEvent(Event* e)
 				e->handled = true;
 			}
 		}
-		else  if (dynamic_cast<KeyDownEvent*>(e))
-		{
-			KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e);
+		else  if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
 			setKeyHeld(keyDownEvent->key);
-		}
-		else if (dynamic_cast<KeyUpEvent*>(e))
+		else if (KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
 		{
-			KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e);
 			setKeyReleased(keyUpEvent->key);
 
 			if (keyHeld(ACCESS_KEY))
