@@ -12,7 +12,7 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	fading = false;
 
 	tempAlpha = SDL_ALPHA_OPAQUE;
-	fadeDelta = 15;
+	fadeDelta = 5;
 	fadeStyle = ImageFadeStyle::ALPHA;
 
 	addSubscriber(&imageCamera);
@@ -53,7 +53,7 @@ void ImageBackground::draw()
 				// When fading only with the current image, tempImage and image are the same, so we need tempAlpha to store our 
 				// current fading alpha value while we draw image with SDL_ALPHA_OPAQUE.
 				tempImage.setAlpha(tempAlpha);
-				fadeImage(tempImage, false, !(tempImage == image));
+				fadeImage(tempImage, false);
 
 				if (tempImage.hasImage())
 				{
@@ -67,8 +67,7 @@ void ImageBackground::draw()
 		// Manual mode fade case, which is only initiated by setImage().
 		else if (fading)
 		{
-			// We free image's old texture, which was shallow copied to tempImage, after tempImage fully fades out.
-			fadeImage(tempImage, false, true);
+			fadeImage(tempImage, false);
 
 			if (tempImage.hasImage())
 				tempImage.draw(ren, tempCamera.getView());
@@ -90,10 +89,6 @@ void ImageBackground::setState(ImageBackgroundState s)
 
 void ImageBackground::setImage(std::string path)
 {
-	// Free the currently fading texture if we load a new texture during fading.
-	if (fading)
-		tempImage.freeImage();
-
 	// Initiate fading to the new image, if there exists an image to fade to.
 	if (images.size() > 1)
 	{
@@ -109,9 +104,8 @@ void ImageBackground::setImage(std::string path)
 	image.setBlendMode(SDL_BLENDMODE_BLEND);
 	imageCamera.setView(&image);
 
-	// When fading during roaming mode without having entered a fade zone, tempAlpha must be reset for tempImage to fade correctly.
-	if (imageCamera.getState() == ImageCameraState::ROAMING && !viewInFadeZone(tempCamera, tempImage))
-		tempAlpha = SDL_ALPHA_OPAQUE;
+	// Reset alpha, which is necessary if the previous image did not fully fade out before setImage was called again.
+	tempAlpha = SDL_ALPHA_OPAQUE;
 }
 
 void ImageBackground::setImage(int index)
@@ -257,7 +251,7 @@ void ImageBackground::checkSlideshowTimer()
 	}
 }
 
-void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
+void ImageBackground::fadeImage(ImageTexture& img, bool in)
 {
 	Uint8 alpha;
 	img.getAlpha(&alpha);
@@ -270,17 +264,7 @@ void ImageBackground::fadeImage(ImageTexture& img, bool in, bool free)
 	img.setAlpha(alpha);
 
 	if (!in && alpha == 0)
-	{
 		fading = false;
-
-		if (free)
-			img.freeImage();
-	}
 	else if (in && alpha == SDL_ALPHA_OPAQUE)
-	{
 		fading = false;
-
-		if (free)
-			img.freeImage();
-	}
 }

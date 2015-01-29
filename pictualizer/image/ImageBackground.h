@@ -50,5 +50,5 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		bool viewInFadeZone(ImageCamera& camera, ImageTexture& img);
 
 		void checkSlideshowTimer();
-		void fadeImage(ImageTexture& img, bool in, bool free = false);
+		void fadeImage(ImageTexture& img, bool in);
 };

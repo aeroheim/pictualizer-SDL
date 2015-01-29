@@ -2,7 +2,15 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <memory>
 #include <string>
+
+typedef std::shared_ptr<SDL_Texture> SharedTexture;
+
+inline SharedTexture make_shared(SDL_Texture* texture) 
+{
+	return SharedTexture(texture, SDL_DestroyTexture);
+}
 
 class ImageTexture
 {
@@ -27,7 +35,7 @@ class ImageTexture
 		bool operator==(const ImageTexture& imageTexture);
 
 	private:
-		SDL_Texture* image;
+		SharedTexture image;
 		int iw;
 		int ih;
 };

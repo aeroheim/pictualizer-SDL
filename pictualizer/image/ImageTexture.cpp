@@ -10,13 +10,13 @@ ImageTexture::ImageTexture()
 ImageTexture::~ImageTexture()
 {
 	if (image)
-		SDL_DestroyTexture(image);
+		SDL_DestroyTexture(image.get());
 }
 
 void ImageTexture::draw(SDL_Renderer* ren, SDL_Rect* view)
 { 
 	if (image)
-		SDL_RenderCopy(ren, image, view, NULL);
+		SDL_RenderCopy(ren, image.get(), view, NULL);
 }
 
 int ImageTexture::getWidth()
@@ -31,11 +31,11 @@ int ImageTexture::getHeight()
 
 bool ImageTexture::setImage(SDL_Renderer* ren, std::string path)
 {
-	image = IMG_LoadTexture(ren, path.c_str());
+	image = make_shared(IMG_LoadTexture(ren, path.c_str()));
 
 	if (image)
 	{
-		SDL_QueryTexture(image, NULL, NULL, &iw, &ih);
+		SDL_QueryTexture(image.get(), NULL, NULL, &iw, &ih);
 		return true;
 	}
 
@@ -56,8 +56,7 @@ void ImageTexture::freeImage()
 {
 	if (image)
 	{
-		SDL_DestroyTexture(image);
-		image = NULL;
+		image.reset();
 		iw = 0;
 		ih = 0;
 	}
@@ -65,12 +64,12 @@ void ImageTexture::freeImage()
 
 void ImageTexture::setColor(Uint8 r, Uint8 g, Uint8 b)
 {
-	SDL_SetTextureColorMod(image, r, g, b);
+	SDL_SetTextureColorMod(image.get(), r, g, b);
 }
 
 void ImageTexture::getColor(Uint8* r, Uint8* g, Uint8* b)
 {
-	SDL_GetTextureColorMod(image, r, g, b);
+	SDL_GetTextureColorMod(image.get(), r, g, b);
 }
 
 void ImageTexture::setTint(Uint8 rgb)
@@ -85,17 +84,17 @@ void ImageTexture::setBlur(int level)
 
 void ImageTexture::getAlpha(Uint8* alpha)
 {
-	SDL_GetTextureAlphaMod(image, alpha);
+	SDL_GetTextureAlphaMod(image.get(), alpha);
 }
 
 void ImageTexture::setAlpha(Uint8 alpha)
 {
-	SDL_SetTextureAlphaMod(image, alpha);
+	SDL_SetTextureAlphaMod(image.get(), alpha);
 }
 
 void ImageTexture::setBlendMode(SDL_BlendMode blend)
 {
-	SDL_SetTextureBlendMode(image, blend);
+	SDL_SetTextureBlendMode(image.get(), blend);
 }
 
 bool ImageTexture::operator==(const ImageTexture& imageTexture)
