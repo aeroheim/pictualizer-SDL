@@ -43,6 +43,9 @@ int main(int argc, char** argv)
 
 	windowIOController.addSubscriber(&imgBg);
 
+	// Use linear filtering to preserve image quality when scaled.
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");
+
 	while (true)
 	{
 		windowIOController.pollEvents();
