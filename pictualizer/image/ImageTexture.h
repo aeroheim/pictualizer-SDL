@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
+#include "../io/EventObserver.h"
 
 
 class ImageTexture;
@@ -43,7 +44,7 @@ struct ImageTextureThreadData
 	ThreadSurfaceBuffer* buffer;
 };
 
-class ImageTexture
+class ImageTexture : public EventObserver
 {
 	public:
 		ImageTexture();
@@ -62,7 +63,7 @@ class ImageTexture
 		void setAlpha(Uint8 alpha);
 		void setBlendMode(SDL_BlendMode blend);
 
-		bool operator==(const ImageTexture& imageTexture);
+		ImageTexture& operator=(const ImageTexture& rhs);
 
 	private:
 		SharedTexture image;
@@ -76,5 +77,4 @@ class ImageTexture
 		static int asyncImageLoad(void* data);
 
 		void pollImageBuffers(SDL_Renderer* ren);
-		void OnImageLoaded();
 };

@@ -12,9 +12,10 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	fading = false;
 
 	tempAlpha = SDL_ALPHA_OPAQUE;
-	fadeDelta = 5;
+	fadeDelta = 15;
 	fadeStyle = ImageFadeStyle::ALPHA;
 
+	subscribeTo(&image);
 	addSubscriber(&imageCamera);
 	registerKey(ACCESS_KEY);
 
@@ -89,23 +90,7 @@ void ImageBackground::setState(ImageBackgroundState s)
 
 void ImageBackground::setImage(std::string path)
 {
-	// Initiate fading to the new image, if there exists an image to fade to.
-	if (images.size() > 1)
-	{
-		fading = true;
-		tempCamera = imageCamera;
-		tempImage = image;
-	}
-
-	// Reset slideshow timer count.
-	frameCount = 0;
-
 	image.setImage(ren, path);
-	image.setBlendMode(SDL_BLENDMODE_BLEND);
-	imageCamera.setView(&image);
-
-	// Reset alpha, which is necessary if the previous image did not fully fade out before setImage was called again.
-	tempAlpha = SDL_ALPHA_OPAQUE;
 }
 
 void ImageBackground::setImage(int index)
@@ -168,6 +153,10 @@ void ImageBackground::handleEvent(Event* e)
 				e->handled = true;
 			}
 		}
+		else if (ImageLoadReadyEvent* imageLoadReadyEvent = dynamic_cast<ImageLoadReadyEvent*>(e))
+			OnImageReady();
+		else if (ImageLoadedEvent* imageLoadedEvent = dynamic_cast<ImageLoadedEvent*>(e))
+			OnImageLoaded();
 		else  if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
 			setKeyHeld(keyDownEvent->key);
 		else if (KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
@@ -241,7 +230,7 @@ void ImageBackground::checkSlideshowTimer()
 		++frameCount;
 
 		// Advance to the next image (circular) if the timer has been reached.
-		if ((frameCount / 60) == slideshowTimer)
+		if (((float) frameCount / 60) == slideshowTimer)
 		{
 			if ((size_t) (imageIndex + 1) < images.size())
 				nextImage();
@@ -267,4 +256,27 @@ void ImageBackground::fadeImage(ImageTexture& img, bool in)
 		fading = false;
 	else if (in && alpha == SDL_ALPHA_OPAQUE)
 		fading = false;
+}
+
+void ImageBackground::OnImageReady()
+{
+	// Initiate fading to the new image, if there exists an image to fade to.
+	if (images.size() > 1)
+	{
+		fading = true;
+		tempCamera = imageCamera;
+		tempImage = image;
+	}
+
+	// Reset slideshow timer count.
+	frameCount = 0;
+}
+
+void ImageBackground::OnImageLoaded()
+{
+	image.setBlendMode(SDL_BLENDMODE_BLEND);
+	imageCamera.setView(&image);
+
+	// Reset alpha, which is necessary if the previous image did not fully fade out before setImage was called again.
+	tempAlpha = SDL_ALPHA_OPAQUE;
 }

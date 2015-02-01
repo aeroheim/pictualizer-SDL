@@ -46,15 +46,17 @@ int ImageTexture::asyncImageLoad(void* data)
 	ImageTextureThreadData* threadData = static_cast<ImageTextureThreadData*>(data);
 	ImageTexture* caller = threadData->caller;
 
-	// SharedTexture asyncImage = make_shared(IMG_LoadTexture(threadData->ren, threadData->path.c_str()));
+	// Load texture if current thread is the last image to be loaded.
 	if (threadData->threadNumber == caller->loadQueueCount)
 	{
 		threadData->buffer->surface = IMG_Load(threadData->path.c_str());
 		
+		// Recheck thread number, incase another image thread was created while loading.
 		if (threadData->buffer->surface && threadData->threadNumber == caller->loadQueueCount)
 			threadData->buffer->ready = true;
 		else
 		{
+
 			if (SDL_LockMutex(caller->mutex) == 0)
 			{
 				caller->imageBuffers.erase(threadData->threadNumber);
@@ -82,43 +84,6 @@ int ImageTexture::asyncImageLoad(void* data)
 		delete threadData->buffer;
 	}
 
-	// SharedSurface asyncSurface = make_shared(IMG_Load(threadData->path.c_str()));
-
-	// Only load the image into the buffer if we're the latest image to be requested.
-	/*
-	if (threadData->threadNumber == caller->loadQueueCount && SDL_LockMutex(caller->mutex) == 0)
-	{
-		caller->imageBuffer = asyncSurface;
-	}
-	*/
-
-	/*
-	if (caller.asyncLoadFlag)
-	{
-		caller.image = asyncImage;
-		SDL_QueryTexture(caller.image.get(), NULL, NULL, &caller.iw, &caller.ih);
-
-		cout << "image loaded" << endl;
-	}
-	else
-	{
-		caller.iw = 0;
-		caller.ih = 0;
-	}
-	*/
-
-	/*
-	if (image)
-	{
-		SDL_QueryTexture(image.get(), NULL, NULL, &iw, &ih);
-		return true;
-	}
-
-	iw = 0;
-	ih = 0;
-	return false;
-	*/
-
 	delete threadData;
 
 	return 0;
@@ -126,8 +91,6 @@ int ImageTexture::asyncImageLoad(void* data)
 
 void ImageTexture::setImage(SDL_Renderer* ren, std::string path)
 {
-	// image = make_shared(IMG_LoadTexture(ren, path.c_str()));
-
 	ThreadSurfaceBuffer* threadImageBuffer = new ThreadSurfaceBuffer();
 	threadImageBuffer->ready = false;
 
@@ -146,10 +109,6 @@ void ImageTexture::setImage(SDL_Renderer* ren, std::string path)
 		throw SDL_GetError();
 
 	SDL_Thread* thread = SDL_CreateThread(asyncImageLoad, NULL, threadData);
-
-	SDL_WaitThread(thread, NULL);
-
-	// image = make_shared(SDL_CreateTextureFromSurface(ren, imageBuffer.get()));
 }
 
 bool ImageTexture::hasImage()
@@ -200,9 +159,12 @@ void ImageTexture::setBlendMode(SDL_BlendMode blend)
 	SDL_SetTextureBlendMode(image.get(), blend);
 }
 
-bool ImageTexture::operator==(const ImageTexture& imageTexture)
+ImageTexture& ImageTexture::operator=(const ImageTexture& rhs)
 {
-	return imageTexture.image == image;
+	image = rhs.image;
+	iw = rhs.iw;
+	ih = rhs.ih;
+	return *this;
 }
 
 void ImageTexture::pollImageBuffers(SDL_Renderer* ren)
@@ -212,11 +174,14 @@ void ImageTexture::pollImageBuffers(SDL_Renderer* ren)
 		// Load from the buffer.
 		if (it->first == loadQueueCount && it->second->ready)
 		{
+			ImageLoadReadyEvent er;
+			notify(&er);
+
 			image = make_shared(SDL_CreateTextureFromSurface(ren, it->second->surface));
-			// image.reset(SDL_CreateTextureFromSurface(ren, imageBuffers[loadQueueCount]->surface));
 			SDL_QueryTexture(image.get(), NULL, NULL, &iw, &ih);
 
-			cout << "iw: " << iw << ", ih: " << ih << endl;
+			ImageLoadedEvent e(iw, ih);
+			notify(&e);
 		}
 
 		// Cleanup buffer.
@@ -226,7 +191,10 @@ void ImageTexture::pollImageBuffers(SDL_Renderer* ren)
 			delete it->second;
 
 			if (SDL_LockMutex(mutex) == 0)
+			{
 				it = imageBuffers.erase(it);
+				SDL_UnlockMutex(mutex);
+			}
 			else
 				throw SDL_GetError();
 		}

@@ -51,4 +51,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 
 		void checkSlideshowTimer();
 		void fadeImage(ImageTexture& img, bool in);
+
+		void OnImageReady();
+		void OnImageLoaded();
 };
