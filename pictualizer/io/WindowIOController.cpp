@@ -70,35 +70,29 @@ void WindowIOController::pollEvents()
 
 void WindowIOController::OnDrop(SDL_DropEvent& e)
 {
-	Event* fileDropEvent = new FileDropEvent(e);
-	notify(fileDropEvent);
-
+	FileDropEvent fileDropEvent(e);
+	notify(&fileDropEvent);
 	SDL_free(e.file);
-	delete fileDropEvent;
 }
 
 void WindowIOController::OnKeyDown(SDL_KeyboardEvent& e)
 {
-	Event* keyDownEvent = new KeyDownEvent(e);
-	notify(keyDownEvent);
-
-	delete keyDownEvent;
+	KeyDownEvent keyDownEvent(e);
+	notify(&keyDownEvent);
 }
 
 void WindowIOController::OnKeyUp(SDL_KeyboardEvent& e)
 {
-	Event* keyUpEvent = new KeyUpEvent(e);
-	notify(keyUpEvent);
-
-	delete keyUpEvent;
+	KeyUpEvent keyUpEvent(e);
+	notify(&keyUpEvent);
 }
 
 void WindowIOController::OnMouseButtonDown(SDL_MouseButtonEvent& e)
 {
-	Event* mouseDownEvent = new MouseDownEvent(e);
-	notify(mouseDownEvent);
+	MouseDownEvent mouseDownEvent(e);
+	notify(&mouseDownEvent);
 
-	if (!mouseDownEvent->handled)
+	if (!mouseDownEvent.handled)
 	{
 		if (e.button == SDL_BUTTON_LEFT)
 		{
@@ -119,16 +113,14 @@ void WindowIOController::OnMouseButtonDown(SDL_MouseButtonEvent& e)
 				dragging = true;
 		}
 	}
-
-	delete mouseDownEvent;
 }
 
 void WindowIOController::OnMouseButtonUp(SDL_MouseButtonEvent& e)
 {
-	Event* mouseUpEvent = new MouseUpEvent(e);
-	notify(mouseUpEvent);
+	MouseUpEvent mouseUpEvent(e);
+	notify(&mouseUpEvent);
 
-	if (!mouseUpEvent->handled)
+	if (!mouseUpEvent.handled)
 	{
 		if (e.button == SDL_BUTTON_LEFT)
 		{
@@ -139,8 +131,6 @@ void WindowIOController::OnMouseButtonUp(SDL_MouseButtonEvent& e)
 			dragResizing = false;
 		}
 	}
-
-	delete mouseUpEvent;
 }
 
 void WindowIOController::OnMouseWheel(SDL_MouseWheelEvent& e)
@@ -150,18 +140,16 @@ void WindowIOController::OnMouseWheel(SDL_MouseWheelEvent& e)
 
 	SDL_GetMouseState(&mx, &my);
 
-	Event* mouseWheelEvent = new MouseWheelEvent(e, mx, my);
-	notify(mouseWheelEvent);
-
-	delete mouseWheelEvent;
+	MouseWheelEvent mouseWheelEvent(e, mx, my);
+	notify(&mouseWheelEvent);
 }
 
 void WindowIOController::OnMouseMotion(SDL_MouseMotionEvent& e)
 {
-	Event* mouseMotionEvent = new MouseMotionEvent(e);
-	notify(mouseMotionEvent);
+	MouseMotionEvent mouseMotionEvent(e);
+	notify(&mouseMotionEvent);
 
-	if (!mouseMotionEvent->handled)
+	if (!mouseMotionEvent.handled)
 	{
 		if (dragging)
 		{
@@ -176,18 +164,14 @@ void WindowIOController::OnMouseMotion(SDL_MouseMotionEvent& e)
 		else
 			setDragCursor(e);
 	}
-
-	delete mouseMotionEvent;
 }
 
 void WindowIOController::OnWindowResized()
 {
 	SDL_GetWindowSize(win, &winWidth, &winHeight);
 
-	Event* windowResizeEvent = new WindowResizeEvent(winWidth, winHeight);
-	notify(windowResizeEvent);
-
-	delete windowResizeEvent;
+	WindowResizeEvent windowResizeEvent(winWidth, winHeight);
+	notify(&windowResizeEvent);
 }
 
 bool WindowIOController::mouseDownInResizeZone()
