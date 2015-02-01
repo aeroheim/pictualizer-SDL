@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_thread.h>
+#include <unordered_map>
 #include <memory>
 #include <string>
 
@@ -25,6 +26,12 @@ inline SharedSurface make_shared(SDL_Surface* surface)
 	return SharedSurface(surface, SDL_FreeSurface);
 }
 
+struct ThreadSurfaceBuffer
+{
+	SDL_Surface* surface;
+	bool ready;
+};
+
 /*
 *  ImageTextureThreadData is passed to ImageTexture threads to allow for asynchronous image loading,
 */
@@ -33,6 +40,7 @@ struct ImageTextureThreadData
 	ImageTexture* caller;
 	std::string path;
 	int threadNumber;
+	ThreadSurfaceBuffer* buffer;
 };
 
 class ImageTexture
@@ -61,7 +69,12 @@ class ImageTexture
 		int iw;
 		int ih;
 
-		SharedSurface asyncImageBuffer;
+		std::unordered_map<int, ThreadSurfaceBuffer*> imageBuffers;
+		SDL_mutex* mutex;
+
 		int loadQueueCount;
 		static int asyncImageLoad(void* data);
+
+		void pollImageBuffers(SDL_Renderer* ren);
+		void OnImageLoaded();
 };
