@@ -6,6 +6,7 @@
 class Event
 {
 	public:
+		Event();
 		virtual ~Event();
 		bool handled;
 };
@@ -74,5 +75,19 @@ class MouseMotionEvent : public Event
 		int yrel;
 		int x;
 		int y;
+};
+
+class ImageLoadReadyEvent : public Event
+{
+	public:
+		ImageLoadReadyEvent();
+};
+
+class ImageLoadedEvent : public Event
+{
+	public:
+		ImageLoadedEvent(int w, int h);
+		int iw;
+		int ih;
 };
 
