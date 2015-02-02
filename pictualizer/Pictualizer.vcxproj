@@ -15,6 +15,8 @@
     <ClInclude Include="audio\AudioPlayerStates.h" />
     <ClInclude Include="audio\AudioPlaylist.h" />
     <ClInclude Include="audio\AudioTrack.h" />
+    <ClInclude Include="controls\GridPanel.h" />
+    <ClInclude Include="controls\PControl.h" />
     <ClInclude Include="image\ImageBackground.h" />
     <ClInclude Include="image\ImageBackgroundStates.h" />
     <ClInclude Include="image\ImageCameraStates.h" />
@@ -31,6 +33,8 @@
     <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="audio\AudioPlaylist.cpp" />
     <ClCompile Include="audio\AudioTrack.cpp" />
+    <ClCompile Include="controls\GridPanel.cpp" />
+    <ClCompile Include="controls\PControl.cpp" />
     <ClCompile Include="image\ImageBackground.cpp" />
     <ClCompile Include="image\ImageCamera.cpp" />
     <ClCompile Include="image\ImageTexture.cpp" />

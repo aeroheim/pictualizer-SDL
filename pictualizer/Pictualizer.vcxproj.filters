@@ -60,6 +60,12 @@
     <ClInclude Include="image\ImageBackgroundStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\PControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls\GridPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -99,6 +105,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="image\ImageTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\PControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\GridPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
