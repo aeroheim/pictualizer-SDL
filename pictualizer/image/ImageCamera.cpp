@@ -467,12 +467,24 @@ void ImageCamera::OnWindowResize(WindowResizeEvent* e)
 	float yMaxPos = (float) (ih - wh * scale);
 
 	if (view.x > xMaxPos)
-		view.x = (int) std::floor(xMaxPos);
+	{
+		view.x = (int)std::floor(xMaxPos);
+		panX = (float) view.x;
+	}
 	else if (view.x < 0)
+	{
 		view.x = 0;
+		panX = (float) view.x;
+	}
 
 	if (view.y > yMaxPos)
-		view.y = (int) std::floor(yMaxPos);
+	{
+		view.y = (int)std::floor(yMaxPos);
+		panY = (float) view.y;
+	}
 	else if (view.y < 0)
+	{
 		view.y = 0;
+		panY = (float) view.y;
+	}
 }
