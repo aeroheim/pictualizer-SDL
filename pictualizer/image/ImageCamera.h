@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdlib>
-#include <ctime>
 #include "ImageCameraStates.h"
 #include "ImageTexture.h"
 #include "../io/EventSubscriber.h"

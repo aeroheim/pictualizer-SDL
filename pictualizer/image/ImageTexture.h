@@ -15,16 +15,10 @@ class ImageTexture;
  *	SharedTexture is a shared_ptr wrapper that allows for shared_ptrs to be used on SDL_Texture classes.
  */
 typedef std::shared_ptr<SDL_Texture> SharedTexture;
-typedef std::shared_ptr<SDL_Surface> SharedSurface;
 
 inline SharedTexture make_shared(SDL_Texture* texture) 
 {
 	return SharedTexture(texture, SDL_DestroyTexture);
-}
-
-inline SharedSurface make_shared(SDL_Surface* surface)
-{
-	return SharedSurface(surface, SDL_FreeSurface);
 }
 
 struct ThreadSurfaceBuffer

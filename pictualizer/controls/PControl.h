@@ -3,9 +3,10 @@ class PControl
 {
 	public:
 		PControl(int x, int y, int w, int h);
+		virtual ~PControl();
 
-		void setX(int x);
-		void setY(int y);
+		virtual void setX(int x);
+		virtual void setY(int y);
 		virtual void setWidth(int w);
 		virtual void setHeight(int h);
 
@@ -15,7 +16,7 @@ class PControl
 		int getHeight();
 
 		void moveTo(int x, int y);
-		virtual void resize(int w, int h);
+		void resize(int w, int h);
 
 		virtual void draw() = 0;
 

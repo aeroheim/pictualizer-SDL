@@ -1,8 +1,4 @@
 #include "ImageCamera.h"
-#include <iostream>
-#include <assert.h>
-
-using namespace std;
 
 ImageCamera::ImageCamera(int w, int h)
 {
@@ -22,8 +18,6 @@ ImageCamera::ImageCamera(int w, int h)
 	state = ImageCameraState::MANUAL;
 
 	registerKey(ACCESS_KEY);
-
-	srand((unsigned int) time(NULL));
 }
 
 ImageCamera::~ImageCamera() {}

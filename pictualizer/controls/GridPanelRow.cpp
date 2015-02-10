@@ -28,15 +28,15 @@ void GridPanelRow::setY(int y)
 {
 	this->y = y;
 
-	for (int i = 0; i < cells.size(); i++)
-		cells[i].setY(y);
+	for (GridPanelCell c : cells)
+		c.setY(y);
 }
 
 void GridPanelRow::setWidth(int width)
 {
 	// Maintain cell proportions when we resize their widths;
-	for (int i = 0; i < cells.size(); i++)
-		cells[i].setWidth((int) std::floor(((float) cells[i].getWidth() / w) * width));
+	for (GridPanelCell c : cells)
+		c.setWidth((int) std::floor(((float) c.getWidth() / w) * width));
 
 	w = width;
 }
@@ -47,7 +47,7 @@ void GridPanelRow::setCellWidths(const std::vector<int>& cellWidths)
 
 	w = 0;
 
-	for (int i = 0; i < cells.size(); i++)
+	for (int i = 0; i < cellWidths.size(); i++)
 	{
 		cells[i].setWidth(cellWidths[i]);
 		w += cellWidths[i];
@@ -58,8 +58,8 @@ void GridPanelRow::setHeight(int height)
 {
 	h = height;
 
-	for (int i = 0; i < cells.size(); i++)
-		cells[i].setHeight(height);
+	for (GridPanelCell c : cells)
+		c.setHeight(height);
 }
 
 int GridPanelRow::getNumCols()
@@ -69,8 +69,8 @@ int GridPanelRow::getNumCols()
 
 void GridPanelRow::draw()
 {
-	for (int i = 0; i < cells.size(); i++)
-		cells[i].draw();
+	for (GridPanelCell c : cells)
+		c.draw();
 }
 
 GridPanelCell& GridPanelRow::operator[](const int index)
