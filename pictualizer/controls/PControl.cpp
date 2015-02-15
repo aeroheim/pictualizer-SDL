@@ -1,12 +1,8 @@
 #include "PControl.h"
 
-PControl::PControl(int x, int y, int w, int h)
-{
-	this->x = x;
-	this->y = y;
-	this->w = w;
-	this->h = h;
-}
+PControl::PControl(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {};
+
+PControl::~PControl() {};
 
 void PControl::setX(int x)
 {

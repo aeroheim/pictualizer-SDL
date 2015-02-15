@@ -1,10 +1,10 @@
+#pragma once
+
+#include <SDL.h>
 
 class PControl
 {
 	public:
-		PControl(int x, int y, int w, int h);
-		virtual ~PControl();
-
 		virtual void setX(int x);
 		virtual void setY(int y);
 		virtual void setWidth(int w);
@@ -18,9 +18,12 @@ class PControl
 		void moveTo(int x, int y);
 		void resize(int w, int h);
 
-		virtual void draw() = 0;
+		virtual void draw(SDL_Renderer* ren) = 0;
 
-	private:
+	protected:
+		PControl(int x, int y, int w, int h);
+		virtual ~PControl();
+
 		int x;
 		int y;
 		int w;
