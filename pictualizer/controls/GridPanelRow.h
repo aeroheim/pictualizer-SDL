@@ -1,8 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <assert.h>
-#include "PControl.h"
+#include <cassert>
 #include "GridPanelCell.h"
 
 class GridPanelRow : public PControl
@@ -18,7 +17,7 @@ class GridPanelRow : public PControl
 
 		int getNumCols();
 
-		void draw();
+		void draw(SDL_Renderer* ren);
 
 		GridPanelCell& operator[] (const int index);
 

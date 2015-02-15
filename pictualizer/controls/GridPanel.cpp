@@ -2,72 +2,128 @@
 
 GridPanel::GridPanel(int x, int y, int w, int h, int r, int c) : PControl(x, y, w, h)
 {
-	float rowHeight = (float) h / r;
-	float colWidth = (float) w / c;
+	assert(r > 0);
+	assert(h >= r);
+
+	int rowHeight = (int) std::floor((float) h / r);
+	int rowY;
 
 	for (int i = 0; i < r; i++)
 	{
-		rowHeights.push_back(rowHeight);
-		controls.push_back(std::vector<PControl*>(c, nullptr));
+		if (i == 0)
+			rowY = y;
+		else
+			rowY = rows[i - 1].getY() + rows[i - 1].getHeight();
+
+		GridPanelRow r(x, rowY, w, rowHeight, c);
+		rows.push_back(r);
 	}
-
-	for (int i = 0; i < c; i++)
-		colWidths.push_back(colWidth);
 }
 
-void GridPanel::setRowHeights(const std::vector<int>& heights)
+void GridPanel::setX(int x)
 {
-	if (rowHeights.size() == heights.size())
-		rowHeights = heights;
-	else
-		throw "GridPanel::setRowHeights(): size mismatch.";
+	this->x = x;
+
+	for (GridPanelRow r : rows)
+		r.setX(x);
 }
 
-void GridPanel::setColWidths(const std::vector<int>& widths)
+void GridPanel::setY(int y)
 {
-	if (colWidths.size() == widths.size())
-		colWidths = widths;
-	else
-		throw "GridPanel::setColWidths(): size mismatch.";
+	this->y = y;
+
+	for (GridPanelRow r : rows)
+		r.setY(y);
 }
 
-int GridPanel::getRowHeight(int r)
+void GridPanel::setWidth(int width)
 {
-	if (r >= 0 && (size_t) r < rowHeights.size())
-		return rowHeights[r];
+	assert(width >= 0);
 
-	return -1;
+	w = width;
+
+	for (GridPanelRow r : rows)
+		r.setWidth(width);
+}
+
+void GridPanel::setColWidths(const std::vector<int>& colWidths)
+{
+	assert(colWidths.size() == rows[0].getNumCols());
+
+	for (GridPanelRow r : rows)
+		r.setCellWidths(colWidths);
+}
+
+void GridPanel::setHeight(int height)
+{
+	assert(height >= 0);
+
+	// Maintain row proportions when we resize their heights.
+	for (GridPanelRow r : rows)
+		r.setHeight((int) std::floor(((float) r.getHeight() / h) * height));
+
+	h = height;
+}
+
+void GridPanel::setRowHeights(const std::vector<int>& rowHeights)
+{
+	assert(rowHeights.size() == rows.size());
+
+	h = 0;
+
+	for (size_t i = 0; i < rowHeights.size(); i++)
+	{
+		rows[i].setHeight(rowHeights[i]);
+		h += rowHeights[i];
+	}
 }
 
 int GridPanel::getColWidth(int c)
 {
-	if (c >= 0 && (size_t) c < colWidths.size())
-		return colWidths[c];
+	assert(c >= 0);
+	assert(c < rows[0].getNumCols());
 
-	return -1;
+	return rows[0][c].getWidth();
 }
 
-const std::vector<int>& GridPanel::getRowHeights()
+const std::vector<int> GridPanel::getColWidths()
 {
-	return rowHeights;
-}
+	std::vector<int> colWidths;
 
-const std::vector<int>& GridPanel::getColWidths()
-{
+	for (int i = 0; i < rows[0].getNumCols(); i++)
+		colWidths.push_back(rows[0][i].getWidth());
+
 	return colWidths;
 }
 
-void GridPanel::setControl(PControl* control, int r, int c)
+int GridPanel::getRowHeight(int r)
 {
-	if ((r >= 0 && (size_t)r < controls.size()) && (c >= 0 && (size_t)c < controls[r].size()))
-		controls[r][c] = control;
-	else
-		throw "GridPanel::setControl(): invalid index.";
+	assert(r >= 0);
+	assert((size_t) r < rows.size());
+
+	return rows[r].getHeight();
 }
 
-void GridPanel::draw()
+const std::vector<int> GridPanel::getRowHeights()
 {
-	for (auto r : controls)
-		for (PControl* control : r)
-			control->draw();
+	std::vector<int> rowHeights;
+
+	for (GridPanelRow r : rows)
+		rowHeights.push_back(r.getHeight());
+
+	return rowHeights;
+}
+
+void GridPanel::draw(SDL_Renderer* ren)
+{
+	for (GridPanelRow r : rows)
+		r.draw(ren);
+}
+
+GridPanelRow& GridPanel::operator[](const int index)
+{
+	assert(index >= 0);
+	assert((size_t) index < rows.size());
+
+	return rows[index];
 }

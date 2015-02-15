@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL.h>
+#include <cassert>
 #include "PControl.h"
 
 class GridPanelCell : public PControl
@@ -18,7 +20,7 @@ class GridPanelCell : public PControl
 		void setWidth(int width);
 		void setHeight(int height);
 
-		void draw();
+		void draw(SDL_Renderer* ren);
 
 	private:
 		PControl* element;
