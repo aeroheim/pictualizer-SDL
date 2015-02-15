@@ -6,13 +6,18 @@ namespace utils
 	{
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		return converter.from_bytes(str);
-	}	
+	}
 
-	std::wstring getwstrcwd()
+	std::string getcwd()
 	{
 		const int MAXPATHLEN = 256;
 		char temp[MAXPATHLEN];
-		return str2wstr(_getcwd(temp, MAXPATHLEN) ? std::string(temp) : std::string(""));
+		return _getcwd(temp, MAXPATHLEN) ? std::string(temp) : std::string("");
+	}
+
+	std::wstring getwstrcwd()
+	{
+		return str2wstr(getcwd());
 	}
 
 	bool pathIsImage(std::string path)
