@@ -1,8 +1,9 @@
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <iostream>
-#include <memory>
 #include "../io/WindowIOController.h"
 #include "../image/ImageBackground.h"
+#include "../ui/PUI.h"
 
 using std::cout;
 using std::endl;
@@ -35,32 +36,51 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	WindowIOController windowIOController(win);
-
-	int ww, wh;
-	SDL_GetWindowSize(win, &ww, &wh);
-	ImageBackground imgBg(ren, ww, wh);
-
-	windowIOController.addSubscriber(&imgBg);
+	// Initialize SDL_TTF
+	if (TTF_Init() < 0)
+	{
+		SDL_DestroyWindow(win);
+		cout << "TTF_Init Error: " << TTF_GetError() << endl;
+		SDL_Quit();
+		return 1;
+	}
 
 	// Use linear filtering to preserve image quality when scaled.
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");
+
+	int ww, wh;
+	SDL_GetWindowSize(win, &ww, &wh);
+
+	// Initialize image background.
+	ImageBackground imageBackground(ren, ww, wh);
+	
+	// Initialize UI.
+	PUI ui(win, ren, ww, wh);
+
+	// Initialize IO.
+	WindowIOController windowIOController(win);
+	windowIOController.addSubscriber(&imageBackground);
 
 	while (true)
 	{
 		windowIOController.pollEvents();
 
-
+		// Clear previous frame.
 		SDL_RenderClear(ren);
 
-		// Draw the texture
-		imgBg.draw();
+		// Draw background.
+		imageBackground.draw();
 
+		// Draw UI.
+		ui.draw();
+
+		// Render current frame.
 		SDL_RenderPresent(ren);
 	}
 
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(win);
+	TTF_Quit();
 	SDL_Quit();
 	return -1;
 }
