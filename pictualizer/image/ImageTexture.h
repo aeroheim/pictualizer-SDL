@@ -8,7 +8,6 @@
 #include <string>
 #include "../io/EventObserver.h"
 
-
 class ImageTexture;
 
 /*

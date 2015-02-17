@@ -4,6 +4,7 @@
 #include <SDL_ttf.h>
 #include <string>
 #include "PControl.h"
+#include "LabelStates.h"
 
 class Label : public PControl
 {
@@ -21,6 +22,9 @@ class Label : public PControl
 		void setText(std::string text, SDL_Renderer* ren);
 		std::string getText();
 
+		void setClipState(LabelClippingState s);
+		LabelClippingState getClipState();
+
 		void setColor(Uint8 r, Uint8 g, Uint8 b);
 		SDL_Color* getColor();
 
@@ -35,8 +39,23 @@ class Label : public PControl
 		SDL_Color color;
 		SDL_Rect view;
 		SDL_Rect dest;
-		std::string text;
 
-		void adjustView();
-		void loadTexture(SDL_Renderer* ren);
+		std::string text;
+		float textScale;
+
+		LabelClippingState state;
+		const int PAN_WAIT_DURATION = 5;
+		float PAN_SPEED = 0.25;
+		int maxPanX;
+		float panX;
+		int frameCount;
+		bool textIsPannable;
+		bool panStopped;
+
+		void panView();
+		void resetView();
+		void getTextTexture(SDL_Renderer* ren);
+
+		void resetPanning();
+		void OnPanStopped();
 };
