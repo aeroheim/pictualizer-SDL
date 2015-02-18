@@ -28,7 +28,7 @@ class Label : public PControl
 		void setColor(Uint8 r, Uint8 g, Uint8 b);
 		SDL_Color* getColor();
 
-		void setAlpha(int a);
+		void setAlpha(Uint8 a);
 		Uint8 getAlpha();
 
 		void draw(SDL_Renderer* ren);
@@ -41,13 +41,13 @@ class Label : public PControl
 		SDL_Rect dest;
 
 		std::string text;
-		float textScale;
 
 		LabelClippingState state;
 		const int PAN_WAIT_DURATION = 5;
-		float PAN_SPEED = 0.25;
-		int maxPanX;
+		const float SRC_PAN_SPEED = 0.0005f;
+		float panSpeed;
 		float panX;
+		int maxPanX;
 		int frameCount;
 		bool textIsPannable;
 		bool panStopped;

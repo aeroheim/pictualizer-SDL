@@ -3,7 +3,7 @@
 
 using namespace std;
 
-PUI::PUI(SDL_Window* win, SDL_Renderer* ren, int ww, int hh) : win(win), ren(ren), ww(ww), wh(hh), test((int)(ww / 6.0), (int)(wh / 3.0), (int)((2 * ww) / 3.0), (int)((2 * wh) / 5.0), 4, 3)
+PUI::PUI(SDL_Window* win, SDL_Renderer* ren, int ww, int hh) : win(win), ren(ren), ww(ww), wh(hh), test((int)(ww / 6.0), (int)(wh / 3.0), (int)((2 * ww) / 3.0), (int)((2 * wh) / 5.0), 4, 2)
 {
 	std::string mplusPath = utils::getcwd() + "\\assets\\mplus-2p-light.ttf";
 
@@ -16,10 +16,8 @@ PUI::PUI(SDL_Window* win, SDL_Renderer* ren, int ww, int hh) : win(win), ren(ren
 	Label* testLabel = new Label(mplus, 0, 0, 0, 0);
 	test[0][0].setElement(testLabel);
 
-	testLabel->setText("hpqd11test22test33lkofsnaso", ren);
+	testLabel->setText("hpqd11test22lkofsnaso", ren);
 	testLabel->setClipState(LabelClippingState::PAN);
-
-	// cout << "height: " << testLabel->getHeight() << endl;
 
 	TTF_CloseFont(mplus);
 }

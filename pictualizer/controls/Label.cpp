@@ -6,10 +6,9 @@ using namespace std;
 Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(x, y, w, h)
 {
 	state = LabelClippingState::CLIP;
-	frameCount = 0;
 	textIsPannable = false;
-	panStopped = true;
-	panX = float(x);
+	panSpeed = SRC_PAN_SPEED;
+	resetPanning();
 
 	color.r = 255;
 	color.g = 255;
@@ -26,7 +25,6 @@ Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(
 	view.w = 0;
 	view.h = 0;
 
-	textScale = 0.0;
 	texture = nullptr;
 }
 
@@ -88,8 +86,20 @@ void Label::setClipState(LabelClippingState s)
 {
 	state = s;
 
-	if (s == LabelClippingState::PAN)
-		resetPanning();
+	switch (s)
+	{
+		case LabelClippingState::PAN:
+			resetPanning();
+			break;
+		case LabelClippingState::STRETCH:
+			resetView();
+			break;
+		case LabelClippingState::CLIP:
+			resetView();
+			break;
+		default:
+			break;
+	}
 }
 
 LabelClippingState Label::getClipState()
@@ -102,6 +112,9 @@ void Label::setColor(Uint8 r, Uint8 g, Uint8 b)
 	color.r = r;
 	color.g = g;
 	color.b = b;
+
+	if (texture)
+		SDL_SetTextureColorMod(texture, r, g, b);
 }
 
 SDL_Color* Label::getColor()
@@ -109,9 +122,12 @@ SDL_Color* Label::getColor()
 	return &color;
 }
 
-void Label::setAlpha(int a)
+void Label::setAlpha(Uint8 a)
 {
 	color.a = a;
+
+	if (texture)
+		SDL_SetTextureAlphaMod(texture, a);
 }
 
 Uint8 Label::getAlpha()
@@ -137,21 +153,15 @@ void Label::draw(SDL_Renderer* ren)
 
 void Label::panView()
 {
-	cout << "PAN_SPEED: " << PAN_SPEED << endl;
-
-	if (PAN_SPEED > 0)
-		panX = panX + PAN_SPEED < maxPanX ? panX + PAN_SPEED : maxPanX;
+	if (panSpeed > 0)
+		panX = panX + panSpeed < maxPanX ? panX + panSpeed : maxPanX;
 	else
-		panX = panX + PAN_SPEED > 0 ? panX + PAN_SPEED : 0;
+		panX = panX + panSpeed > 0 ? panX + panSpeed : 0;
 	
-	cout << "panX: " << panX << endl;
-
 	if (panX == 0 || panX == maxPanX)
 		panStopped = true;
 
 	view.x = (int) std::round(panX);
-
-	cout << "view.x: " << view.x << endl;
 }
 
 void Label::resetPanning()
@@ -161,7 +171,7 @@ void Label::resetPanning()
 
 	frameCount = 0;
 	panStopped = true;
-	PAN_SPEED = std::abs(PAN_SPEED);
+	panSpeed = std::abs(panSpeed);
 }
 
 void Label::OnPanStopped()
@@ -174,10 +184,10 @@ void Label::OnPanStopped()
 		frameCount = 0;
 		panStopped = false;
 
-		if (view.x == 0)
-			PAN_SPEED = -std::abs(PAN_SPEED);
+		if (view.x == maxPanX)
+			panSpeed = -std::abs(panSpeed);
 		else
-			PAN_SPEED = std::abs(PAN_SPEED);
+			panSpeed = std::abs(panSpeed);
 	}
 }
 
@@ -185,7 +195,9 @@ void Label::resetView()
 {
 	TTF_SizeUTF8(font, text.c_str(), &view.w, &view.h);
 
-	textScale = (float) view.h / h;
+	panSpeed = view.w * SRC_PAN_SPEED;
+
+	float textScale = (float) view.h / h;
 	float whratio = (float) w / h;
 	float scaledTextWidth = (float) view.w / textScale;
 
@@ -193,15 +205,22 @@ void Label::resetView()
 	if (scaledTextWidth > w)
 	{
 		textIsPannable = true;
-		maxPanX = (int) std::floor(scaledTextWidth - w);
-		view.w = (int) std::round(view.h * whratio);
+		maxPanX = (int) std::floor((scaledTextWidth - w) * textScale);
+
+		if (state == LabelClippingState::PAN || state == LabelClippingState::CLIP)
+			view.w = (int) std::round(view.h * whratio);
+
 		dest.w = w;
 	}
 	// Otherwise prevent text shorter than the label width from stretching.
 	else
 	{
 		textIsPannable = false;
-		dest.w = (int) std::round((float) view.w / textScale);
+
+		if (state == LabelClippingState::STRETCH)
+			dest.w = w;
+		else
+			dest.w = (int)std::round((float) view.w / textScale);
 	}
 }
 
