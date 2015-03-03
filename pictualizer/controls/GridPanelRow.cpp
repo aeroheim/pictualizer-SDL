@@ -11,8 +11,6 @@ GridPanelRow::GridPanelRow(int x, int y, int w, int h, int c) : PControl(x, y, w
 	{
 		GridPanelCell c(x + i * cellWidth, y, cellWidth, h);
 		cells.push_back(c);
-
-		cout << "row cells created: " << i + 1 << endl;
 	}
 }
 

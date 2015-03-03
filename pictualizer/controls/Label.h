@@ -22,8 +22,11 @@ class Label : public PControl
 		void setText(std::string text, SDL_Renderer* ren);
 		std::string getText();
 
-		void setClipState(LabelClippingState s);
-		LabelClippingState getClipState();
+		void setClipState(LabelClipState s);
+		LabelClipState getClipState();
+
+		void setAlignState(LabelAlignState s);
+		LabelAlignState getAlignState();
 
 		void setColor(Uint8 r, Uint8 g, Uint8 b);
 		SDL_Color* getColor();
@@ -42,7 +45,9 @@ class Label : public PControl
 
 		std::string text;
 
-		LabelClippingState state;
+		LabelClipState clipState;
+		LabelAlignState alignState;
+
 		const int PAN_WAIT_DURATION = 5;
 		const float SRC_PAN_SPEED = 0.0005f;
 		float panSpeed;

@@ -5,7 +5,9 @@ using namespace std;
 
 Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(x, y, w, h)
 {
-	state = LabelClippingState::CLIP;
+	clipState = LabelClipState::CLIP;
+	alignState = LabelAlignState::LEFT;
+
 	textIsPannable = false;
 	panSpeed = SRC_PAN_SPEED;
 	resetPanning();
@@ -56,8 +58,8 @@ void Label::setHeight(int h)
 
 	if (!text.empty())
 		resetView();
-	else
-		dest.h = h;
+
+	dest.h = h;
 }
 
 void Label::setFont(TTF_Font* font, SDL_Renderer* ren)
@@ -82,19 +84,19 @@ std::string Label::getText()
 	return text;
 }
 
-void Label::setClipState(LabelClippingState s)
+void Label::setClipState(LabelClipState s)
 {
-	state = s;
+	clipState = s;
 
 	switch (s)
 	{
-		case LabelClippingState::PAN:
+		case LabelClipState::PAN:
 			resetPanning();
 			break;
-		case LabelClippingState::STRETCH:
+		case LabelClipState::STRETCH:
 			resetView();
 			break;
-		case LabelClippingState::CLIP:
+		case LabelClipState::CLIP:
 			resetView();
 			break;
 		default:
@@ -102,9 +104,22 @@ void Label::setClipState(LabelClippingState s)
 	}
 }
 
-LabelClippingState Label::getClipState()
+LabelClipState Label::getClipState()
 {
-	return state;
+	return clipState;
+}
+
+void Label::setAlignState(LabelAlignState s)
+{
+	alignState = s;
+
+	if (clipState == LabelClipState::CLIP)
+		resetView();
+}
+
+LabelAlignState Label::getAlignState()
+{
+	return alignState;
 }
 
 void Label::setColor(Uint8 r, Uint8 g, Uint8 b)
@@ -141,7 +156,7 @@ void Label::draw(SDL_Renderer* ren)
 	{
 		SDL_RenderCopy(ren, texture, &view, &dest);
 
-		if (state == LabelClippingState::PAN && textIsPannable)
+		if (clipState == LabelClipState::PAN && textIsPannable)
 		{
 			if (panStopped)
 				OnPanStopped();
@@ -207,7 +222,7 @@ void Label::resetView()
 		textIsPannable = true;
 		maxPanX = (int) std::floor((scaledTextWidth - w) * textScale);
 
-		if (state == LabelClippingState::PAN || state == LabelClippingState::CLIP)
+		if (clipState == LabelClipState::PAN || clipState == LabelClipState::CLIP)
 			view.w = (int) std::round(view.h * whratio);
 
 		dest.w = w;
@@ -217,10 +232,29 @@ void Label::resetView()
 	{
 		textIsPannable = false;
 
-		if (state == LabelClippingState::STRETCH)
+		if (clipState == LabelClipState::STRETCH)
 			dest.w = w;
 		else
+		{
 			dest.w = (int)std::round((float) view.w / textScale);
+
+			int midpoint = x + (int)std::round(w / 2.0);
+			int textRadius = (int)std::round(dest.w / 2.0);
+
+			// Align text to the correct position.
+			switch (alignState)
+			{
+				case LabelAlignState::LEFT:
+					dest.x = x;
+					break;
+				case LabelAlignState::CENTER:
+					dest.x = midpoint - textRadius;
+					break;
+				case LabelAlignState::RIGHT:
+					dest.x = x + (w - dest.w);
+					break;
+			}
+		}
 	}
 }
 
