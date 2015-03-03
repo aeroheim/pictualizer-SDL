@@ -3,8 +3,9 @@
 #include <vector>
 #include <cassert>
 #include "GridPanelRow.h"
+#include "../io/EventSubscriber.h"
 
-class GridPanel : public PControl
+class GridPanel : public PControl, public EventSubscriber
 {
 	public:
 		GridPanel(int x, int y, int w, int h, int r, int c);
@@ -24,6 +25,8 @@ class GridPanel : public PControl
 		void draw(SDL_Renderer* ren);
 
 		GridPanelRow& operator[] (const int index);
+
+		void handleEvent(Event* e);
 
 	private:
 		std::vector<GridPanelRow> rows;

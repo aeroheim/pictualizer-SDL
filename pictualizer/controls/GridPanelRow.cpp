@@ -11,6 +11,8 @@ GridPanelRow::GridPanelRow(int x, int y, int w, int h, int c) : PControl(x, y, w
 	{
 		GridPanelCell c(x + i * cellWidth, y, cellWidth, h);
 		cells.push_back(c);
+
+		cout << "row cells created: " << i + 1 << endl;
 	}
 }
 
@@ -31,7 +33,7 @@ void GridPanelRow::setY(int y)
 {
 	this->y = y;
 
-	for (GridPanelCell c : cells)
+	for (GridPanelCell& c : cells)
 		c.setY(y);
 }
 
@@ -40,7 +42,7 @@ void GridPanelRow::setWidth(int width)
 	assert(width >= 0);
 
 	// Maintain cell proportions when we resize their widths;
-	for (GridPanelCell c : cells)
+	for (GridPanelCell& c : cells)
 		c.setWidth((int) std::floor(((float) c.getWidth() / w) * width));
 
 	w = width;
@@ -51,10 +53,15 @@ void GridPanelRow::setCellWidths(const std::vector<int>& cellWidths)
 	assert(cellWidths.size() == cells.size());
 
 	w = 0;
+	int cellX;
 
 	for (size_t i = 0; i < cellWidths.size(); i++)
 	{
+		cellX = i == 0 ? x : cellX + cellWidths[i - 1];
+
+		cells[i].setX(cellX);
 		cells[i].setWidth(cellWidths[i]);
+
 		w += cellWidths[i];
 	}
 }
@@ -65,7 +72,7 @@ void GridPanelRow::setHeight(int height)
 
 	h = height;
 
-	for (GridPanelCell c : cells)
+	for (GridPanelCell& c : cells)
 		c.setHeight(height);
 }
 
@@ -76,7 +83,7 @@ int GridPanelRow::getNumCols()
 
 void GridPanelRow::draw(SDL_Renderer* ren)
 {
-	for (GridPanelCell c : cells)
+	for (GridPanelCell& c : cells)
 		c.draw(ren);
 }
 

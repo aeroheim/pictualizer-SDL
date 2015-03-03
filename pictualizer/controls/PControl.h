@@ -16,7 +16,7 @@ class PControl
 		int getHeight();
 
 		void moveTo(int x, int y);
-		void resize(int w, int h);
+		virtual void resize(int w, int h);
 
 		virtual void draw(SDL_Renderer* ren) = 0;
 

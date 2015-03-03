@@ -53,13 +53,17 @@ void GridPanelCell::setPadding(int l, int u, int r, int d)
 
 void GridPanelCell::setX(int x)
 {
-	element->setX(x + padding[0]);
+	if (element)
+		element->setX(x + padding[0]);
+
 	this->x = x;
 }
 
 void GridPanelCell::setY(int y)
 {
-	element->setY(y + padding[1]);
+	if (element)
+		element->setY(y + padding[1]);
+
 	this->y = y;
 }
 
@@ -67,16 +71,20 @@ void GridPanelCell::setWidth(int width)
 {
 	assert(width >= 0);
 
-	element->setWidth(width - padding[2] - padding[0]);
-	this->w = width;
+	if (element)
+		element->setWidth(width - padding[2] - padding[0]);
+
+	w = width;
 }
 
 void GridPanelCell::setHeight(int height)
 {
 	assert(height >= 0);
 
-	element->setHeight(height - padding[3] - padding[1]);
-	this->h = height;
+	if (element)
+		element->setHeight(height - padding[3] - padding[1]);
+
+	h = height;
 }
 
 void GridPanelCell::draw(SDL_Renderer* ren)
