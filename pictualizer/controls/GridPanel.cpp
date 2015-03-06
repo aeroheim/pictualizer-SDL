@@ -3,9 +3,8 @@
 GridPanel::GridPanel(int x, int y, int w, int h, int r, int c) : PControl(x, y, w, h)
 {
 	assert(r > 0);
-	assert(h >= r);
 
-	int rowHeight = (int) std::floor((float) h / r);
+	int rowHeight = (int) std::round((float) h / r);
 	int rowY;
 
 	for (int i = 0; i < r; i++)
@@ -60,9 +59,17 @@ void GridPanel::setHeight(int height)
 {
 	assert(height >= 0);
 
-	// Maintain row proportions when we resize their heights.
-	for (GridPanelRow& r : rows)
-		r.setHeight((int) std::floor(((float) r.getHeight() / h) * height));
+	int rowY;
+
+	for (size_t i = 0; i < rows.size(); i++)
+	{
+		rowY = i == 0 ? y : rowY + rows[i - 1].getHeight();
+
+		rows[i].setY(rowY);
+
+		// Maintain row proportions when we resize their heights.
+		rows[i].setHeight((int) std::round(((float) rows[i].getHeight() / h) * height));
+	}
 
 	h = height;
 }
@@ -119,6 +126,11 @@ const std::vector<int> GridPanel::getRowHeights()
 		rowHeights.push_back(r.getHeight());
 
 	return rowHeights;
+}
+
+int GridPanel::getNumRows()
+{
+	return rows.size();
 }
 
 void GridPanel::draw(SDL_Renderer* ren)

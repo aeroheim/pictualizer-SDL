@@ -22,6 +22,8 @@ class GridPanel : public PControl, public EventSubscriber
 		int getRowHeight(int r);
 		const std::vector<int> getRowHeights();
 
+		int getNumRows();
+
 		void draw(SDL_Renderer* ren);
 
 		GridPanelRow& operator[] (const int index);

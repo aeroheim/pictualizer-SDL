@@ -19,10 +19,14 @@ GridPanelCell::GridPanelCell(PControl* e, int x, int y, int w, int h) : PControl
 void GridPanelCell::setElement(PControl* e)
 {
 	element = e;
-	setX(x);
-	setY(y);
-	setWidth(w);
-	setHeight(h);
+
+	if (element)
+	{
+		setX(x);
+		setY(y);
+		setWidth(w);
+		setHeight(h);
+	}
 }
 
 PControl* GridPanelCell::getElement()

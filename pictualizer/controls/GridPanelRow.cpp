@@ -3,9 +3,8 @@
 GridPanelRow::GridPanelRow(int x, int y, int w, int h, int c) : PControl(x, y, w, h)
 {
 	assert(c > 0);
-	assert(w >= c);
 
-	int cellWidth = (int) std::floor((float) w / c);
+	int cellWidth = (int) std::round((float) w / c);
 
 	for (int i = 0; i < c; i++)
 	{
@@ -39,9 +38,17 @@ void GridPanelRow::setWidth(int width)
 {
 	assert(width >= 0);
 
-	// Maintain cell proportions when we resize their widths;
-	for (GridPanelCell& c : cells)
-		c.setWidth((int) std::floor(((float) c.getWidth() / w) * width));
+	int cellX;
+
+	for (size_t i = 0; i < cells.size(); i++)
+	{
+		cellX = i == 0 ? x : cellX + cells[i - 1].getWidth();
+
+		cells[i].setX(cellX);
+
+		// Maintain cell proportions when we resize their widths;
+		cells[i].setWidth((int) std::round(((float) cells[i].getWidth() / w) * width));
+	}
 
 	w = width;
 }
