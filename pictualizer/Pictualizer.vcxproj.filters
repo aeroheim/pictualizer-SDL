@@ -39,9 +39,6 @@
     <ClInclude Include="audio\AudioTrack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="util\utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="image\ImageBackground.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -84,6 +81,15 @@
     <ClInclude Include="controls\IndexWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\PWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="io\PCursors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util\PUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -105,9 +111,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="util\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="image\ImageCamera.cpp">
@@ -144,6 +147,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="controls\IndexWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\PWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="io\PCursors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util\PUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

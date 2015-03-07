@@ -146,7 +146,7 @@ void ImageBackground::handleEvent(Event* e)
 	{
 		if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
 		{
-			if (utils::pathIsImage(fileDropEvent->path))
+			if (PUtils::pathIsImage(fileDropEvent->path))
 			{
 				enqueueImage(fileDropEvent->path);
 				setImage(images.size() - 1);

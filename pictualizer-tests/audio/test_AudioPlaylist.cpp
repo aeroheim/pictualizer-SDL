@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "AudioPlaylist.h"
-#include "utils.h"
+#include "PUtils.h"
 
 TEST(AudioPlaylist, getName)
 {
@@ -22,7 +22,7 @@ TEST(AudioPlaylist, setName)
 TEST(AudioPlaylist, enqueueTrackOnEmptyPlaylist)
 {
 	std::wstring name = L"test";
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	AudioPlaylist pl(name);
 
@@ -35,7 +35,7 @@ TEST(AudioPlaylist, enqueueTrackOnEmptyPlaylist)
 TEST(AudioPlaylist, getTrackValidIndex)
 {
 	std::wstring name = L"test";
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	AudioPlaylist pl(name);
 
@@ -54,8 +54,8 @@ TEST(AudioPlaylist, getTrackInvalidIndex)
 TEST(AudioPlaylist, enqueueTrackOnNonEmptyPlaylist)
 {
 	std::wstring name = L"test";
-	std::wstring path1(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
-	std::wstring path2(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
+	std::wstring path1(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path2(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
 	AudioTrack track1(path1);
 	AudioTrack track2(path2);
 	AudioPlaylist pl(name);
@@ -71,7 +71,7 @@ TEST(AudioPlaylist, enqueueTrackOnNonEmptyPlaylist)
 TEST(AudioPlaylist, removeTrackInvalidIndex)
 {
 	std::wstring name = L"test";
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	AudioPlaylist pl(name);
 
@@ -84,7 +84,7 @@ TEST(AudioPlaylist, removeTrackInvalidIndex)
 TEST(AudioPlaylist, removeTrackValidIndex)
 {
 	std::wstring name = L"test";
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	AudioPlaylist pl(name);
 
@@ -98,8 +98,8 @@ TEST(AudioPlaylist, removeTrackValidIndex)
 TEST(AudioPlaylist, removeTrackPreservesOrder)
 {
 	std::wstring name = L"test";
-	std::wstring path1(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
-	std::wstring path2(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
+	std::wstring path1(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path2(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
 	AudioTrack track1(path1);
 	AudioTrack track2(path2);
 	AudioPlaylist pl(name);
@@ -115,7 +115,7 @@ TEST(AudioPlaylist, removeTrackPreservesOrder)
 TEST(AudioPlaylist, removeAllTracks)
 {
 	std::wstring name = L"test";
-	std::wstring path1(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path1(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioPlaylist pl(name);
 
 	for (int i = 0; i < 15; i++)

@@ -1,6 +1,6 @@
-#include "utils.h"
+#include "PUtils.h"
 
-namespace utils
+namespace PUtils
 {
 	std::wstring str2wstr(std::string str)
 	{

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "../audio/AudioTrack.h"
-#include "EventObserver.h"
-#include "iostream"
 #include <SDL.h>
-#pragma once
-
 #include <locale>
 #include <codecvt>
+#include "PCursors.h"
+#include "EventObserver.h"
+#include "../audio/AudioTrack.h"
+
 
 class WindowIOController : public EventObserver
 {
@@ -21,15 +20,6 @@ class WindowIOController : public EventObserver
 		const int DRAG_ZONE_DIST = 15;
 		SDL_Window* win;
 		SDL_Event e;
-		SDL_Cursor* ARROW;
-		SDL_Cursor* SIZEN;
-		SDL_Cursor* SIZENW;
-		SDL_Cursor* SIZENE;
-		SDL_Cursor* SIZES;
-		SDL_Cursor* SIZESE;
-		SDL_Cursor* SIZESW;
-		SDL_Cursor* SIZEW;
-		SDL_Cursor* SIZEE;
 
 		void OnDrop(SDL_DropEvent& e);
 		void OnKeyDown(SDL_KeyboardEvent& e);

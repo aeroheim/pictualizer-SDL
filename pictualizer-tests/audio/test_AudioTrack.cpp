@@ -1,32 +1,32 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "AudioTrack.h"
-#include "utils.h"
+#include "PUtils.h"
 
 TEST(AudioTrack, getPath)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	ASSERT_STREQ(path.c_str(), track.getPath().c_str());
 }
 
 TEST(AudioTrack, getTitle)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
 	AudioTrack track(path);
 	EXPECT_STREQ(L"Groove Loop", track.getTitle().c_str());
 }
 
 TEST(AudioTrack, getArtist)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
 	AudioTrack track(path);
 	EXPECT_STREQ(L"Novelty Christmas Group", track.getArtist().c_str());
 }
 
 TEST(AudioTrack, getAlbum)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\tagged.mp3");
 	AudioTrack track(path);
 	EXPECT_STREQ(L"70s Christmas Tunes", track.getAlbum().c_str());
 }
@@ -38,21 +38,21 @@ TEST(AudioTrack, getDuration)
 
 TEST(AudioTrack, getEmptyTitle)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	EXPECT_STREQ(L"", track.getTitle().c_str());
 }
 
 TEST(AudioTrack, getEmptyArtist)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	EXPECT_STREQ(L"", track.getArtist().c_str());
 }
 
 TEST(AudioTrack, getEmptyAlbum)
 {
-	std::wstring path(utils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
+	std::wstring path(PUtils::getwstrcwd() + L"\\..\\pictualizer-tests\\audio\\data\\notag.wav");
 	AudioTrack track(path);
 	EXPECT_STREQ(L"", track.getAlbum().c_str());
 }

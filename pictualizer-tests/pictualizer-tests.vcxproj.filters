@@ -36,13 +36,13 @@
     <ClCompile Include="..\pictualizer\io\EventSubscriber.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\pictualizer\util\utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="audio\test_AudioPlaylist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="audio\test_AudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pictualizer\util\PUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

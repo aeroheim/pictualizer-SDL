@@ -9,31 +9,12 @@ WindowIOController::WindowIOController(SDL_Window* window)
 	dragging = false;
 	dragResizing = false;
 
-	// Default arrow cursor
-	ARROW = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-
-	// Cardinal direction cursors used for resizing
-	SIZENW = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
-	SIZESE = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
-	SIZENE = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
-	SIZESW = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
-	SIZEN = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
-	SIZES = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
-	SIZEW = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
-	SIZEE = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+	PCursors::initCursors();
 }
 
 WindowIOController::~WindowIOController()
 {
-	SDL_FreeCursor(ARROW);
-	SDL_FreeCursor(SIZEN);
-	SDL_FreeCursor(SIZENW);
-	SDL_FreeCursor(SIZENE);
-	SDL_FreeCursor(SIZES);
-	SDL_FreeCursor(SIZESE);
-	SDL_FreeCursor(SIZESW);
-	SDL_FreeCursor(SIZEW);
-	SDL_FreeCursor(SIZEE);
+	PCursors::freeCursors();
 }
 
 void WindowIOController::pollEvents()
@@ -186,23 +167,23 @@ bool WindowIOController::mouseDownInResizeZone()
 void WindowIOController::setDragCursor(SDL_MouseMotionEvent &motion)
 {
 	if ((motion.x < DRAG_ZONE_DIST) && (motion.y < DRAG_ZONE_DIST))
-		SDL_SetCursor(SIZENW);
+		SDL_SetCursor(PCursors::SIZENW);
 	else if ((motion.x > winWidth - DRAG_ZONE_DIST) && (motion.y < DRAG_ZONE_DIST))
-		SDL_SetCursor(SIZENE);
+		SDL_SetCursor(PCursors::SIZENE);
 	else if ((motion.x < DRAG_ZONE_DIST) && (motion.y > winHeight - DRAG_ZONE_DIST))
-		SDL_SetCursor(SIZESW);
+		SDL_SetCursor(PCursors::SIZESW);
 	else if ((motion.x > winWidth - DRAG_ZONE_DIST) && (motion.y > winHeight - DRAG_ZONE_DIST))
-		SDL_SetCursor(SIZESE);
+		SDL_SetCursor(PCursors::SIZESE);
 	else if (motion.y < DRAG_ZONE_DIST)
-		SDL_SetCursor(SIZEN);
+		SDL_SetCursor(PCursors::SIZEN);
 	else if (motion.y > winHeight - DRAG_ZONE_DIST)
-		SDL_SetCursor(SIZES);
+		SDL_SetCursor(PCursors::SIZES);
 	else if (motion.x < DRAG_ZONE_DIST)
-		SDL_SetCursor(SIZEW);
+		SDL_SetCursor(PCursors::SIZEW);
 	else if ((motion.x > winWidth - DRAG_ZONE_DIST))
-		SDL_SetCursor(SIZEE);
+		SDL_SetCursor(PCursors::SIZEE);
 	else
-		SDL_SetCursor(ARROW);
+		SDL_SetCursor(PCursors::ARROW);
 }
 
 void WindowIOController::doDragResize()
@@ -216,39 +197,39 @@ void WindowIOController::doDragResize()
 		int winXPos, winYPos;
 		SDL_GetWindowPosition(win, &winXPos, &winYPos);
 
-		if (SDL_GetCursor() == SIZENW)
+		if (SDL_GetCursor() == PCursors::SIZENW)
 		{
 			SDL_SetWindowPosition(win, globalMouseX, globalMouseY);
 			SDL_SetWindowSize(win, prevWinWidth + globalMouseDownX - globalMouseX, prevWinHeight + globalMouseDownY - globalMouseY);
 		}
-		else if (SDL_GetCursor() == SIZENE)
+		else if (SDL_GetCursor() == PCursors::SIZENE)
 		{
 			SDL_SetWindowPosition(win, winXPos, globalMouseY);
 			SDL_SetWindowSize(win, prevWinWidth + globalMouseX - globalMouseDownX, prevWinHeight + globalMouseDownY - globalMouseY);
 		}
-		else if (SDL_GetCursor() == SIZESW)
+		else if (SDL_GetCursor() == PCursors::SIZESW)
 		{
 			SDL_SetWindowPosition(win, globalMouseX, winYPos);
 			SDL_SetWindowSize(win, prevWinWidth + globalMouseDownX - globalMouseX, prevWinHeight + globalMouseY - globalMouseDownY);
 		}
-		else if (SDL_GetCursor() == SIZESE)
+		else if (SDL_GetCursor() == PCursors::SIZESE)
 		{
 			SDL_SetWindowSize(win, prevWinWidth + globalMouseX - globalMouseDownX, prevWinHeight + globalMouseY - globalMouseDownY);
 		}
-		else if (SDL_GetCursor() == SIZEN)
+		else if (SDL_GetCursor() == PCursors::SIZEN)
 		{
 			SDL_SetWindowSize(win, prevWinWidth, prevWinHeight + globalMouseDownY - globalMouseY);
 			SDL_SetWindowPosition(win, winXPos, globalMouseY);
 		}
-		else if (SDL_GetCursor() == SIZES)
+		else if (SDL_GetCursor() == PCursors::SIZES)
 		{
 			SDL_SetWindowSize(win, prevWinWidth, prevWinHeight + globalMouseY - globalMouseDownY);
 		}
-		else if (SDL_GetCursor() == SIZEE)
+		else if (SDL_GetCursor() == PCursors::SIZEE)
 		{
 			SDL_SetWindowSize(win, prevWinWidth + globalMouseX - globalMouseDownX, prevWinHeight);
 		}
-		else if (SDL_GetCursor() == SIZEW)
+		else if (SDL_GetCursor() == PCursors::SIZEW)
 		{
 			SDL_SetWindowPosition(win, globalMouseX, winYPos);
 			SDL_SetWindowSize(win, prevWinWidth + globalMouseDownX - globalMouseX, prevWinHeight);

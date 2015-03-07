@@ -6,7 +6,7 @@
 #include "ImageTexture.h"
 #include "ImageBackgroundStates.h"
 #include "../io/EventSubscriber.h"
-#include "../util/utils.h"
+#include "../util/PUtils.h"
 
 class ImageBackground : public EventSubscriber, public EventObserver, public InputListener
 {
