@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <numeric>
 #include <cassert>
 #include "GridPanelRow.h"
 #include "../io/EventSubscriber.h"
@@ -9,6 +10,7 @@ class GridPanel : public PControl, public EventSubscriber
 {
 	public:
 		GridPanel(int x, int y, int w, int h, int r, int c);
+		GridPanel(int x, int y, const std::vector<int>& rowHeights, const std::vector<int>& colWidths);
 
 		void setX(int x);
 		void setY(int y);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <numeric>
 #include <cassert>
 #include "GridPanelCell.h"
 
@@ -8,6 +9,7 @@ class GridPanelRow : public PControl
 {
 	public:
 		GridPanelRow(int x, int y, int w, int h, int c);
+		GridPanelRow(int x, int y, const std::vector<int>& colWidths, int h);
 
 		void setX(int x);
 		void setY(int y);

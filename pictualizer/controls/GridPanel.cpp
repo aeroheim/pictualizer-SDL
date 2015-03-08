@@ -5,13 +5,27 @@ GridPanel::GridPanel(int x, int y, int w, int h, int r, int c) : PControl(x, y, 
 	assert(r > 0);
 
 	int rowHeight = (int) std::round((float) h / r);
-	int rowY;
 
 	for (int i = 0; i < r; i++)
 	{
-		rowY = i == 0 ? y : rowY + rows[i - 1].getHeight();
+		GridPanelRow r(x, y + rowHeight * i, w, rowHeight, c);
+		rows.push_back(r);
+	}
+}
 
-		GridPanelRow r(x, rowY, w, rowHeight, c);
+GridPanel::GridPanel(int x, int y, const std::vector<int>& rowHeights, const std::vector<int>& colWidths) : PControl(x, y, 
+																															std::accumulate(colWidths.begin(), colWidths.end(), 0),
+																															std::accumulate(rowHeights.begin(), rowHeights.end(), 0))
+{
+	assert(rowHeights.size() > 0);
+
+	int rowY;
+
+	for (size_t i = 0; i < rowHeights.size(); i++)
+	{
+		rowY = i == 0 ? y : rowY + rowHeights[i - 1];
+
+		GridPanelRow r(x, rowY, colWidths, rowHeights[i]);
 		rows.push_back(r);
 	}
 }

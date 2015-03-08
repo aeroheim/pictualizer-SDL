@@ -13,6 +13,21 @@ GridPanelRow::GridPanelRow(int x, int y, int w, int h, int c) : PControl(x, y, w
 	}
 }
 
+GridPanelRow::GridPanelRow(int x, int y, const std::vector<int>& colWidths, int h) : PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0), h)
+{
+	assert(colWidths.size() > 0);
+
+	int cellX;
+
+	for (size_t i = 0; i < colWidths.size(); i++)
+	{
+		cellX = i == 0 ? x : cellX + colWidths[i - 1];
+
+		GridPanelCell c(cellX, y, colWidths[i], h);
+		cells.push_back(c);
+	}
+}
+
 void GridPanelRow::setX(int x)
 {
 	this->x = x;
