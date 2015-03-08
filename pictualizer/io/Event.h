@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <string>
 
+class PWidget;
+
 class Event
 {
 	public:
@@ -89,5 +91,25 @@ class ImageLoadedEvent : public Event
 		ImageLoadedEvent(int w, int h);
 		int iw;
 		int ih;
+};
+
+class WidgetMoveEvent : public Event
+{
+	public:
+		WidgetMoveEvent(PWidget* widget, int x, int y);
+		PWidget* widget;
+		int x;
+		int y;
+};
+
+class WidgetResizeEvent : public Event
+{
+	public:
+		WidgetResizeEvent(PWidget* widget, int x, int y, int w, int h);
+		PWidget* widget;
+		int x;
+		int y;
+		int w;
+		int h;
 };
 

@@ -23,3 +23,7 @@ MouseMotionEvent::MouseMotionEvent(SDL_MouseMotionEvent& e) : xrel(e.xrel), yrel
 ImageLoadReadyEvent::ImageLoadReadyEvent() {}
 
 ImageLoadedEvent::ImageLoadedEvent(int w, int h) : iw(w), ih(h) {}
+
+WidgetMoveEvent::WidgetMoveEvent(PWidget* widget, int x, int y) : widget(widget), x(x), y(y) {}
+
+WidgetResizeEvent::WidgetResizeEvent(PWidget* widget, int x, int y, int w, int h) : widget(widget), x(x), y(y), w(w), h(h) {}

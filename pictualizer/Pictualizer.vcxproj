@@ -15,6 +15,7 @@
     <ClInclude Include="audio\AudioPlayerStates.h" />
     <ClInclude Include="audio\AudioPlaylist.h" />
     <ClInclude Include="audio\AudioTrack.h" />
+    <ClInclude Include="controls\AudioPlayerWidget.h" />
     <ClInclude Include="controls\GridPanelCell.h" />
     <ClInclude Include="controls\GridPanel.h" />
     <ClInclude Include="controls\GridPanelRow.h" />
@@ -23,6 +24,7 @@
     <ClInclude Include="controls\PControl.h" />
     <ClInclude Include="controls\IndexWidget.h" />
     <ClInclude Include="controls\PWidget.h" />
+    <ClInclude Include="controls\PWidgetStates.h" />
     <ClInclude Include="image\ImageBackground.h" />
     <ClInclude Include="image\ImageBackgroundStates.h" />
     <ClInclude Include="image\ImageCameraStates.h" />
@@ -41,6 +43,7 @@
     <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="audio\AudioPlaylist.cpp" />
     <ClCompile Include="audio\AudioTrack.cpp" />
+    <ClCompile Include="controls\AudioPlayerWidget.cpp" />
     <ClCompile Include="controls\GridPanel.cpp" />
     <ClCompile Include="controls\GridPanelCell.cpp" />
     <ClCompile Include="controls\GridPanelRow.cpp" />
