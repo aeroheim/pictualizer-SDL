@@ -1,4 +1,5 @@
 #include "GridPanel.h"
+#include <iostream>
 
 GridPanel::GridPanel(int x, int y, int w, int h, int r, int c) : PControl(x, y, w, h)
 {
@@ -42,8 +43,13 @@ void GridPanel::setY(int y)
 {
 	this->y = y;
 
-	for (GridPanelRow& r : rows)
-		r.setY(y);
+	for (size_t i = 0; i < rows.size(); i++)
+	{
+		if (i == 0)
+			rows[i].setY(y);
+		else
+			rows[i].setY(rows[i - 1].getY() + rows[i - 1].getHeight());
+	}
 }
 
 void GridPanel::setWidth(int width)

@@ -33,7 +33,22 @@ Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(
 void Label::setX(int x)
 {
 	this->x = x;
-	dest.x = x;
+
+	int midpoint = x + (int) std::round(w / 2.0);
+	int textRadius = (int) std::round(dest.w / 2.0);
+
+	switch (alignState)
+	{
+		case LabelAlignState::LEFT:
+			dest.x = x;
+			break;
+		case LabelAlignState::CENTER:
+			dest.x = midpoint - textRadius;
+			break;
+		case LabelAlignState::RIGHT:
+			dest.x = x + (w - dest.w);
+			break;
+	}
 }
 
 void Label::setY(int y)
