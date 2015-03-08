@@ -1,7 +1,4 @@
 #include "ImageBackground.h"
-#include <iostream>
-
-using namespace std;
 
 ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), imageCamera(ww, wh), tempCamera(ww, wh)
 {

@@ -138,5 +138,9 @@ Uint8 IndexWidget::getAlpha()
 void IndexWidget::draw(SDL_Renderer* ren)
 {
 	GridPanel& nGrid = index >= 10000 ? nineGrid : (index >= 100 ? fourGrid : oneGrid);
-	nGrid.draw(this->ren);
+
+	if (ren)
+		nGrid.draw(ren);
+	else
+		nGrid.draw(this->ren);
 }
