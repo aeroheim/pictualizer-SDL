@@ -7,18 +7,18 @@
 class GridPanelCell : public PControl
 {
 	public:
-		GridPanelCell(int x, int y, int w, int h);
-		GridPanelCell(PControl* e, int x, int y, int w, int h);
+		GridPanelCell(float x, float y, float w, float h);
+		GridPanelCell(PControl* e, float x, float y, float w, float h);
 
 		void setElement(PControl* e);
 		PControl* getElement();
 
 		void setPadding(int l, int u, int r, int d);
 
-		void setX(int x);
-		void setY(int y);
-		void setWidth(int width);
-		void setHeight(int height);
+		void setX(float x);
+		void setY(float y);
+		void setWidth(float w);
+		void setHeight(float h);
 
 		void draw(SDL_Renderer* ren);
 

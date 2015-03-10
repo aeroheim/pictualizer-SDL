@@ -1,6 +1,6 @@
 #include "IndexWidget.h"
 
-IndexWidget::IndexWidget(SDL_Renderer* ren, TTF_Font* font, int x, int y, int w, int h) :  
+IndexWidget::IndexWidget(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h) :  
 																		PControl(x, y, w, h),
 																		oneGrid(x, y, w, h, 1, 1),
 																		fourGrid(x, y, w, h, 2, 2),
@@ -81,33 +81,33 @@ void IndexWidget::prevIndex()
 		setIndex(index - 1);
 }
 
-void IndexWidget::setX(int x)
+void IndexWidget::setX(float x)
 {
-	this->x = x;
+	PControl::setX(x);
 	oneGrid.setX(x);
 	fourGrid.setX(x);
 	nineGrid.setX(x);
 }
 
-void IndexWidget::setY(int y)
+void IndexWidget::setY(float y)
 {
-	this->y = y;
+	PControl::setY(y);
 	oneGrid.setY(y);
 	fourGrid.setY(y);
 	nineGrid.setY(y);
 }
 
-void IndexWidget::setWidth(int w)
+void IndexWidget::setWidth(float w)
 {
-	this->w = w;
+	PControl::setWidth(w);
 	oneGrid.setWidth(w);
 	fourGrid.setWidth(w);
 	nineGrid.setWidth(w);
 }
 
-void IndexWidget::setHeight(int h)
+void IndexWidget::setHeight(float h)
 {
-	this->h = h;
+	PControl::setHeight(h);
 	oneGrid.setHeight(h);
 	fourGrid.setHeight(h);
 	nineGrid.setHeight(h);

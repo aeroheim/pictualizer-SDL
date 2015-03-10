@@ -9,7 +9,7 @@
 class IndexWidget : public PControl
 {
 	public:
-		IndexWidget(SDL_Renderer* ren, TTF_Font* font, int x, int y, int w, int h);
+		IndexWidget(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h);
 
 		void setIndex(int i);
 		int getIndex();
@@ -17,10 +17,10 @@ class IndexWidget : public PControl
 		void nextIndex();
 		void prevIndex();
 
-		void setX(int x);
-		void setY(int y);
-		void setWidth(int w);
-		void setHeight(int h);
+		void setX(float x);
+		void setY(float y);
+		void setWidth(float w);
+		void setHeight(float h);
 
 		void setColor(Uint8 r, Uint8 g, Uint8 b);
 		SDL_Color* getColor();

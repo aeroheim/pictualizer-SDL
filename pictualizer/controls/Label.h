@@ -9,12 +9,12 @@
 class Label : public PControl
 {
 	public:
-		Label(TTF_Font* font, int x, int y, int w, int h);
+		Label(TTF_Font* font, float x, float y, float w, float h);
 
-		void setX(int x);
-		void setY(int y);
-		void setWidth(int w);
-		void setHeight(int h);
+		void setX(float x);
+		void setY(float y);
+		void setWidth(float w);
+		void setHeight(float h);
 		
 		void setFont(TTF_Font* font, SDL_Renderer* ren);
 		TTF_Font* getFont();

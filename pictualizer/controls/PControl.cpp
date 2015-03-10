@@ -1,58 +1,78 @@
 #include "PControl.h"
 
-PControl::PControl(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {};
+PControl::PControl(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {};
 
 PControl::~PControl() {};
 
-void PControl::setX(int x)
+void PControl::setX(float x)
 {
 	this->x = x;
 }
 
-void PControl::setY(int y)
+void PControl::setY(float y)
 {
 	this->y = y;
 }
 
-void PControl::setWidth(int w)
+void PControl::setWidth(float w)
 {
 	this->w = w;
 }
 
-void PControl::setHeight(int h)
+void PControl::setHeight(float h)
 {
 	this->h = h;
 }
 
-int PControl::getX()
+float PControl::getX()
 {
 	return x;
 }
 
-int PControl::getY()
+float PControl::getY()
 {
 	return y;
 }
 
-int PControl::getWidth()
+float PControl::getWidth()
 {
 	return w;
 }
 
-int PControl::getHeight()
+float PControl::getHeight()
 {
 	return h;
 }
 
-void PControl::moveTo(int x, int y)
+int PControl::getRoundedX()
 {
-	this->x = x;
-	this->y = y;
+	return (int) std::round(x);
 }
 
-void PControl::resize(int w, int h)
+int PControl::getRoundedY()
 {
-	this->w = w;
-	this->h = h;
+	return (int) std::round(y);
+}
+
+int PControl::getRoundedWidth()
+{
+	return (int) std::round(w);
+}
+
+int PControl::getRoundedHeight()
+{
+	return (int) std::round(h);
+}
+
+void PControl::moveTo(float x, float y)
+{
+	setX(x);
+	setY(y);
+}
+
+void PControl::resize(float w, float h)
+{
+	setWidth(w);
+	setHeight(h);
 }
 

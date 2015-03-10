@@ -9,8 +9,8 @@
 class PWidget : public PControl, public EventSubscriber, public EventObserver, public InputListener
 {
 	public:
-		void setMinWidth(int minWidth);
-		void setMinHeight(int minHeight);
+		void setMinWidth(float minWidth);
+		void setMinHeight(float minHeight);
 
 		void setResizeState(PWidgetResizeState s);
 		PWidgetResizeState getResizeState();
@@ -19,13 +19,13 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		virtual void handleEvent(Event* e);
 
 	protected:
-		PWidget(int x, int y, int w, int h);
+		PWidget(float x, float y, float w, float h);
 		virtual ~PWidget();
 
 		bool posInWidget(int x, int y);
 
-		int minWidth;
-		int minHeight;
+		float minWidth;
+		float minHeight;
 
 	private:
 		SDL_Keycode IGNORE_KEY = SDLK_LCTRL;
@@ -35,10 +35,10 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		bool dragResizing;
 		bool dragging;
 
-		bool widgetIntersects(PWidget* widget);
+		bool widgetIntersects(float x, float y, float w, float h);
 
 		void setDragCursor(MouseMotionEvent* e);
-		void getDragValues(MouseMotionEvent* e, int* newX, int* newY, int* newW, int* newH);
+		void getDragValues(MouseMotionEvent* e, float* newX, float* newY, float* newW, float* newH);
 		void OnMouseMotion(MouseMotionEvent* e);
 
 };

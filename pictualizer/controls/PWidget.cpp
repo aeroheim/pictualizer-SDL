@@ -3,22 +3,25 @@
 
 using namespace std;
 
-PWidget::PWidget(int x, int y, int w, int h) : PControl(x, y, w, h)
+PWidget::PWidget(float x, float y, float w, float h) : PControl(x, y, w, h)
 {
 	dragging = false;
 	dragResizing = false;
 	resizeState = PWidgetResizeState::FREE;
+	minWidth = 20;
+	minHeight = 20;
+
 	registerKey(IGNORE_KEY);
 }
 
 PWidget::~PWidget() {}
 
-void PWidget::setMinWidth(int minWidth)
+void PWidget::setMinWidth(float minWidth)
 {
 	this->minWidth = minWidth;
 }
 
-void PWidget::setMinHeight(int minHeight)
+void PWidget::setMinHeight(float minHeight)
 {
 	this->minHeight = minHeight;
 }
@@ -95,13 +98,13 @@ void PWidget::handleEvent(Event* e)
 		else if (WidgetMoveEvent* widgetMoveEvent = dynamic_cast<WidgetMoveEvent*>(e))
 		{
 			// If a widget move event will collide with us, handle the event to prevent it from moving.
-			if (widgetMoveEvent->widget != this && widgetIntersects(widgetMoveEvent->widget))
+			if (widgetMoveEvent->widget != this && widgetIntersects(widgetMoveEvent->x, widgetMoveEvent->y, widgetMoveEvent->widget->getWidth(), widgetMoveEvent->widget->getHeight()))
 				e->handled = true;
 		}
 		else if (WidgetResizeEvent* widgetResizeEvent = dynamic_cast<WidgetResizeEvent*>(e))
 		{
 			// If a widget reszie event will collide with us, handle the event to prevent it from resizing.
-			if (widgetResizeEvent->widget != this && widgetIntersects(widgetMoveEvent->widget))
+			if (widgetResizeEvent->widget != this && widgetIntersects(widgetResizeEvent->x, widgetResizeEvent->y, widgetResizeEvent->w, widgetResizeEvent->h))
 				e->handled = true;
 		}
 	}
@@ -109,95 +112,96 @@ void PWidget::handleEvent(Event* e)
 
 bool PWidget::posInWidget(int x, int y)
 {
-	return ((x >= this->x && x <= this->x + w) && (y >= this->y && y <= this->y + h));
+	return ((x >= getRoundedX() && x <= getRoundedX() + getRoundedWidth()) && (y >= getRoundedY() && y <= getRoundedY() + getRoundedHeight()));
 }
 
-bool PWidget::widgetIntersects(PWidget* widget)
+bool PWidget::widgetIntersects(float x, float y, float w, float h)
 {
-	return ((x < widget->getX() + widget->getWidth()) && (x + w > widget->getX()) && (y < widget->getY() + widget->getHeight()) && (y + h > widget->getY()));
+	return ((getRoundedX() < x + w) && (getRoundedX() + getRoundedWidth() > x) 
+			&& (getRoundedY() < y + h) && (getRoundedY() + getRoundedHeight() > y));
 }
 
 void PWidget::setDragCursor(MouseMotionEvent* e)
 {
-	if ((e->x < x + DRAG_ZONE_DIST) && (e->y < y + DRAG_ZONE_DIST))
+	if ((e->x < getRoundedX() + DRAG_ZONE_DIST) && (e->y < getRoundedY() + DRAG_ZONE_DIST))
 		SDL_SetCursor(PCursors::SIZENW);
-	else if ((e->x > x + w - DRAG_ZONE_DIST) && (e->y < y + DRAG_ZONE_DIST))
+	else if ((e->x > getRoundedX() + getRoundedWidth() - DRAG_ZONE_DIST) && (e->y < getRoundedY() + DRAG_ZONE_DIST))
 		SDL_SetCursor(PCursors::SIZENE);
-	else if ((e->x < x + DRAG_ZONE_DIST) && (e->y > y + h - DRAG_ZONE_DIST))
+	else if ((e->x < getRoundedX() + DRAG_ZONE_DIST) && (e->y > getRoundedY() + getRoundedHeight() - DRAG_ZONE_DIST))
 		SDL_SetCursor(PCursors::SIZESW);
-	else if ((e->x > x + w - DRAG_ZONE_DIST) && (e->y > y + h - DRAG_ZONE_DIST))
+	else if ((e->x > getRoundedX() + getRoundedWidth() - DRAG_ZONE_DIST) && (e->y > getRoundedY() + getRoundedHeight() - DRAG_ZONE_DIST))
 		SDL_SetCursor(PCursors::SIZESE);
-	else if (e->y < y + DRAG_ZONE_DIST)
+	else if (e->y < getRoundedY() + DRAG_ZONE_DIST)
 		SDL_SetCursor(PCursors::SIZEN);
-	else if (e->y > y + h - DRAG_ZONE_DIST)
+	else if (e->y > getRoundedY() + getRoundedHeight() - DRAG_ZONE_DIST)
 		SDL_SetCursor(PCursors::SIZES);
-	else if (e->x < x + DRAG_ZONE_DIST)
+	else if (e->x < getRoundedX() + DRAG_ZONE_DIST)
 		SDL_SetCursor(PCursors::SIZEW);
-	else if (e->x > x + w - DRAG_ZONE_DIST)
+	else if (e->x > getRoundedX() + getRoundedWidth() - DRAG_ZONE_DIST)
 		SDL_SetCursor(PCursors::SIZEE);
 	else
 		SDL_SetCursor(PCursors::ARROW);
 }
 
-void PWidget::getDragValues(MouseMotionEvent* e, int* newX, int* newY, int* newW, int* newH)
+void PWidget::getDragValues(MouseMotionEvent* e, float* newX, float* newY, float* newW, float* newH)
 {
 	SDL_Cursor* cursor = SDL_GetCursor();
 
 	if (cursor == PCursors::SIZENW)
 	{
-		*newX = x + e->xrel;
-		*newY = y + e->yrel;
-		*newW = w - e->xrel;
-		*newH = h - e->yrel;
+		*newX = getX() + e->xrel;
+		*newY = getY() + e->yrel;
+		*newW = getWidth() - e->xrel;
+		*newH = getHeight() - e->yrel;
 	}
 	else if (cursor == PCursors::SIZENE)
 	{
-		*newX = x;
-		*newY = y + e->yrel;
-		*newW = w + e->xrel;
-		*newH = h - e->yrel;
+		*newX = getX();
+		*newY = getY() + e->yrel;
+		*newW = getWidth() + e->xrel;
+		*newH = getHeight() - e->yrel;
 	}
 	else if (cursor == PCursors::SIZESW)
 	{
-		*newX = x + e->xrel;
-		*newY = y;
-		*newW = w - e->xrel;
-		*newH = h + e->yrel;
+		*newX = getX() + e->xrel;
+		*newY = getY();
+		*newW = getWidth() - e->xrel;
+		*newH = getHeight() + e->yrel;
 	}
 	else if (cursor == PCursors::SIZESE)
 	{
-		*newX = x;
-		*newY = y;
-		*newW = w + e->xrel;
-		*newH = h + e->yrel;
+		*newX = getX();
+		*newY = getY();
+		*newW = getWidth() + e->xrel;
+		*newH = getHeight() + e->yrel;
 	}
 	else if (cursor == PCursors::SIZEN)
 	{
-		*newX = x;
-		*newY = y + e->yrel;
-		*newW = w;
-		*newH = h - e->yrel;
+		*newX = getX();
+		*newY = getY() + e->yrel;
+		*newW = getWidth();
+		*newH = getHeight() - e->yrel;
 	}
 	else if (cursor == PCursors::SIZES)
 	{
-		*newX = x;
-		*newY = y;
-		*newW = w;
-		*newH = h + e->yrel;
+		*newX = getX();
+		*newY = getY();
+		*newW = getWidth();
+		*newH = getHeight() + e->yrel;
 	}
 	else if (cursor == PCursors::SIZEW)
 	{
-		*newX = x + e->xrel;
-		*newY = y;
-		*newW = w - e->xrel;
-		*newH = h;
+		*newX = getX() + e->xrel;
+		*newY = getY();
+		*newW = getWidth() - e->xrel;
+		*newH = getHeight();
 	}
 	else if (cursor == PCursors::SIZEE)
 	{
-		*newX = x;
-		*newY = y;
-		*newW = w + e->xrel;
-		*newH = h;
+		*newX = getX();
+		*newY = getY();
+		*newW = getWidth() + e->xrel;
+		*newH = getHeight();
 	}
 }
 
@@ -206,8 +210,8 @@ void PWidget::OnMouseMotion(MouseMotionEvent* e)
 	// Drag the widget around.
 	if (SDL_GetCursor() == PCursors::ARROW)
 	{
-		int newX = x + e->xrel;
-		int newY = y + e->yrel;
+		float newX = getX() + e->xrel;
+		float newY = getY() + e->yrel;
 
 		WidgetMoveEvent widgetMoveEvent(this, newX, newY);
 		notify(&widgetMoveEvent);
@@ -223,20 +227,23 @@ void PWidget::OnMouseMotion(MouseMotionEvent* e)
 	else
 	{
 		// TODO: support SCALED resizing.
-		int newX, newY, newW, newH;
+		float newX, newY, newW, newH;
 
 		getDragValues(e, &newX, &newY, &newW, &newH);
 
-		WidgetResizeEvent widgetResizeEvent(this, newX, newY, newW, newH);
-		notify(&widgetResizeEvent);
-
-		// If no widget collision, we can resize the widget.
-		if (!widgetResizeEvent.handled)
+		if (newW > minWidth && newH > minHeight)
 		{
-			setX(newX);
-			setY(newY);
-			setWidth(newW);
-			setHeight(newH);
+			WidgetResizeEvent widgetResizeEvent(this, newX, newY, newW, newH);
+			notify(&widgetResizeEvent);
+
+			// If no widget collision, we can resize the widget.
+			if (!widgetResizeEvent.handled)
+			{
+				setX(newX);
+				setY(newY);
+				setWidth(newW);
+				setHeight(newH);
+			}
 		}
 	}
 }

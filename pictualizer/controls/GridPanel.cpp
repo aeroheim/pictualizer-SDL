@@ -1,26 +1,25 @@
 #include "GridPanel.h"
-#include <iostream>
 
-GridPanel::GridPanel(int x, int y, int w, int h, int r, int c) : PControl(x, y, w, h)
+GridPanel::GridPanel(float x, float y, float w, float h, int r, int c) : PControl(x, y, w, h)
 {
 	assert(r > 0);
 
-	int rowHeight = (int) std::round((float) h / r);
+	float rowHeight = h / r;
 
 	for (int i = 0; i < r; i++)
 	{
-		GridPanelRow r(x, y + rowHeight * i, w, rowHeight, c);
+		GridPanelRow r(x, y + (rowHeight * i), w, rowHeight, c);
 		rows.push_back(r);
 	}
 }
 
-GridPanel::GridPanel(int x, int y, const std::vector<int>& rowHeights, const std::vector<int>& colWidths) : PControl(x, y, 
-																															std::accumulate(colWidths.begin(), colWidths.end(), 0),
-																															std::accumulate(rowHeights.begin(), rowHeights.end(), 0))
+GridPanel::GridPanel(float x, float y, const std::vector<float>& rowHeights, const std::vector<float>& colWidths) : PControl(x, y, 
+																															std::accumulate(colWidths.begin(), colWidths.end(), 0.0f),
+																															std::accumulate(rowHeights.begin(), rowHeights.end(), 0.0f))
 {
 	assert(rowHeights.size() > 0);
 
-	int rowY;
+	float rowY;
 
 	for (size_t i = 0; i < rowHeights.size(); i++)
 	{
@@ -31,17 +30,17 @@ GridPanel::GridPanel(int x, int y, const std::vector<int>& rowHeights, const std
 	}
 }
 
-void GridPanel::setX(int x)
+void GridPanel::setX(float x)
 {
-	this->x = x;
+	PControl::setX(x);
 
 	for (GridPanelRow& r : rows)
 		r.setX(x);
 }
 
-void GridPanel::setY(int y)
+void GridPanel::setY(float y)
 {
-	this->y = y;
+	PControl::setY(y);
 
 	for (size_t i = 0; i < rows.size(); i++)
 	{
@@ -52,67 +51,66 @@ void GridPanel::setY(int y)
 	}
 }
 
-void GridPanel::setWidth(int width)
+void GridPanel::setWidth(float w)
 {
-	assert(width >= 0);
+	assert(w >= 0);
 
-	w = width;
+	PControl::setWidth(w);
 
 	for (GridPanelRow& r : rows)
-		r.setWidth(width);
+		r.setWidth(w);
 }
 
-void GridPanel::setColWidths(const std::vector<int>& colWidths)
+void GridPanel::setColWidths(const std::vector<float>& colWidths)
 {
 	assert(colWidths.size() == rows[0].getNumCols());
 
-	w = 0;
-
-	for (int i : colWidths)
-		w += i;
+	PControl::setWidth(std::accumulate(colWidths.begin(), colWidths.end(), 0.0f));
 
 	for (GridPanelRow& r : rows)
 		r.setCellWidths(colWidths);
 }
 
-void GridPanel::setHeight(int height)
+void GridPanel::setHeight(float h)
 {
-	assert(height >= 0);
+	assert(h >= 0);
 
-	int rowY;
+	float rowY;
 
 	for (size_t i = 0; i < rows.size(); i++)
 	{
-		rowY = i == 0 ? y : rowY + rows[i - 1].getHeight();
+		rowY = i == 0 ? getY() : rowY + rows[i - 1].getHeight();
 
 		rows[i].setY(rowY);
 
 		// Maintain row proportions when we resize their heights.
-		rows[i].setHeight((int) std::round(((float) rows[i].getHeight() / h) * height));
+		rows[i].setHeight((rows[i].getHeight() / getHeight()) * h);
 	}
 
-	h = height;
+	PControl::setHeight(h);
 }
 
-void GridPanel::setRowHeights(const std::vector<int>& rowHeights)
+void GridPanel::setRowHeights(const std::vector<float>& rowHeights)
 {
 	assert(rowHeights.size() == rows.size());
 
-	h = 0;
-	int rowY;
+	float h = 0;
+	float rowY;
 
 	for (size_t i = 0; i < rowHeights.size(); i++)
 	{
-		rowY = i == 0 ? y : rowY + rowHeights[i - 1];
+		rowY = i == 0 ? getY() : rowY + rowHeights[i - 1];
 
 		rows[i].setY(rowY);
 		rows[i].setHeight(rowHeights[i]);
 
 		h += rowHeights[i];
 	}
+
+	PControl::setHeight(h);
 }
 
-int GridPanel::getColWidth(int c)
+float GridPanel::getColWidth(int c)
 {
 	assert(c >= 0);
 	assert(c < rows[0].getNumCols());
@@ -120,9 +118,9 @@ int GridPanel::getColWidth(int c)
 	return rows[0][c].getWidth();
 }
 
-const std::vector<int> GridPanel::getColWidths()
+const std::vector<float> GridPanel::getColWidths()
 {
-	std::vector<int> colWidths;
+	std::vector<float> colWidths;
 
 	for (int i = 0; i < rows[0].getNumCols(); i++)
 		colWidths.push_back(rows[0][i].getWidth());
@@ -130,7 +128,7 @@ const std::vector<int> GridPanel::getColWidths()
 	return colWidths;
 }
 
-int GridPanel::getRowHeight(int r)
+float GridPanel::getRowHeight(int r)
 {
 	assert(r >= 0);
 	assert((size_t) r < rows.size());
@@ -138,9 +136,9 @@ int GridPanel::getRowHeight(int r)
 	return rows[r].getHeight();
 }
 
-const std::vector<int> GridPanel::getRowHeights()
+const std::vector<float> GridPanel::getRowHeights()
 {
-	std::vector<int> rowHeights;
+	std::vector<float> rowHeights;
 
 	for (GridPanelRow& r : rows)
 		rowHeights.push_back(r.getHeight());

@@ -96,20 +96,20 @@ class ImageLoadedEvent : public Event
 class WidgetMoveEvent : public Event
 {
 	public:
-		WidgetMoveEvent(PWidget* widget, int x, int y);
+		WidgetMoveEvent(PWidget* widget, float x, float y);
 		PWidget* widget;
-		int x;
-		int y;
+		float x;
+		float y;
 };
 
 class WidgetResizeEvent : public Event
 {
 	public:
-		WidgetResizeEvent(PWidget* widget, int x, int y, int w, int h);
+		WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h);
 		PWidget* widget;
-		int x;
-		int y;
-		int w;
-		int h;
+		float  x;
+		float y;
+		float w;
+		float h;
 };
 

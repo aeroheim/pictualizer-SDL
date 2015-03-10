@@ -1,31 +1,38 @@
 #pragma once
 
 #include <SDL.h>
+#include <algorithm>
 
 class PControl
 {
 	public:
-		virtual void setX(int x);
-		virtual void setY(int y);
-		virtual void setWidth(int w);
-		virtual void setHeight(int h);
+		virtual void setX(float x);
+		virtual void setY(float y);
+		virtual void setWidth(float w);
+		virtual void setHeight(float h);
 
-		int getX();
-		int getY();
-		int getWidth();
-		int getHeight();
+		float getX();
+		float getY();
+		float getWidth();
+		float getHeight();
 
-		void moveTo(int x, int y);
-		virtual void resize(int w, int h);
+		int getRoundedX();
+		int getRoundedY();
+		int getRoundedWidth();
+		int getRoundedHeight();
+
+		void moveTo(float x, float y);
+		void resize(float w, float h);
 
 		virtual void draw(SDL_Renderer* ren) = 0;
 
 	protected:
-		PControl(int x, int y, int w, int h);
+		PControl(float x, float y, float w, float h);
 		virtual ~PControl();
 
-		int x;
-		int y;
-		int w;
-		int h;
+	private:
+		float x;
+		float y;
+		float w;
+		float h;
 };

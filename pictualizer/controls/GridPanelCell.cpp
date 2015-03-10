@@ -1,6 +1,6 @@
 #include "GridPanelCell.h"
 
-GridPanelCell::GridPanelCell(int x, int y, int w, int h) : PControl(x, y, w, h)
+GridPanelCell::GridPanelCell(float x, float y, float w, float h) : PControl(x, y, w, h)
 {
 	element = nullptr;
 
@@ -8,12 +8,21 @@ GridPanelCell::GridPanelCell(int x, int y, int w, int h) : PControl(x, y, w, h)
 		padding[i] = 0;
 }
 
-GridPanelCell::GridPanelCell(PControl* e, int x, int y, int w, int h) : PControl(x, y, w, h)
+GridPanelCell::GridPanelCell(PControl* e, float x, float y, float w, float h) : PControl(x, y, w, h)
 {
-	e->setX(x);
-	e->setY(y);
-	e->setWidth(w);
-	e->setHeight(h);
+	if (element)
+	{
+		element = e;
+		e->setX(x);
+		e->setY(y);
+		e->setWidth(w);
+		e->setHeight(h);
+	}
+	else
+		element = nullptr;
+
+	for (int i = 0; i < 4; i++)
+		padding[i] = 0;
 }
 
 void GridPanelCell::setElement(PControl* e)
@@ -22,10 +31,10 @@ void GridPanelCell::setElement(PControl* e)
 
 	if (element)
 	{
-		setX(x);
-		setY(y);
-		setWidth(w);
-		setHeight(h);
+		setX(getX());
+		setY(getY());
+		setWidth(getWidth());
+		setHeight(getHeight());
 	}
 }
 
@@ -49,46 +58,46 @@ void GridPanelCell::setPadding(int l, int u, int r, int d)
 	padding[2] = r;
 	padding[3] = d;
 
-	setX(x);
-	setY(y);
-	setWidth(w);
-	setHeight(h);
+	setX(getX());
+	setY(getY());
+	setWidth(getWidth());
+	setHeight(getHeight());
 }
 
-void GridPanelCell::setX(int x)
+void GridPanelCell::setX(float x)
 {
 	if (element)
 		element->setX(x + padding[0]);
 
-	this->x = x;
+	PControl::setX(x);
 }
 
-void GridPanelCell::setY(int y)
+void GridPanelCell::setY(float y)
 {
 	if (element)
 		element->setY(y + padding[1]);
 
-	this->y = y;
+	PControl::setY(y);
 }
 
-void GridPanelCell::setWidth(int width)
+void GridPanelCell::setWidth(float w)
 {
-	assert(width >= 0);
+	assert(w >= 0);
 
 	if (element)
-		element->setWidth(width - padding[2] - padding[0]);
+		element->setWidth(w - padding[2] - padding[0]);
 
-	w = width;
+	PControl::setWidth(w);
 }
 
-void GridPanelCell::setHeight(int height)
+void GridPanelCell::setHeight(float h)
 {
-	assert(height >= 0);
+	assert(h >= 0);
 
 	if (element)
-		element->setHeight(height - padding[3] - padding[1]);
+		element->setHeight(h - padding[3] - padding[1]);
 
-	h = height;
+	PControl::setHeight(h);
 }
 
 void GridPanelCell::draw(SDL_Renderer* ren)
@@ -97,16 +106,16 @@ void GridPanelCell::draw(SDL_Renderer* ren)
 		element->draw(ren);
 
 	SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
-	SDL_RenderDrawLine(ren, x, y, x + w, y);
-	SDL_RenderDrawLine(ren, x, y, x, y + h);
-	SDL_RenderDrawLine(ren, x + w, y, x + w, y + h);
-	SDL_RenderDrawLine(ren, x, y + h, x + w, y + h);
+	SDL_RenderDrawLine(ren, getRoundedX(), getRoundedY(), getRoundedX() + getRoundedWidth(), getRoundedY());
+	SDL_RenderDrawLine(ren, getRoundedX(), getRoundedY(), getRoundedX(), getRoundedY() + getRoundedHeight());
+	SDL_RenderDrawLine(ren, getRoundedX() + getRoundedWidth(), getRoundedY(), getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
+	SDL_RenderDrawLine(ren, getRoundedX(), getRoundedY() + getRoundedHeight(), getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
 
 	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
-	SDL_RenderDrawPoint(ren, x, y);
-	SDL_RenderDrawPoint(ren, x + w, y);
-	SDL_RenderDrawPoint(ren, x, y + h);
-	SDL_RenderDrawPoint(ren, x + w, y + h);
+	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY());
+	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY());
+	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY() + getRoundedHeight());
+	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
 }
 
 

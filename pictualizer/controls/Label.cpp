@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(x, y, w, h)
+Label::Label(TTF_Font* font, float x, float y, float w, float h) : font(font), PControl(x, y, w, h)
 {
 	clipState = LabelClipState::CLIP;
 	alignState = LabelAlignState::LEFT;
@@ -17,10 +17,10 @@ Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(
 	color.b = 255;
 	color.a = SDL_ALPHA_OPAQUE;
 
-	dest.x = x;
-	dest.y = y;
-	dest.w = w;
-	dest.h = h;
+	dest.x = getRoundedX();
+	dest.y = getRoundedY();
+	dest.w = getRoundedWidth();
+	dest.h = getRoundedHeight();
 
 	view.x = 0;
 	view.y = 0;
@@ -30,51 +30,51 @@ Label::Label(TTF_Font* font, int x, int y, int w, int h) : font(font), PControl(
 	texture = nullptr;
 }
 
-void Label::setX(int x)
+void Label::setX(float x)
 {
-	this->x = x;
+	PControl::setX(x);
 
-	int midpoint = x + (int) std::round(w / 2.0);
-	int textRadius = (int) std::round(dest.w / 2.0);
+	float midpoint = x + (getWidth() / 2.0f);
+	float textRadius = dest.w / 2.0f;
 
 	switch (alignState)
 	{
 		case LabelAlignState::LEFT:
-			dest.x = x;
+			dest.x = getRoundedX();
 			break;
 		case LabelAlignState::CENTER:
-			dest.x = midpoint - textRadius;
+			dest.x = (int) std::round(midpoint - textRadius);
 			break;
 		case LabelAlignState::RIGHT:
-			dest.x = x + (w - dest.w);
+			dest.x = (int) std::round(x + (getWidth() - dest.w));
 			break;
 	}
 }
 
-void Label::setY(int y)
+void Label::setY(float y)
 {
-	this->y = y;
-	dest.y = y;
+	PControl::setY(y);
+	dest.y = getRoundedY();
 }
  
-void Label::setWidth(int w)
+void Label::setWidth(float w)
 {
-	this->w = w;
+	PControl::setWidth(w);
 
 	if (!text.empty())
 		resetView();
 	else
-		dest.w = w;
+		dest.w = getRoundedWidth();
 }
 
-void Label::setHeight(int h)
+void Label::setHeight(float h)
 {
-	this->h = h;
+	PControl::setHeight(h);
 
 	if (!text.empty())
 		resetView();
 
-	dest.h = h;
+	dest.h = getRoundedHeight();
 }
 
 void Label::setFont(TTF_Font* font, SDL_Renderer* ren)
@@ -227,20 +227,20 @@ void Label::resetView()
 
 	panSpeed = view.w * SRC_PAN_SPEED;
 
-	float textScale = (float) view.h / h;
-	float whratio = (float) w / h;
-	float scaledTextWidth = (float) view.w / textScale;
+	float textScale = view.h / getHeight();
+	float whratio = getWidth() / getHeight();
+	float scaledTextWidth = view.w / textScale;
 
 	// Clip texture view if wider than label width.
-	if (scaledTextWidth > w)
+	if (scaledTextWidth > getWidth())
 	{
 		textIsPannable = true;
-		maxPanX = (int) std::floor((scaledTextWidth - w) * textScale);
+		maxPanX = (int) std::floor((scaledTextWidth - getWidth()) * textScale);
 
 		if (clipState == LabelClipState::PAN || clipState == LabelClipState::CLIP)
 			view.w = (int) std::round(view.h * whratio);
 
-		dest.w = w;
+		dest.w = getRoundedWidth();
 	}
 	// Otherwise prevent text shorter than the label width from stretching.
 	else
@@ -248,25 +248,25 @@ void Label::resetView()
 		textIsPannable = false;
 
 		if (clipState == LabelClipState::STRETCH)
-			dest.w = w;
+			dest.w = getRoundedWidth();
 		else
 		{
-			dest.w = (int)std::round((float) view.w / textScale);
+			dest.w = (int) std::round((float) view.w / textScale);
 
-			int midpoint = x + (int)std::round(w / 2.0);
-			int textRadius = (int)std::round(dest.w / 2.0);
+			float midpoint = getX() + (getWidth() / 2.0f);
+			float textRadius = dest.w / 2.0f;
 
 			// Align text to the correct position.
 			switch (alignState)
 			{
 				case LabelAlignState::LEFT:
-					dest.x = x;
+					dest.x = getRoundedX();
 					break;
 				case LabelAlignState::CENTER:
-					dest.x = midpoint - textRadius;
+					dest.x = (int) std::round(midpoint - textRadius);
 					break;
 				case LabelAlignState::RIGHT:
-					dest.x = x + (w - dest.w);
+					dest.x = (int) std::round(getX() + (getWidth() - dest.w));
 					break;
 			}
 		}

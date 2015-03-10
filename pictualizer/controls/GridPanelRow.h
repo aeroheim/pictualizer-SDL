@@ -8,14 +8,15 @@
 class GridPanelRow : public PControl
 {
 	public:
-		GridPanelRow(int x, int y, int w, int h, int c);
-		GridPanelRow(int x, int y, const std::vector<int>& colWidths, int h);
+		GridPanelRow(float x, float y, float w, float h, int c);
+		GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h);
 
-		void setX(int x);
-		void setY(int y);
-		void setWidth(int width);
-		void setCellWidths(const std::vector<int>& cellWidths);
-		void setHeight(int height);
+		void setX(float x);
+		void setY(float y);
+		void setWidth(float w);
+		void setHeight(float h);
+
+		void setCellWidths(const std::vector<float>& cellWidths);
 
 		int getNumCols();
 

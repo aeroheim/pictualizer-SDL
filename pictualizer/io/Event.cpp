@@ -24,6 +24,6 @@ ImageLoadReadyEvent::ImageLoadReadyEvent() {}
 
 ImageLoadedEvent::ImageLoadedEvent(int w, int h) : iw(w), ih(h) {}
 
-WidgetMoveEvent::WidgetMoveEvent(PWidget* widget, int x, int y) : widget(widget), x(x), y(y) {}
+WidgetMoveEvent::WidgetMoveEvent(PWidget* widget, float x, float y) : widget(widget), x(x), y(y) {}
 
-WidgetResizeEvent::WidgetResizeEvent(PWidget* widget, int x, int y, int w, int h) : widget(widget), x(x), y(y), w(w), h(h) {}
+WidgetResizeEvent::WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h) : widget(widget), x(x), y(y), w(w), h(h) {}

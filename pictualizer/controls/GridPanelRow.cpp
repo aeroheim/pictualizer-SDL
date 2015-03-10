@@ -1,10 +1,10 @@
 #include "GridPanelRow.h"
 
-GridPanelRow::GridPanelRow(int x, int y, int w, int h, int c) : PControl(x, y, w, h)
+GridPanelRow::GridPanelRow(float x, float y, float w, float h, int c) : PControl(x, y, w, h)
 {
 	assert(c > 0);
 
-	int cellWidth = (int) std::round((float) w / c);
+	float cellWidth = getWidth() / c;
 
 	for (int i = 0; i < c; i++)
 	{
@@ -13,24 +13,24 @@ GridPanelRow::GridPanelRow(int x, int y, int w, int h, int c) : PControl(x, y, w
 	}
 }
 
-GridPanelRow::GridPanelRow(int x, int y, const std::vector<int>& colWidths, int h) : PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0), h)
+GridPanelRow::GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h) : PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0.0f), h)
 {
 	assert(colWidths.size() > 0);
 
-	int cellX;
+	float cellX;
 
 	for (size_t i = 0; i < colWidths.size(); i++)
 	{
-		cellX = i == 0 ? x : cellX + colWidths[i - 1];
+		cellX = i == 0 ? getX() : cellX + colWidths[i - 1];
 
 		GridPanelCell c(cellX, y, colWidths[i], h);
 		cells.push_back(c);
 	}
 }
 
-void GridPanelRow::setX(int x)
+void GridPanelRow::setX(float x)
 {
-	this->x = x;
+	PControl::setX(x);
 
 	for (size_t i = 0; i < cells.size(); i++)
 	{
@@ -41,59 +41,61 @@ void GridPanelRow::setX(int x)
 	}
 }
 
-void GridPanelRow::setY(int y)
+void GridPanelRow::setY(float y)
 {
-	this->y = y;
+	PControl::setY(y);
 
 	for (GridPanelCell& c : cells)
 		c.setY(y);
 }
 
-void GridPanelRow::setWidth(int width)
+void GridPanelRow::setWidth(float w)
 {
-	assert(width >= 0);
+	assert(w >= 0);
 
-	int cellX;
+	float cellX;
 
 	for (size_t i = 0; i < cells.size(); i++)
 	{
-		cellX = i == 0 ? x : cellX + cells[i - 1].getWidth();
+		cellX = i == 0 ? getX() : cellX + cells[i - 1].getWidth();
 
 		cells[i].setX(cellX);
 
 		// Maintain cell proportions when we resize their widths;
-		cells[i].setWidth((int) std::round(((float) cells[i].getWidth() / w) * width));
+		cells[i].setWidth((cells[i].getWidth() / getWidth()) * w);
 	}
 
-	w = width;
+	PControl::setWidth(w);
 }
 
-void GridPanelRow::setCellWidths(const std::vector<int>& cellWidths)
+void GridPanelRow::setCellWidths(const std::vector<float>& cellWidths)
 {
 	assert(cellWidths.size() == cells.size());
 
-	w = 0;
-	int cellX;
+	float w = 0;
+	float cellX;
 
 	for (size_t i = 0; i < cellWidths.size(); i++)
 	{
-		cellX = i == 0 ? x : cellX + cellWidths[i - 1];
+		cellX = i == 0 ? getX() : cellX + cellWidths[i - 1];
 
 		cells[i].setX(cellX);
 		cells[i].setWidth(cellWidths[i]);
 
 		w += cellWidths[i];
 	}
+
+	PControl::setWidth(w);
 }
 
-void GridPanelRow::setHeight(int height)
+void GridPanelRow::setHeight(float h)
 {
-	assert(height >= 0);
+	assert(h >= 0);
 
-	h = height;
+	PControl::setHeight(h);
 
 	for (GridPanelCell& c : cells)
-		c.setHeight(height);
+		c.setHeight(h);
 }
 
 int GridPanelRow::getNumCols()
