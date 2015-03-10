@@ -22,8 +22,6 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		PWidget(float x, float y, float w, float h);
 		virtual ~PWidget();
 
-		bool posInWidget(int x, int y);
-
 		float minWidth;
 		float minHeight;
 

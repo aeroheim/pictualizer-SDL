@@ -64,6 +64,11 @@ int PControl::getRoundedHeight()
 	return (int) std::round(h);
 }
 
+bool PControl::mouseInside(int x, int y)
+{
+	return ((x >= getRoundedX() && x <= getRoundedX() + getRoundedWidth()) && (y >= getRoundedY() && y <= getRoundedY() + getRoundedHeight()));
+}
+
 void PControl::moveTo(float x, float y)
 {
 	setX(x);

@@ -21,6 +21,8 @@ class PControl
 		int getRoundedWidth();
 		int getRoundedHeight();
 
+		bool mouseInside(int x, int y);
+
 		void moveTo(float x, float y);
 		void resize(float w, float h);
 

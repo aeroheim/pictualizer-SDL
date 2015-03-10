@@ -56,7 +56,7 @@ void PWidget::handleEvent(Event* e)
 		{
 			if (!keyHeld(IGNORE_KEY))
 			{
-				if (posInWidget(mouseDownEvent->x, mouseDownEvent->y) && !lMouseHeld && mouseDownEvent->button == SDL_BUTTON_LEFT)
+				if (mouseInside(mouseDownEvent->x, mouseDownEvent->y) && !lMouseHeld && mouseDownEvent->button == SDL_BUTTON_LEFT)
 				{
 					lMouseHeld = true;
 					mDownX = mouseDownEvent->x;
@@ -82,7 +82,7 @@ void PWidget::handleEvent(Event* e)
 		{
 			if (!keyHeld(IGNORE_KEY))
 			{
-				if (!dragResizing && !dragging && posInWidget(mouseMotionEvent->x, mouseMotionEvent->y))
+				if (!dragResizing && !dragging && mouseInside(mouseMotionEvent->x, mouseMotionEvent->y))
 				{
 					setDragCursor(mouseMotionEvent);
 					e->handled = true;
@@ -108,11 +108,6 @@ void PWidget::handleEvent(Event* e)
 				e->handled = true;
 		}
 	}
-}
-
-bool PWidget::posInWidget(int x, int y)
-{
-	return ((x >= getRoundedX() && x <= getRoundedX() + getRoundedWidth()) && (y >= getRoundedY() && y <= getRoundedY() + getRoundedHeight()));
 }
 
 bool PWidget::widgetIntersects(float x, float y, float w, float h)
