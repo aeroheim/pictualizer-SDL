@@ -102,7 +102,23 @@ PIntColor PControl::getRoundedColor()
 
 void PControl::setAlpha(float a)
 {
+	assert(a >= 0 && a <= 255);
+
 	this->a = a;
+
+	switch (fadeState)
+	{
+		case PControlFadeState::FADEIN:
+			if (a >= 255.0f)
+				fadeState = PControlFadeState::NONE;
+			break;
+		case PControlFadeState::FADEOUT:
+			if (a <= 0.0f)
+				fadeState = PControlFadeState::NONE;
+			break;
+		case PControlFadeState::NONE:
+			break;
+	}
 }
 
 float PControl::getAlpha()
