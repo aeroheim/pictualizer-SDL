@@ -1,6 +1,6 @@
 #include "PControl.h"
 
-PControl::PControl(float x, float y, float w, float h) : x(x), y(y), w(w), h(h) {};
+PControl::PControl(float x, float y, float w, float h) : x(x), y(y), w(w), h(h), r(-1), g(-1), b(-1), a(255), aDelta(0), fadeState(PControlFadeState::NONE) {}
 
 PControl::~PControl() {};
 
@@ -80,4 +80,66 @@ void PControl::resize(float w, float h)
 	setWidth(w);
 	setHeight(h);
 }
+
+void PControl::setColor(float r, float g, float b)
+{
+	this->r = r;
+	this->g = g;
+	this->b = b;
+}
+
+PColor PControl::getColor()
+{
+	PColor color{ r, g, b };
+	return color;
+}
+
+void PControl::setAlpha(float a)
+{
+	this->a = a;
+}
+
+float PControl::getAlpha()
+{
+	return a;
+}
+
+void PControl::setFadeState(PControlFadeState s)
+{
+	fadeState = s;
+}
+
+PControlFadeState PControl::getFadeState()
+{
+	return fadeState;
+}
+
+void PControl::setFadeDelta(float delta)
+{
+	assert(delta >= 0);
+
+	aDelta = delta;
+}
+
+float PControl::getFadeDelta()
+{
+	return aDelta;
+}
+
+void PControl::draw(SDL_Renderer* ren = nullptr)
+{
+	switch (fadeState)
+	{
+		case PControlFadeState::FADEIN:
+			a = a + aDelta < 255 ? a + aDelta : 255.0f;
+			break;
+		case PControlFadeState::FADEOUT:
+			a = a - aDelta > 0 ? a - aDelta : 0.0f;
+			break;
+		case PControlFadeState::NONE:
+			break;
+	}
+}
+
+
 

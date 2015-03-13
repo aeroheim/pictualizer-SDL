@@ -1,7 +1,16 @@
 #pragma once
 
 #include <SDL.h>
+#include <assert.h>
 #include <algorithm>
+#include "PControlStates.h"
+
+struct PColor
+{
+	float r;
+	float g;
+	float b;
+};
 
 class PControl
 {
@@ -25,6 +34,18 @@ class PControl
 
 		void moveTo(float x, float y);
 		void resize(float w, float h);
+		
+		void setColor(float r, float g, float b);
+		PColor getColor();
+
+		virtual void setAlpha(float a);
+		float getAlpha();
+
+		virtual void setFadeState(PControlFadeState s);
+		PControlFadeState getFadeState();
+
+		virtual void setFadeDelta(float delta);
+		float getFadeDelta();
 
 		virtual void draw(SDL_Renderer* ren) = 0;
 
@@ -37,4 +58,12 @@ class PControl
 		float y;
 		float w;
 		float h;
+
+		float r;
+		float g;
+		float b;
+
+		PControlFadeState fadeState;
+		float aDelta;
+		float a;
 };
