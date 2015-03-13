@@ -14,9 +14,9 @@ struct PFloatColor
 
 struct PIntColor
 {
-	int r;
-	int g;
-	int b;
+	Uint8 r;
+	Uint8 g;
+	Uint8 b;
 };
 
 class PControl
@@ -48,7 +48,7 @@ class PControl
 
 		virtual void setAlpha(float a);
 		float getAlpha();
-		int getRoundedAlpha();
+		Uint8 getRoundedAlpha();
 
 		virtual void setFadeState(PControlFadeState s);
 		PControlFadeState getFadeState();

@@ -96,7 +96,7 @@ PFloatColor PControl::getColor()
 
 PIntColor PControl::getRoundedColor()
 {
-	PIntColor color{ (int) std::round(r), (int) std::round(g), (int) std::round(b) };
+	PIntColor color{ (Uint8) std::round(r), (Uint8) std::round(g), (Uint8) std::round(b) };
 	return color;
 }
 
@@ -126,9 +126,9 @@ float PControl::getAlpha()
 	return a;
 }
 
-int PControl::getRoundedAlpha()
+Uint8 PControl::getRoundedAlpha()
 {
-	return (int) std::round(a);
+	return (Uint8) std::round(a);
 }
 
 void PControl::setFadeState(PControlFadeState s)
