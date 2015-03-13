@@ -15,6 +15,11 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		void setResizeState(PWidgetResizeState s);
 		PWidgetResizeState getResizeState();
 
+		void setColor(float r, float g, float b);
+		void setAlpha(float a);
+		void setFadeState(PControlFadeState s);
+		void setFadeDelta(float delta);
+
 		virtual void draw(SDL_Renderer* ren) = 0;
 		virtual void handleEvent(Event* e);
 

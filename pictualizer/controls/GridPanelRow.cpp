@@ -103,10 +103,44 @@ int GridPanelRow::getNumCols()
 	return cells.size();
 }
 
+void GridPanelRow::setColor(float r, float g, float b)
+{
+	PControl::setColor(r, g, b);
+
+	for (GridPanelCell& c : cells)
+		c.setColor(r, g, b);
+}
+
+void GridPanelRow::setAlpha(float a)
+{
+	PControl::setAlpha(a);
+
+	for (GridPanelCell& c : cells)
+		c.setAlpha(a);
+}
+
+void GridPanelRow::setFadeState(PControlFadeState s)
+{
+	PControl::setFadeState(s);
+
+	for (GridPanelCell& c : cells)
+		c.setFadeState(s);
+}
+
+void GridPanelRow::setFadeDelta(float delta)
+{
+	PControl::setFadeDelta(delta);
+
+	for (GridPanelCell& c : cells)
+		c.setFadeDelta(delta);
+}
+
 void GridPanelRow::draw(SDL_Renderer* ren)
 {
 	for (GridPanelCell& c : cells)
 		c.draw(ren);
+
+	PControl::draw(nullptr);
 }
 
 GridPanelCell& GridPanelRow::operator[](const int index)

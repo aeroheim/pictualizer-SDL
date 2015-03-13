@@ -28,11 +28,8 @@ class Label : public PControl
 		void setAlignState(LabelAlignState s);
 		LabelAlignState getAlignState();
 
-		void setColor(Uint8 r, Uint8 g, Uint8 b);
-		SDL_Color* getColor();
-
-		void setAlpha(Uint8 a);
-		Uint8 getAlpha();
+		void setColor(float r, float g, float b);
+		void setAlpha(float a);
 
 		void draw(SDL_Renderer* ren);
 

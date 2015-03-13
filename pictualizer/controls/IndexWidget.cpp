@@ -113,26 +113,45 @@ void IndexWidget::setHeight(float h)
 	nineGrid.setHeight(h);
 }
 
-void IndexWidget::setColor(Uint8 r, Uint8 g, Uint8 b)
+void IndexWidget::setColor(float r, float g, float b)
 {
+	PControl::setColor(r, g, b);
+
 	for (Label& digitLabel : digitLabels)
 		digitLabel.setColor(r, g, b);
 }
 
-SDL_Color* IndexWidget::getColor()
-{
-	return digitLabels[0].getColor();
-}
 
-void IndexWidget::setAlpha(Uint8 a)
+void IndexWidget::setAlpha(float a)
 {
+	PControl::setAlpha(a);
+
 	for (Label& digitLabel : digitLabels)
 		digitLabel.setAlpha(a);
 }
 
-Uint8 IndexWidget::getAlpha()
+void IndexWidget::setFadeState(PControlFadeState s)
 {
-	return digitLabels[0].getAlpha();
+	PControl::setFadeState(s);
+
+	oneGrid.setFadeState(s);
+	fourGrid.setFadeState(s);
+	nineGrid.setFadeState(s);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setFadeState(s);
+}
+
+void IndexWidget::setFadeDelta(float delta)
+{
+	PControl::setFadeDelta(delta);
+
+	oneGrid.setFadeDelta(delta);
+	fourGrid.setFadeDelta(delta);
+	nineGrid.setFadeDelta(delta);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setFadeDelta(delta);
 }
 
 void IndexWidget::draw(SDL_Renderer* ren)
@@ -143,4 +162,6 @@ void IndexWidget::draw(SDL_Renderer* ren)
 		nGrid.draw(ren);
 	else
 		nGrid.draw(this->ren);
+
+	PControl::draw(nullptr);
 }

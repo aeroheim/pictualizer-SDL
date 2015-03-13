@@ -20,6 +20,11 @@ class GridPanelCell : public PControl
 		void setWidth(float w);
 		void setHeight(float h);
 
+		void setColor(float r, float g, float b);
+		void setAlpha(float a);
+		void setFadeState(PControlFadeState s);
+		void setFadeDelta(float delta);
+
 		void draw(SDL_Renderer* ren);
 
 	private:

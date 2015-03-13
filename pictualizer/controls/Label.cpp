@@ -1,7 +1,4 @@
 #include "Label.h"
-#include <iostream>
-
-using namespace std;
 
 Label::Label(TTF_Font* font, float x, float y, float w, float h) : font(font), PControl(x, y, w, h)
 {
@@ -137,33 +134,22 @@ LabelAlignState Label::getAlignState()
 	return alignState;
 }
 
-void Label::setColor(Uint8 r, Uint8 g, Uint8 b)
+void Label::setColor(float r, float g, float b)
 {
-	color.r = r;
-	color.g = g;
-	color.b = b;
+	PControl::setColor(r, g, b);
 
 	if (texture)
-		SDL_SetTextureColorMod(texture, r, g, b);
+		SDL_SetTextureColorMod(texture, (int) std::round(r), (int) std::round(g), (int) std::round(b));
 }
 
-SDL_Color* Label::getColor()
+void Label::setAlpha(float a)
 {
-	return &color;
-}
-
-void Label::setAlpha(Uint8 a)
-{
-	color.a = a;
+	PControl::setAlpha(a);
 
 	if (texture)
-		SDL_SetTextureAlphaMod(texture, a);
+		SDL_SetTextureAlphaMod(texture, getRoundedAlpha());
 }
 
-Uint8 Label::getAlpha()
-{
-	return color.a;
-}
 
 void Label::draw(SDL_Renderer* ren)
 {
@@ -179,6 +165,8 @@ void Label::draw(SDL_Renderer* ren)
 				panView();
 		}
 	}
+
+	PControl::draw(nullptr);
 }
 
 void Label::panView()

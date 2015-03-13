@@ -36,6 +36,31 @@ PWidgetResizeState PWidget::getResizeState()
 	return resizeState;
 }
 
+void PWidget::setColor(float r, float g, float b)
+{
+	PControl::setColor(r, g, b);
+}
+
+void PWidget::setAlpha(float a)
+{
+	PControl::setAlpha(a);
+}
+
+void PWidget::setFadeState(PControlFadeState s)
+{
+	PControl::setFadeState(s);
+}
+
+void PWidget::setFadeDelta(float delta)
+{
+	PControl::setFadeDelta(delta);
+}
+
+void PWidget::draw(SDL_Renderer* = nullptr)
+{
+	PControl::draw(nullptr);
+}
+
 void PWidget::handleEvent(Event* e)
 {
 	if (!e->handled)

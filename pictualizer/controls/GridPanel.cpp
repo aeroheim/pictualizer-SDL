@@ -151,10 +151,44 @@ int GridPanel::getNumRows()
 	return rows.size();
 }
 
+void GridPanel::setColor(float r, float g, float b)
+{
+	PControl::setColor(r, g, b);
+
+	for (GridPanelRow& row : rows)
+		row.setColor(r, g, b);
+}
+
+void GridPanel::setAlpha(float a)
+{
+	PControl::setAlpha(a);
+
+	for (GridPanelRow& r : rows)
+		r.setAlpha(a);
+}
+
+void GridPanel::setFadeState(PControlFadeState s)
+{
+	PControl::setFadeState(s);
+
+	for (GridPanelRow& r : rows)
+		r.setFadeState(s);
+}
+
+void GridPanel::setFadeDelta(float delta)
+{
+	PControl::setFadeDelta(delta);
+
+	for (GridPanelRow& r : rows)
+		r.setFadeDelta(delta);
+}
+
 void GridPanel::draw(SDL_Renderer* ren)
 {
 	for (GridPanelRow& r : rows)
 		r.draw(ren);
+
+	PControl::draw(nullptr);
 }
 
 GridPanelRow& GridPanel::operator[](const int index)

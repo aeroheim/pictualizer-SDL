@@ -26,6 +26,11 @@ class GridPanel : public PControl, public EventSubscriber
 
 		int getNumRows();
 
+		void setColor(float r, float g, float b);
+		void setAlpha(float a);
+		void setFadeState(PControlFadeState s);
+		void setFadeDelta(float delta);
+
 		void draw(SDL_Renderer* ren);
 
 		GridPanelRow& operator[] (const int index);

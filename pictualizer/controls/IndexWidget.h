@@ -22,11 +22,10 @@ class IndexWidget : public PControl
 		void setWidth(float w);
 		void setHeight(float h);
 
-		void setColor(Uint8 r, Uint8 g, Uint8 b);
-		SDL_Color* getColor();
-
-		void setAlpha(Uint8 a);
-		Uint8 getAlpha();
+		void setColor(float r, float g, float b);
+		void setAlpha(float a);
+		void setFadeState(PControlFadeState s);
+		void setFadeDelta(float delta);
 
 		void draw(SDL_Renderer* ren = nullptr);
 

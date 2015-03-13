@@ -88,9 +88,15 @@ void PControl::setColor(float r, float g, float b)
 	this->b = b;
 }
 
-PColor PControl::getColor()
+PFloatColor PControl::getColor()
 {
-	PColor color{ r, g, b };
+	PFloatColor color{ r, g, b };
+	return color;
+}
+
+PIntColor PControl::getRoundedColor()
+{
+	PIntColor color{ (int) std::round(r), (int) std::round(g), (int) std::round(b) };
 	return color;
 }
 
@@ -102,6 +108,11 @@ void PControl::setAlpha(float a)
 float PControl::getAlpha()
 {
 	return a;
+}
+
+int PControl::getRoundedAlpha()
+{
+	return (int) std::round(a);
 }
 
 void PControl::setFadeState(PControlFadeState s)
@@ -131,10 +142,10 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	switch (fadeState)
 	{
 		case PControlFadeState::FADEIN:
-			a = a + aDelta < 255 ? a + aDelta : 255.0f;
+			setAlpha(a + aDelta < 255 ? a + aDelta : 255.0f); 
 			break;
 		case PControlFadeState::FADEOUT:
-			a = a - aDelta > 0 ? a - aDelta : 0.0f;
+			setAlpha(a - aDelta > 0 ? a - aDelta : 0.0f);
 			break;
 		case PControlFadeState::NONE:
 			break;

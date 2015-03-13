@@ -5,11 +5,18 @@
 #include <algorithm>
 #include "PControlStates.h"
 
-struct PColor
+struct PFloatColor
 {
 	float r;
 	float g;
 	float b;
+};
+
+struct PIntColor
+{
+	int r;
+	int g;
+	int b;
 };
 
 class PControl
@@ -36,10 +43,12 @@ class PControl
 		void resize(float w, float h);
 		
 		void setColor(float r, float g, float b);
-		PColor getColor();
+		PFloatColor getColor();
+		PIntColor getRoundedColor();
 
 		virtual void setAlpha(float a);
 		float getAlpha();
+		int getRoundedAlpha();
 
 		virtual void setFadeState(PControlFadeState s);
 		PControlFadeState getFadeState();

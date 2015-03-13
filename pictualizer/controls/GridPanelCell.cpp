@@ -100,6 +100,38 @@ void GridPanelCell::setHeight(float h)
 	PControl::setHeight(h);
 }
 
+void GridPanelCell::setColor(float r, float g, float b)
+{
+	PControl::setColor(r, g, b);
+
+	if (element)
+		element->setColor(r, g, b);
+}
+
+void GridPanelCell::setAlpha(float a)
+{
+	PControl::setAlpha(a);
+
+	if (element)
+		element->setAlpha(a);
+}
+
+void GridPanelCell::setFadeState(PControlFadeState s)
+{
+	PControl::setFadeState(s);
+
+	if (element)
+		element->setFadeState(s);
+}
+
+void GridPanelCell::setFadeDelta(float delta)
+{
+	PControl::setFadeDelta(delta);
+
+	if (element)
+		element->setFadeDelta(delta);
+}
+
 void GridPanelCell::draw(SDL_Renderer* ren)
 {
 	if (element)
@@ -116,6 +148,8 @@ void GridPanelCell::draw(SDL_Renderer* ren)
 	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY());
 	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY() + getRoundedHeight());
 	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
+
+	PControl::draw(nullptr);
 }
 
 
