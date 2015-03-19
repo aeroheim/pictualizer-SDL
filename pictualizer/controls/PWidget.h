@@ -9,26 +9,24 @@
 class PWidget : public PControl, public EventSubscriber, public EventObserver, public InputListener
 {
 	public:
+		float getInnerX();
+		float getInnerY();
+		float getInnerWidth();
+		float getInnerHeight();
+
 		void setMinWidth(float minWidth);
 		void setMinHeight(float minHeight);
+		float getMinWidth();
+		float getMinHeight();
 
 		void setResizeState(PWidgetResizeState s);
 		PWidgetResizeState getResizeState();
 
-		void setColor(float r, float g, float b);
-		void setAlpha(float a);
-		void setFadeState(PControlFadeState s);
-		void setFadeDelta(float delta);
-
-		virtual void draw(SDL_Renderer* ren) = 0;
 		virtual void handleEvent(Event* e);
 
 	protected:
 		PWidget(float x, float y, float w, float h);
 		virtual ~PWidget();
-
-		float minWidth;
-		float minHeight;
 
 	private:
 		SDL_Keycode IGNORE_KEY = SDLK_LCTRL;
@@ -37,6 +35,9 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		PWidgetResizeState resizeState;
 		bool dragResizing;
 		bool dragging;
+
+		float minWidth;
+		float minHeight;
 
 		bool widgetIntersects(float x, float y, float w, float h);
 

@@ -16,14 +16,48 @@ PWidget::PWidget(float x, float y, float w, float h) : PControl(x, y, w, h)
 
 PWidget::~PWidget() {}
 
+float PWidget::getInnerX()
+{
+	return getX() + DRAG_ZONE_DIST;
+}
+
+float PWidget::getInnerY()
+{
+	return getY() + DRAG_ZONE_DIST;
+}
+
+float PWidget::getInnerWidth()
+{
+	return getWidth() - (DRAG_ZONE_DIST * 2);
+}
+
+float PWidget::getInnerHeight()
+{
+	return getHeight() - (DRAG_ZONE_DIST * 2);
+}
+
 void PWidget::setMinWidth(float minWidth)
 {
+	assert(minWidth >= 0);
+
 	this->minWidth = minWidth;
 }
 
 void PWidget::setMinHeight(float minHeight)
 {
+	assert(minHeight >= 0);
+
 	this->minHeight = minHeight;
+}
+
+float PWidget::getMinWidth()
+{
+	return minWidth;
+}
+
+float PWidget::getMinHeight()
+{
+	return minHeight;
 }
 
 void PWidget::setResizeState(PWidgetResizeState s)
@@ -36,33 +70,10 @@ PWidgetResizeState PWidget::getResizeState()
 	return resizeState;
 }
 
-void PWidget::setColor(float r, float g, float b)
-{
-	PControl::setColor(r, g, b);
-}
-
-void PWidget::setAlpha(float a)
-{
-	PControl::setAlpha(a);
-}
-
-void PWidget::setFadeState(PControlFadeState s)
-{
-	PControl::setFadeState(s);
-}
-
-void PWidget::setFadeDelta(float delta)
-{
-	PControl::setFadeDelta(delta);
-}
-
-void PWidget::draw(SDL_Renderer* = nullptr)
-{
-	PControl::draw(nullptr);
-}
-
 void PWidget::handleEvent(Event* e)
 {
+	notify(e);
+
 	if (!e->handled)
 	{
 		if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
@@ -115,7 +126,7 @@ void PWidget::handleEvent(Event* e)
 
 				if (lMouseHeld)
 				{
-					OnMouseMotion(mouseMotionEvent);
+					PWidget::OnMouseMotion(mouseMotionEvent);
 					e->handled = true;
 				}
 			}
