@@ -5,3 +5,10 @@ enum class PControlFadeState
 	FADEOUT,
 	NONE
 };
+
+enum class PControlTintState
+{
+	BASE,
+	FOCUS,
+	NONE
+};

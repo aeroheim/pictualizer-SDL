@@ -1,6 +1,18 @@
 #include "PControl.h"
 
-PControl::PControl(float x, float y, float w, float h) : x(x), y(y), w(w), h(h), r(-1), g(-1), b(-1), a(255), aDelta(0), fadeState(PControlFadeState::NONE) {}
+PControl::PControl(float x, float y, float w, float h) : 
+	x(x), y(y), w(w), h(h), 
+	r(-1), g(-1), b(-1),
+	tintState(PControlTintState::NONE),
+	baseTint(255),
+	focusTint(255),
+	tintDelta(0),
+	tint(255),
+	fadeState(PControlFadeState::NONE),
+	minAlpha(0),
+	maxAlpha(255),
+	alphaDelta(0),
+	alpha(255) {}
 
 PControl::~PControl() {};
 
@@ -100,20 +112,102 @@ PIntColor PControl::getRoundedColor()
 	return color;
 }
 
+void PControl::setTint(float t)
+{
+	assert(t >= 0 && t <= 255);
+
+	tint = t;
+
+	setColor(tint, tint, tint);
+
+	switch (tintState)
+	{
+		case PControlTintState::BASE:
+			if (tint <= baseTint)
+				tintState = PControlTintState::NONE;
+			break;
+		case PControlTintState::FOCUS:
+			if (tint >= focusTint)
+				tintState = PControlTintState::NONE;
+			break;
+		case PControlTintState::NONE:
+			break;
+	}
+}
+
+float PControl::getTint()
+{
+	return tint;
+}
+
+Uint8 PControl::getRoundedTint()
+{
+	return (Uint8) std::round(tint);
+}
+
+void PControl::setBaseTint(float t)
+{
+	assert(t <= focusTint);
+
+	baseTint = t;
+}
+
+float PControl::getBaseTint()
+{
+	return baseTint;
+}
+
+void PControl::setFocusTint(float t)
+{
+	assert(t >= baseTint);
+
+	focusTint = t;
+}
+
+float PControl::getFocusTint()
+{
+	return focusTint;
+}
+
+void PControl::setTintState(PControlTintState s)
+{
+	tintState = s;
+
+	if (tintState == PControlTintState::NONE)
+		setTint(baseTint);
+}
+
+PControlTintState PControl::getTintState()
+{
+	return tintState;
+}
+
+void PControl::setTintDelta(float delta)
+{
+	assert(delta >= 0);
+
+	tintDelta = delta;
+}
+
+float PControl::getTintDelta()
+{
+	return tintDelta;
+}
+
 void PControl::setAlpha(float a)
 {
 	assert(a >= 0 && a <= 255);
 
-	this->a = a;
+	alpha = a;
 
 	switch (fadeState)
 	{
 		case PControlFadeState::FADEIN:
-			if (a >= 255.0f)
+			if (alpha >= 255.0f)
 				fadeState = PControlFadeState::NONE;
 			break;
 		case PControlFadeState::FADEOUT:
-			if (a <= 0.0f)
+			if (alpha <= 0.0f)
 				fadeState = PControlFadeState::NONE;
 			break;
 		case PControlFadeState::NONE:
@@ -123,12 +217,12 @@ void PControl::setAlpha(float a)
 
 float PControl::getAlpha()
 {
-	return a;
+	return alpha;
 }
 
 Uint8 PControl::getRoundedAlpha()
 {
-	return (Uint8) std::round(a);
+	return (Uint8) std::round(alpha);
 }
 
 void PControl::setFadeState(PControlFadeState s)
@@ -145,12 +239,12 @@ void PControl::setFadeDelta(float delta)
 {
 	assert(delta >= 0);
 
-	aDelta = delta;
+	alphaDelta = delta;
 }
 
 float PControl::getFadeDelta()
 {
-	return aDelta;
+	return alphaDelta;
 }
 
 void PControl::draw(SDL_Renderer* ren = nullptr)
@@ -158,12 +252,24 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	switch (fadeState)
 	{
 		case PControlFadeState::FADEIN:
-			setAlpha(a + aDelta < 255 ? a + aDelta : 255.0f); 
+			setAlpha(alpha + alphaDelta < 255 ? alpha + alphaDelta : 255.0f); 
 			break;
 		case PControlFadeState::FADEOUT:
-			setAlpha(a - aDelta > 0 ? a - aDelta : 0.0f);
+			setAlpha(alpha - alphaDelta > 0 ? alpha - alphaDelta : 0.0f);
 			break;
 		case PControlFadeState::NONE:
+			break;
+	}
+
+	switch (tintState)
+	{
+		case PControlTintState::BASE:
+			setTint(tint - tintDelta > baseTint ? tint - tintDelta : baseTint);
+			break;
+		case PControlTintState::FOCUS:
+			setTint(tint + tintDelta < focusTint ? tint + tintDelta : focusTint);
+			break;
+		case PControlTintState::NONE:
 			break;
 	}
 }

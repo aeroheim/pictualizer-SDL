@@ -41,11 +41,35 @@ class PControl
 
 		void moveTo(float x, float y);
 		void resize(float w, float h);
-		
-		void setColor(float r, float g, float b);
+
+		virtual void setColor(float r, float g, float b);
 		PFloatColor getColor();
 		PIntColor getRoundedColor();
 
+		/*
+		 *  PControl objects provide support for modifying its own TINT value in the
+		 *  range set between BASE TINT and FOCUS TINT.
+		 */
+		virtual void setTint(float t);
+		float getTint();
+		Uint8 getRoundedTint();
+
+		void setBaseTint(float t);
+		float getBaseTint();
+
+		void setFocusTint(float t);
+		float getFocusTint();
+
+		void setTintState(PControlTintState s);
+		PControlTintState getTintState();
+
+		void setTintDelta(float delta);
+		float getTintDelta();
+
+		/*
+		 *  PControl objects provide support for modifying its own ALPHA value in the
+		 *  range set between MIN ALPHA and MAX ALPHA.
+		 */
 		virtual void setAlpha(float a);
 		float getAlpha();
 		Uint8 getRoundedAlpha();
@@ -72,7 +96,15 @@ class PControl
 		float g;
 		float b;
 
+		PControlTintState tintState;
+		float baseTint;
+		float focusTint;
+		float tintDelta;
+		float tint;
+
 		PControlFadeState fadeState;
-		float aDelta;
-		float a;
+		float minAlpha;
+		float maxAlpha;
+		float alphaDelta;
+		float alpha;
 };
