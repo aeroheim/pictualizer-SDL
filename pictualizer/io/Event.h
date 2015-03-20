@@ -4,6 +4,7 @@
 #include <string>
 
 class PWidget;
+class Button;
 
 class Event
 {
@@ -111,5 +112,12 @@ class WidgetResizeEvent : public Event
 		float y;
 		float w;
 		float h;
+};
+
+class ButtonPressedEvent : public Event
+{
+	public:
+		ButtonPressedEvent(Button* button);
+		Button* button;
 };
 

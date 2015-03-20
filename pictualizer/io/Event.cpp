@@ -27,3 +27,5 @@ ImageLoadedEvent::ImageLoadedEvent(int w, int h) : iw(w), ih(h) {}
 WidgetMoveEvent::WidgetMoveEvent(PWidget* widget, float x, float y) : widget(widget), x(x), y(y) {}
 
 WidgetResizeEvent::WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h) : widget(widget), x(x), y(y), w(w), h(h) {}
+
+ButtonPressedEvent::ButtonPressedEvent(Button* button) : button(button) {}
