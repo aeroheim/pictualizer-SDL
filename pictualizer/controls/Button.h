@@ -5,7 +5,7 @@
 #include "../io/InputListener.h"
 #include "../io/EventObserver.h"
 
-class Button : public PControl, public EventSubscriber, public EventObserver
+class Button : public PControl, public EventSubscriber, public EventObserver, public InputListener
 {
 	public:
 		virtual void handleEvent(Event* e);

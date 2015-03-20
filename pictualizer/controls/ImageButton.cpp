@@ -113,7 +113,12 @@ void ImageButton::draw(SDL_Renderer* ren)
 
 void ImageButton::handleEvent(Event* e)
 {
-	if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
+	if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
+	{
+		if (lMouseHeld && mouseUpEvent->button == SDL_BUTTON_LEFT)
+			setTintState(PControlTintState::BASE);
+	}
+	else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
 		OnMouseMotion(mouseMotionEvent);
 
 	Button::handleEvent(e);
@@ -122,15 +127,20 @@ void ImageButton::handleEvent(Event* e)
 void ImageButton::OnMouseMotion(MouseMotionEvent* e)
 {
 	bool mouseOverButton = mouseInside(e->x, e->y);
-
-	if (!mouseOver && mouseOverButton)
-	{
-		mouseOver = true;
+	
+	if (lMouseHeld && getTintState() != PControlTintState::FOCUS)
 		setTintState(PControlTintState::FOCUS);
-	}
-	else if (!mouseOverButton)
+	else
 	{
-		mouseOver = false;
-		setTintState(PControlTintState::BASE);
+		if (!mouseOver && mouseOverButton)
+		{
+			mouseOver = true;
+			setTintState(PControlTintState::FOCUS);
+		}
+		else if (!mouseOverButton)
+		{
+			mouseOver = false;
+			setTintState(PControlTintState::BASE);
+		}
 	}
 }
