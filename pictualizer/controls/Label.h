@@ -10,6 +10,7 @@ class Label : public PControl
 {
 	public:
 		Label(TTF_Font* font, float x, float y, float w, float h);
+		Label(float x, float y, float w, float h);
 
 		void setX(float x);
 		void setY(float y);

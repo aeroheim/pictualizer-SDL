@@ -1,12 +1,14 @@
 #include "Label.h"
 
-Label::Label(TTF_Font* font, float x, float y, float w, float h) : font(font), PControl(x, y, w, h)
+Label::Label(TTF_Font* font, float x, float y, float w, float h) : 
+	PControl(x, y, w, h),
+	font(font), 
+	clipState(LabelClipState::CLIP),
+	alignState(LabelAlignState::LEFT),
+	textIsPannable(false),
+	panSpeed(SRC_PAN_SPEED),
+	texture(nullptr)
 {
-	clipState = LabelClipState::CLIP;
-	alignState = LabelAlignState::LEFT;
-
-	textIsPannable = false;
-	panSpeed = SRC_PAN_SPEED;
 	resetPanning();
 
 	color.r = 255;
@@ -23,9 +25,34 @@ Label::Label(TTF_Font* font, float x, float y, float w, float h) : font(font), P
 	view.y = 0;
 	view.w = 0;
 	view.h = 0;
-
-	texture = nullptr;
 }
+
+Label::Label(float x, float y, float w, float h) :
+	PControl(x, y, w, h),
+	clipState(LabelClipState::CLIP),
+	alignState(LabelAlignState::LEFT),
+	textIsPannable(false),
+	panSpeed(SRC_PAN_SPEED),
+	texture(nullptr)
+{
+	resetPanning();
+
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = SDL_ALPHA_OPAQUE;
+
+	dest.x = getRoundedX();
+	dest.y = getRoundedY();
+	dest.w = getRoundedWidth();
+	dest.h = getRoundedHeight();
+
+	view.x = 0;
+	view.y = 0;
+	view.w = 0;
+	view.h = 0;
+}
+
 
 void Label::setX(float x)
 {
@@ -87,8 +114,11 @@ TTF_Font* Label::getFont()
 
 void Label::setText(std::string text, SDL_Renderer* ren)
 {
-	this->text = text;
-	getTextTexture(ren);
+	if (font)
+	{
+		this->text = text;
+		getTextTexture(ren);
+	}
 }
 
 std::string Label::getText()
