@@ -118,7 +118,8 @@ void PControl::setTint(float t)
 
 	tint = t;
 
-	setColor(tint, tint, tint);
+	if (r != tint && g != tint && b != tint)
+		setColor(tint, tint, tint);
 
 	switch (tintState)
 	{
@@ -203,11 +204,11 @@ void PControl::setAlpha(float a)
 	switch (fadeState)
 	{
 		case PControlFadeState::FADEIN:
-			if (alpha >= 255.0f)
+			if (alpha >= maxAlpha)
 				fadeState = PControlFadeState::NONE;
 			break;
 		case PControlFadeState::FADEOUT:
-			if (alpha <= 0.0f)
+			if (alpha <= minAlpha)
 				fadeState = PControlFadeState::NONE;
 			break;
 		case PControlFadeState::NONE:
@@ -223,6 +224,30 @@ float PControl::getAlpha()
 Uint8 PControl::getRoundedAlpha()
 {
 	return (Uint8) std::round(alpha);
+}
+
+void PControl::setMinAlpha(float a)
+{
+	assert(a <= maxAlpha);
+
+	minAlpha = a;
+}
+
+float PControl::getMinAlpha()
+{
+	return minAlpha;
+}
+
+void PControl::setMaxAlpha(float a)
+{
+	assert(a >= minAlpha);
+
+	maxAlpha = a;
+}
+
+float PControl::getMaxAlpha()
+{
+	return maxAlpha;
 }
 
 void PControl::setFadeState(PControlFadeState s)
@@ -252,10 +277,10 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	switch (fadeState)
 	{
 		case PControlFadeState::FADEIN:
-			setAlpha(alpha + alphaDelta < 255 ? alpha + alphaDelta : 255.0f); 
+			setAlpha(alpha + alphaDelta < maxAlpha ? alpha + alphaDelta : maxAlpha); 
 			break;
 		case PControlFadeState::FADEOUT:
-			setAlpha(alpha - alphaDelta > 0 ? alpha - alphaDelta : 0.0f);
+			setAlpha(alpha - alphaDelta > minAlpha ? alpha - alphaDelta : minAlpha);
 			break;
 		case PControlFadeState::NONE:
 			break;

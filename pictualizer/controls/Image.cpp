@@ -31,31 +31,33 @@ void Image::setImage(std::string path, SDL_Renderer* ren)
 	this->image = IMG_LoadTexture(ren, path.c_str());
 }
 
+void Image::freeImage()
+{
+	if (image)
+		SDL_DestroyTexture(image);
+}
+
 void Image::setX(float x)
 {
 	PControl::setX(x);
-
 	dest.x = getRoundedX();
 }
 
 void Image::setY(float y)
 {
 	PControl::setY(y);
-
 	dest.y = getRoundedY();
 }
 
 void Image::setWidth(float w)
 {
 	PControl::setWidth(w);
-
 	dest.w = getRoundedWidth();
 }
 
 void Image::setHeight(float h)
 {
 	PControl::setHeight(h);
-
 	dest.h = getRoundedHeight();
 }
 

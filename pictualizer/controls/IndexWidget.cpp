@@ -1,15 +1,14 @@
 #include "IndexWidget.h"
 
 IndexWidget::IndexWidget(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h) :  
-																		PControl(x, y, w, h),
-																		oneGrid(x, y, w, h, 1, 1),
-																		fourGrid(x, y, w, h, 2, 2),
-																		nineGrid(x, y, w, h, 3, 3)
+	PControl(x, y, w, h),
+	oneGrid(x, y, w, h, 1, 1),
+	fourGrid(x, y, w, h, 2, 2),
+	nineGrid(x, y, w, h, 3, 3),
+	ren(ren),
+	font(font),
+	index(0)
 {
-	this->ren = ren;
-	this->font = font;
-	index = 0;
-
 	for (int i = 0; i < 9; i++)
 	{
 		Label digit(font, 0, 0, 0, 0);
@@ -121,6 +120,45 @@ void IndexWidget::setColor(float r, float g, float b)
 		digitLabel.setColor(r, g, b);
 }
 
+void IndexWidget::setTint(float t)
+{
+	PControl::setTint(t);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setTint(t);
+}
+
+void IndexWidget::setBaseTint(float t)
+{
+	PControl::setBaseTint(t);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setBaseTint(t);
+}
+
+void IndexWidget::setFocusTint(float t)
+{
+	PControl::setBaseTint(t);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setFocusTint(t);
+}
+
+void IndexWidget::setTintState(PControlTintState s)
+{
+	PControl::setTintState(s);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setTintState(s);
+}
+
+void IndexWidget::setTintDelta(float delta)
+{
+	PControl::setTintDelta(delta);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setTintDelta(delta);
+}
 
 void IndexWidget::setAlpha(float a)
 {
@@ -130,13 +168,25 @@ void IndexWidget::setAlpha(float a)
 		digitLabel.setAlpha(a);
 }
 
+void IndexWidget::setMinAlpha(float a)
+{
+	PControl::setMinAlpha(a);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setMinAlpha(a);
+}
+
+void IndexWidget::setMaxAlpha(float a)
+{
+	PControl::setMaxAlpha(a);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setMaxAlpha(a);
+}
+
 void IndexWidget::setFadeState(PControlFadeState s)
 {
 	PControl::setFadeState(s);
-
-	oneGrid.setFadeState(s);
-	fourGrid.setFadeState(s);
-	nineGrid.setFadeState(s);
 
 	for (Label& digitLabel : digitLabels)
 		digitLabel.setFadeState(s);
@@ -145,10 +195,6 @@ void IndexWidget::setFadeState(PControlFadeState s)
 void IndexWidget::setFadeDelta(float delta)
 {
 	PControl::setFadeDelta(delta);
-
-	oneGrid.setFadeDelta(delta);
-	fourGrid.setFadeDelta(delta);
-	nineGrid.setFadeDelta(delta);
 
 	for (Label& digitLabel : digitLabels)
 		digitLabel.setFadeDelta(delta);

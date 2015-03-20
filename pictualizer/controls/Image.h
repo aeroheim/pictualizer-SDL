@@ -14,6 +14,8 @@ class Image : public PControl
 		void setImage(SDL_Texture* image);
 		void setImage(std::string path, SDL_Renderer* ren);
 
+		void freeImage();
+
 		void setX(float x);
 		void setY(float y);
 		void setWidth(float w);

@@ -111,12 +111,68 @@ void GridPanelRow::setColor(float r, float g, float b)
 		c.setColor(r, g, b);
 }
 
+void GridPanelRow::setTint(float t)
+{
+	PControl::setTint(t);
+
+	for (GridPanelCell& c : cells)
+		c.setTint(t);
+}
+
+void GridPanelRow::setBaseTint(float t)
+{
+	PControl::setBaseTint(t);
+
+	for (GridPanelCell& c : cells)
+		c.setBaseTint(t);
+}
+
+void GridPanelRow::setFocusTint(float t)
+{
+	PControl::setFocusTint(t);
+
+	for (GridPanelCell& c : cells)
+		c.setFocusTint(t);
+}
+
+void GridPanelRow::setTintState(PControlTintState s)
+{
+	PControl::setTintState(s);
+
+	for (GridPanelCell& c : cells)
+		c.setTintState(s);
+}
+
+void GridPanelRow::setTintDelta(float delta)
+{
+	PControl::setTintDelta(delta);
+
+	for (GridPanelCell& c : cells)
+		c.setTintDelta(delta);
+}
+
 void GridPanelRow::setAlpha(float a)
 {
 	PControl::setAlpha(a);
 
 	for (GridPanelCell& c : cells)
 		c.setAlpha(a);
+}
+
+void GridPanelRow::setMinAlpha(float a)
+{
+	PControl::setMinAlpha(a);
+
+	for (GridPanelCell& c : cells)
+		c.setMinAlpha(a);
+}
+
+void GridPanelRow::setMaxAlpha(float a)
+{
+	PControl::setMaxAlpha(a);
+
+	for (GridPanelCell& c : cells)
+		c.setMaxAlpha(a);
 }
 
 void GridPanelRow::setFadeState(PControlFadeState s)

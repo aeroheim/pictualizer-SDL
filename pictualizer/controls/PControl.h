@@ -48,31 +48,41 @@ class PControl
 
 		/*
 		 *  PControl objects provide support for modifying its own TINT value in the
-		 *  range set between BASE TINT and FOCUS TINT.
+		 *  range set between BASE TINT and FOCUS TINT. Derived classes should override
+		 *  the provided mutators if they contain other PControls, and should always call
+		 *  the original PControl provided implementation in theirs.
 		 */
 		virtual void setTint(float t);
 		float getTint();
 		Uint8 getRoundedTint();
 
-		void setBaseTint(float t);
+		virtual void setBaseTint(float t);
 		float getBaseTint();
 
-		void setFocusTint(float t);
+		virtual void setFocusTint(float t);
 		float getFocusTint();
 
-		void setTintState(PControlTintState s);
+		virtual void setTintState(PControlTintState s);
 		PControlTintState getTintState();
 
-		void setTintDelta(float delta);
+		virtual void setTintDelta(float delta);
 		float getTintDelta();
 
 		/*
 		 *  PControl objects provide support for modifying its own ALPHA value in the
-		 *  range set between MIN ALPHA and MAX ALPHA.
+		 *  range set between MIN ALPHA and MAX ALPHA. Derived classes should override
+		 *  the provided mutators if they contain other PControls, and should always call
+		 *  the original PControl provided implementation in theirs.
 		 */
 		virtual void setAlpha(float a);
 		float getAlpha();
 		Uint8 getRoundedAlpha();
+
+		virtual void setMinAlpha(float a);
+		float getMinAlpha();
+
+		virtual void setMaxAlpha(float a);
+		float getMaxAlpha();
 
 		virtual void setFadeState(PControlFadeState s);
 		PControlFadeState getFadeState();
@@ -80,6 +90,10 @@ class PControl
 		virtual void setFadeDelta(float delta);
 		float getFadeDelta();
 
+		/*
+		 *  Derived classes must call PControl's provided implementation
+		 *  when implementing draw() to enable tint and alpha effects.
+		 */
 		virtual void draw(SDL_Renderer* ren) = 0;
 
 	protected:

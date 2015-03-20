@@ -159,34 +159,90 @@ void GridPanel::setColor(float r, float g, float b)
 		row.setColor(r, g, b);
 }
 
+void GridPanel::setTint(float t)
+{
+	PControl::setTint(t);
+
+	for (GridPanelRow& row : rows)
+		row.setTint(t);
+}
+
+void GridPanel::setBaseTint(float t)
+{
+	PControl::setBaseTint(t);
+
+	for (GridPanelRow& row : rows)
+		row.setBaseTint(t);
+}
+
+void GridPanel::setFocusTint(float t)
+{
+	PControl::setFocusTint(t);
+
+	for (GridPanelRow& row : rows)
+		row.setFocusTint(t);
+}
+
+void GridPanel::setTintState(PControlTintState s)
+{
+	PControl::setTintState(s);
+
+	for (GridPanelRow& row : rows)
+		row.setTintState(s);
+}
+
+void GridPanel::setTintDelta(float delta)
+{
+	PControl::setTintDelta(delta);
+
+	for (GridPanelRow& row : rows)
+		row.setTintDelta(delta);
+}
+
 void GridPanel::setAlpha(float a)
 {
 	PControl::setAlpha(a);
 
-	for (GridPanelRow& r : rows)
-		r.setAlpha(a);
+	for (GridPanelRow& row : rows)
+		row.setAlpha(a);
+}
+
+void GridPanel::setMinAlpha(float a)
+{
+	PControl::setMinAlpha(a);
+
+	for (GridPanelRow& row : rows)
+		row.setMinAlpha(a);
+}
+
+void GridPanel::setMaxAlpha(float a)
+{
+	PControl::setMaxAlpha(a);
+
+	for (GridPanelRow& row : rows)
+		row.setMaxAlpha(a);
 }
 
 void GridPanel::setFadeState(PControlFadeState s)
 {
 	PControl::setFadeState(s);
 
-	for (GridPanelRow& r : rows)
-		r.setFadeState(s);
+	for (GridPanelRow& row : rows)
+		row.setFadeState(s);
 }
 
 void GridPanel::setFadeDelta(float delta)
 {
 	PControl::setFadeDelta(delta);
 
-	for (GridPanelRow& r : rows)
-		r.setFadeDelta(delta);
+	for (GridPanelRow& row : rows)
+		row.setFadeDelta(delta);
 }
 
 void GridPanel::draw(SDL_Renderer* ren)
 {
-	for (GridPanelRow& r : rows)
-		r.draw(ren);
+	for (GridPanelRow& row : rows)
+		row.draw(ren);
 
 	PControl::draw(nullptr);
 }

@@ -3,14 +3,14 @@
 
 using namespace std;
 
-PWidget::PWidget(float x, float y, float w, float h) : PControl(x, y, w, h)
+PWidget::PWidget(float x, float y, float w, float h) :
+	PControl(x, y, w, h),
+	dragging(false),
+	dragResizing(false),
+	resizeState(PWidgetResizeState::FREE),
+	minWidth(20),
+	minHeight(20)
 {
-	dragging = false;
-	dragResizing = false;
-	resizeState = PWidgetResizeState::FREE;
-	minWidth = 20;
-	minHeight = 20;
-
 	registerKey(IGNORE_KEY);
 }
 

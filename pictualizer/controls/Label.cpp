@@ -150,7 +150,6 @@ void Label::setAlpha(float a)
 		SDL_SetTextureAlphaMod(texture, getRoundedAlpha());
 }
 
-
 void Label::draw(SDL_Renderer* ren)
 {
 	if (texture)

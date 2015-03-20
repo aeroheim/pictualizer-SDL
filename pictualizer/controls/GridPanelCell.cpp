@@ -108,12 +108,68 @@ void GridPanelCell::setColor(float r, float g, float b)
 		element->setColor(r, g, b);
 }
 
+void GridPanelCell::setTint(float t)
+{
+	PControl::setTint(t);
+
+	if (element)
+		element->setTint(t);
+}
+
+void GridPanelCell::setBaseTint(float t)
+{
+	PControl::setBaseTint(t);
+
+	if (element)
+		element->setBaseTint(t);
+}
+
+void GridPanelCell::setFocusTint(float t)
+{
+	PControl::setFocusTint(t);
+
+	if (element)
+		element->setFocusTint(t);
+}
+
+void GridPanelCell::setTintState(PControlTintState s)
+{
+	PControl::setTintState(s);
+
+	if (element)
+		element->setTintState(s);
+}
+
+void GridPanelCell::setTintDelta(float delta)
+{
+	PControl::setTintDelta(delta);
+
+	if (element)
+		element->setTintDelta(delta);
+}
+
 void GridPanelCell::setAlpha(float a)
 {
 	PControl::setAlpha(a);
 
 	if (element)
 		element->setAlpha(a);
+}
+
+void GridPanelCell::setMinAlpha(float a)
+{
+	PControl::setMinAlpha(a);
+
+	if (element)
+		element->setMinAlpha(a);
+}
+
+void GridPanelCell::setMaxAlpha(float a)
+{
+	PControl::setMaxAlpha(a);
+
+	if (element)
+		element->setMaxAlpha(a);
 }
 
 void GridPanelCell::setFadeState(PControlFadeState s)
@@ -147,11 +203,10 @@ void GridPanelCell::draw(SDL_Renderer* ren)
 	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY());
 	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY());
 	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY() + getRoundedHeight());
-	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
+	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());	
 
 	PControl::draw(nullptr);
 }
-
 
 
 
