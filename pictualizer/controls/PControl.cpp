@@ -118,8 +118,8 @@ void PControl::setTint(float t)
 
 	tint = t;
 
-	if (r != tint && g != tint && b != tint)
-		setColor(tint, tint, tint);
+	if (r != t && g != t && b != t)
+		setColor(t, t, t);
 
 	switch (tintState)
 	{
