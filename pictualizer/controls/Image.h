@@ -9,6 +9,7 @@ class Image : public PControl
 {
 	public:
 		Image(SDL_Texture* image, float x, float y, float w, float h);
+		Image(float x, float y, float w, float h);
 		~Image();
 
 		void setImage(SDL_Texture* image);

@@ -3,18 +3,53 @@
 
 using namespace std;
 
-PWidget::PWidget(float x, float y, float w, float h) :
+PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
+	background(x, y, w, h),
 	dragging(false),
 	dragResizing(false),
+	mouseOver(false),
 	resizeState(PWidgetResizeState::FREE),
 	minWidth(20),
 	minHeight(20)
 {
+	SDL_Surface* bgSurface = SDL_CreateRGBSurface(0, (int) std::round(w), (int) std::round(h), 32, 0, 0, 0, 0);
+	SDL_FillRect(bgSurface, NULL, SDL_MapRGBA(bgSurface->format, 0, 0, 0, 255));
+	
+	SDL_Texture* bgTexture = SDL_CreateTextureFromSurface(ren, bgSurface);
+	SDL_SetTextureBlendMode(bgTexture, SDL_BLENDMODE_BLEND);
+	background.setImage(bgTexture);
+
+	SDL_FreeSurface(bgSurface);
+
 	registerKey(IGNORE_KEY);
 }
 
 PWidget::~PWidget() {}
+
+void PWidget::setX(float x)
+{
+	PControl::setX(x);
+	background.setX(x);
+}
+
+void PWidget::setY(float y)
+{
+	PControl::setY(y);
+	background.setY(y);
+}
+
+void PWidget::setWidth(float w)
+{
+	PControl::setWidth(w);
+	background.setWidth(w);
+}
+
+void PWidget::setHeight(float h)
+{
+	PControl::setHeight(h);
+	background.setHeight(h);
+}
 
 float PWidget::getInnerX()
 {
@@ -60,6 +95,31 @@ float PWidget::getMinHeight()
 	return minHeight;
 }
 
+void PWidget::setBackgroundAlpha(float a)
+{
+	background.setAlpha(a);
+}
+
+void PWidget::setBackgroundMinAlpha(float a)
+{
+	background.setMinAlpha(a);
+}
+
+void PWidget::setBackgroundMaxAlpha(float a)
+{
+	background.setMaxAlpha(a);
+}
+
+void PWidget::setBackgroundFadeState(PControlFadeState s)
+{
+	background.setFadeState(s);
+}
+
+void PWidget::setBackgroundFadeDelta(float delta)
+{
+	background.setFadeDelta(delta);
+}
+
 void PWidget::setResizeState(PWidgetResizeState s)
 {
 	resizeState = s;
@@ -68,6 +128,12 @@ void PWidget::setResizeState(PWidgetResizeState s)
 PWidgetResizeState PWidget::getResizeState()
 {
 	return resizeState;
+}
+
+void PWidget::draw(SDL_Renderer* ren)
+{
+	background.draw(ren);
+	PControl::draw(nullptr);
 }
 
 void PWidget::handleEvent(Event* e)
@@ -125,10 +191,9 @@ void PWidget::handleEvent(Event* e)
 				}
 
 				if (lMouseHeld)
-				{
-					PWidget::OnMouseMotion(mouseMotionEvent);
 					e->handled = true;
-				}
+
+				PWidget::OnMouseMotion(mouseMotionEvent);
 			}
 		}
 		else if (WidgetMoveEvent* widgetMoveEvent = dynamic_cast<WidgetMoveEvent*>(e))
@@ -238,42 +303,58 @@ void PWidget::getDragValues(MouseMotionEvent* e, float* newX, float* newY, float
 
 void PWidget::OnMouseMotion(MouseMotionEvent* e)
 {
-	// Drag the widget around.
-	if (SDL_GetCursor() == PCursors::ARROW)
+	bool mouseOverWidget = mouseInside(e->x, e->y);
+
+	if (!mouseOver && mouseOverWidget)
 	{
-		float newX = getX() + e->xrel;
-		float newY = getY() + e->yrel;
-
-		WidgetMoveEvent widgetMoveEvent(this, newX, newY);
-		notify(&widgetMoveEvent);
-
-		// If no widget collision, we can move the widget around.
-		if (!widgetMoveEvent.handled)
-		{
-			setX(newX);
-			setY(newY);
-		}
+		mouseOver = true;
+		setBackgroundFadeState(PControlFadeState::FADEIN);
 	}
-	// Drag resize the widget.
-	else
+	else if (!mouseOverWidget)
 	{
-		// TODO: support SCALED resizing.
-		float newX, newY, newW, newH;
+		mouseOver = false;
+		setBackgroundFadeState(PControlFadeState::FADEOUT);
+	}
 
-		getDragValues(e, &newX, &newY, &newW, &newH);
-
-		if (newW > minWidth && newH > minHeight)
+	if (lMouseHeld)
+	{
+		// Drag the widget around.
+		if (SDL_GetCursor() == PCursors::ARROW)
 		{
-			WidgetResizeEvent widgetResizeEvent(this, newX, newY, newW, newH);
-			notify(&widgetResizeEvent);
+			float newX = getX() + e->xrel;
+			float newY = getY() + e->yrel;
 
-			// If no widget collision, we can resize the widget.
-			if (!widgetResizeEvent.handled)
+			WidgetMoveEvent widgetMoveEvent(this, newX, newY);
+			notify(&widgetMoveEvent);
+
+			// If no widget collision, we can move the widget around.
+			if (!widgetMoveEvent.handled)
 			{
 				setX(newX);
 				setY(newY);
-				setWidth(newW);
-				setHeight(newH);
+			}
+		}
+		// Drag resize the widget.
+		else
+		{
+			// TODO: support SCALED resizing.
+			float newX, newY, newW, newH;
+
+			getDragValues(e, &newX, &newY, &newW, &newH);
+
+			if (newW > minWidth && newH > minHeight)
+			{
+				WidgetResizeEvent widgetResizeEvent(this, newX, newY, newW, newH);
+				notify(&widgetResizeEvent);
+
+				// If no widget collision, we can resize the widget.
+				if (!widgetResizeEvent.handled)
+				{
+					setX(newX);
+					setY(newY);
+					setWidth(newW);
+					setHeight(newH);
+				}
 			}
 		}
 	}

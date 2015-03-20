@@ -1,8 +1,19 @@
 #include "Image.h"
 
-Image::Image(SDL_Texture* image, float x, float y, float w, float h) : PControl(x, y, w, h)
+Image::Image(SDL_Texture* image, float x, float y, float w, float h) : 
+	PControl(x, y, w, h),
+	image(image)
 {
-	this->image = image;
+	dest.x = getRoundedX();
+	dest.y = getRoundedY();
+	dest.w = getRoundedWidth();
+	dest.h = getRoundedHeight();
+}
+
+Image::Image(float x, float y, float w, float h) : 
+	PControl(x, y, w, h),
+	image(nullptr)
+{
 	dest.x = getRoundedX();
 	dest.y = getRoundedY();
 	dest.w = getRoundedWidth();
