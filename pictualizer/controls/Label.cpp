@@ -314,4 +314,10 @@ void Label::getTextTexture(SDL_Renderer* ren)
 	resetPanning();
 
 	SDL_FreeSurface(surface);
+
+	// Restore previous color & alpha values
+	PFloatColor color = getColor();
+
+	setColor(color.r, color.g, color.b);
+	setAlpha(getAlpha());
 }
