@@ -29,3 +29,5 @@ WidgetMoveEvent::WidgetMoveEvent(PWidget* widget, float x, float y) : widget(wid
 WidgetResizeEvent::WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h) : widget(widget), x(x), y(y), w(w), h(h) {}
 
 ButtonPressedEvent::ButtonPressedEvent(Button* button) : button(button) {}
+
+TrackSeekEvent::TrackSeekEvent(int seconds) : seconds(seconds) {}

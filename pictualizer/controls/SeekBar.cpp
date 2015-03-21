@@ -1,4 +1,5 @@
 #include "SeekBar.h"
+#include <iostream>
 
 SeekBar::SeekBar(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
@@ -14,7 +15,7 @@ SeekBar::SeekBar(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, f
 
 	bodyGrid[0][0].setElement(&timeLabel);
 	bodyGrid[1][0].setElement(&bar);
-	bodyGrid[1][0].setPadding(0, 2, 0, 2);
+	bodyGrid[1][0].setPadding(0, 1, 0, 3);
 }
 
 SeekBar::~SeekBar() {}
@@ -51,6 +52,8 @@ void SeekBar::setDuration(int seconds)
 	std::stringstream ss;
 	ss << std::setw(2) << std::setfill('0') << h << ':' << std::setw(2) << std::setfill('0') << m << ':' << std::setw(2) << std::setfill('0') << s;
 	durationString = ss.str();
+
+	setTime(this->time);
 }
 
 void SeekBar::setX(float x)
@@ -218,7 +221,8 @@ void SeekBar::handleEvent(Event* e)
 
 void SeekBar::OnMouseDown(MouseDownEvent* e)
 {
-	int seekTime = (int)std::round(((e->x - bar.getX()) / bar.getWidth()) * duration);
+	int seekTime = (int) std::round(((e->x - bar.getX()) / bar.getWidth()) * duration);
+	seekTime = seekTime < 0 ? 0 : seekTime;
 
 	setTime(seekTime);
 }
@@ -228,6 +232,7 @@ void SeekBar::OnMouseUp(MouseUpEvent* e)
 	int mouseX = e->x > bar.getX() + bar.getWidth() ? (int) (bar.getX() + bar.getWidth()) : (e->x < bar.getX() ? (int) bar.getX() : e->x);
 
 	int seekTime = (int) std::round(((mouseX - bar.getX()) / bar.getWidth()) * duration);
+	seekTime = seekTime < 0 ? 0 : seekTime;
 
 	setTime(seekTime);
 
@@ -239,7 +244,8 @@ void SeekBar::OnMouseMotion(MouseMotionEvent* e)
 {
 	int mouseX = e->x > bar.getX() + bar.getWidth() ? (int) (bar.getX() + bar.getWidth()) : (e->x < bar.getX() ? (int) bar.getX() : e->x);
 
-	int seekTime = (int)std::round(((mouseX - bar.getX()) / bar.getWidth()) * duration);
+	int seekTime = (int) std::round(((mouseX - bar.getX()) / bar.getWidth()) * duration);
+	seekTime = seekTime < 0 ? 0 : seekTime;
 
 	setTime(seekTime);
 }

@@ -108,7 +108,7 @@ class WidgetResizeEvent : public Event
 	public:
 		WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h);
 		PWidget* widget;
-		float  x;
+		float x;
 		float y;
 		float w;
 		float h;
@@ -119,5 +119,12 @@ class ButtonPressedEvent : public Event
 	public:
 		ButtonPressedEvent(Button* button);
 		Button* button;
+};
+
+class TrackSeekEvent : public Event
+{
+	public:
+		TrackSeekEvent(int seconds);
+		int seconds;
 };
 
