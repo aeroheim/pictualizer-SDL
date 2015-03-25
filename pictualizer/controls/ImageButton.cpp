@@ -113,12 +113,7 @@ void ImageButton::draw(SDL_Renderer* ren)
 
 void ImageButton::handleEvent(Event* e)
 {
-	if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
-	{
-		if (lMouseHeld && mouseUpEvent->button == SDL_BUTTON_LEFT)
-			setTintState(PControlTintState::BASE);
-	}
-	else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
+	if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
 		OnMouseMotion(mouseMotionEvent);
 
 	Button::handleEvent(e);

@@ -60,6 +60,9 @@ void AudioPlayer::addPlaylist(AudioPlaylist playlist)
 
 void AudioPlayer::removePlaylist(int index)
 {
+	if (playlistIndex >= index)
+		--playlistIndex;
+
 	playlists.erase(playlists.begin() + index);
 }
 
@@ -71,14 +74,20 @@ void AudioPlayer::setCurrentPlaylist(int index)
 
 void AudioPlayer::nextPlaylist()
 {
-	if ((size_t)playlistIndex < playlists.size() - 1)
+	if ((size_t) playlistIndex < playlists.size() - 1)
+	{
+		trackIndex = 0;
 		++playlistIndex;
+	}
 }
 
 void AudioPlayer::prevPlaylist()
 {
 	if (playlistIndex > 0)
+	{
+		trackIndex = 0;
 		--playlistIndex;
+	}
 }
 
 AudioTrack* AudioPlayer::getCurrentTrack()
@@ -134,7 +143,7 @@ void AudioPlayer::nextTrack()
 		else
 		{
 			// The playlist is circular if PLAYLIST REPEAT is enabled.
-			if (repeatState == RepeatState::PLAYLIST && trackIndex+ 1 > playlistSize)
+			if (repeatState == RepeatState::PLAYLIST && trackIndex + 1 > playlistSize)
 				trackIndex = 0;
 			else if (trackIndex + 1 < playlistSize)
 				++trackIndex;
