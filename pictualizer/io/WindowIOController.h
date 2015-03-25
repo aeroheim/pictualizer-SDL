@@ -3,8 +3,8 @@
 #include <SDL.h>
 #include <locale>
 #include <codecvt>
-#include "PCursors.h"
 #include "EventObserver.h"
+#include "../assets/cursors/PCursors.h"
 #include "../audio/AudioTrack.h"
 
 

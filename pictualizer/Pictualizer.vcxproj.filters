@@ -84,9 +84,6 @@
     <ClInclude Include="controls\PWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="io\PCursors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="util\PUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="controls\ProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="assets\cursors\PCursors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -176,9 +176,6 @@
     <ClCompile Include="controls\PWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="io\PCursors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="util\PUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -198,6 +195,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="controls\ProgessBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="assets\cursors\PCursors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
