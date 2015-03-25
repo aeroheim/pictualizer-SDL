@@ -102,13 +102,16 @@
     <ClInclude Include="controls\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="controls\LabelButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="controls\ImageButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="controls\PControlStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls\SeekBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls\ProgressBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,10 +191,13 @@
     <ClCompile Include="controls\Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="controls\LabelButton.cpp">
+    <ClCompile Include="controls\ImageButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="controls\ImageButton.cpp">
+    <ClCompile Include="controls\SeekBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\ProgessBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
