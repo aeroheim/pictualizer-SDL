@@ -1,0 +1,8 @@
+
+enum class PFontTypes
+{
+	SOURCEHANSSERIF,
+	CENTURYGOTHIC,
+	MPLUSLIGHT,
+	MPLUSTHIN
+};

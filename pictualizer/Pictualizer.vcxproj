@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="assets\fonts\PFonts.h" />
+    <ClInclude Include="assets\fonts\PFontTypes.h" />
     <ClInclude Include="audio\AudioPlayer.h" />
     <ClInclude Include="audio\AudioPlayerStates.h" />
     <ClInclude Include="audio\AudioPlaylist.h" />
@@ -46,6 +48,7 @@
     <ClInclude Include="util\PUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="assets\fonts\PFonts.cpp" />
     <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="audio\AudioPlaylist.cpp" />
     <ClCompile Include="audio\AudioTrack.cpp" />
