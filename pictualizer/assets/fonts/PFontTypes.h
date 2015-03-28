@@ -1,7 +1,6 @@
 
-enum class PFontTypes
+enum class PFontType
 {
-	SOURCEHANSSERIF,
 	CENTURYGOTHIC,
 	MPLUSLIGHT,
 	MPLUSTHIN
