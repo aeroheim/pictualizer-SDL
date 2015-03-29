@@ -13,6 +13,8 @@
   <ItemGroup>
     <ClInclude Include="assets\fonts\PFonts.h" />
     <ClInclude Include="assets\fonts\PFontTypes.h" />
+    <ClInclude Include="assets\textures\PTextures.h" />
+    <ClInclude Include="assets\textures\PTextureTypes.h" />
     <ClInclude Include="audio\AudioPlayer.h" />
     <ClInclude Include="audio\AudioPlayerStates.h" />
     <ClInclude Include="audio\AudioPlaylist.h" />
@@ -49,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="assets\fonts\PFonts.cpp" />
+    <ClCompile Include="assets\textures\PTextures.cpp" />
     <ClCompile Include="audio\AudioPlayer.cpp" />
     <ClCompile Include="audio\AudioPlaylist.cpp" />
     <ClCompile Include="audio\AudioTrack.cpp" />

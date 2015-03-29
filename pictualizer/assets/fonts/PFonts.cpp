@@ -1,5 +1,4 @@
 #include "PFonts.h"
-#include <iostream>
 
 namespace
 {
@@ -19,7 +18,7 @@ namespace PFonts
 	void initFonts()
 	{
 		for (auto& kv : fontPaths)
-			for (int ptSize : pointSizes)
+			for (const int& ptSize : pointSizes)
 			{
 				// Open the font with the specified point size.
 				TTF_Font* font = TTF_OpenFont(kv.second.c_str(), ptSize);
