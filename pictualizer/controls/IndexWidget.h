@@ -5,11 +5,12 @@
 #include "PControl.h"
 #include "GridPanel.h"
 #include "Label.h"
+#include "../assets/fonts/PFonts.h"
 
 class IndexWidget : public PControl
 {
 	public:
-		IndexWidget(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h);
+		IndexWidget(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h);
 
 		void setIndex(int i);
 		int getIndex();
@@ -36,17 +37,15 @@ class IndexWidget : public PControl
 		void setFadeState(PControlFadeState s);
 		void setFadeDelta(float delta);
 
-		void draw(SDL_Renderer* ren = nullptr);
+		void draw(SDL_Renderer* ren);
 
 	private:
-		SDL_Renderer* ren;
-
 		GridPanel oneGrid;
 		GridPanel fourGrid;
 		GridPanel nineGrid;
 
 		std::vector<Label> digitLabels;
-		TTF_Font* font;
+		PFontType fontType;
 		int index;
 
 		const int MAX_INDEX = 1000000000;

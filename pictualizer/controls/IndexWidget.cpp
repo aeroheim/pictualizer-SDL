@@ -1,17 +1,16 @@
 #include "IndexWidget.h"
 
-IndexWidget::IndexWidget(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h) :  
+IndexWidget::IndexWidget(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) :  
 	PControl(x, y, w, h),
 	oneGrid(x, y, w, h, 1, 1),
 	fourGrid(x, y, w, h, 2, 2),
 	nineGrid(x, y, w, h, 3, 3),
-	ren(ren),
-	font(font),
+	fontType(fontType),
 	index(0)
 {
 	for (int i = 0; i < 9; i++)
 	{
-		Label digit(font, 0, 0, 0, 0);
+		Label digit(ren, fontType, 0, 0, 0, 0);
 
 		digit.setClipState(LabelClipState::CLIP);
 		digit.setAlignState(LabelAlignState::CENTER);
@@ -39,12 +38,21 @@ void IndexWidget::setIndex(int i)
 			{
 				Label* digitLabel = &digitLabels[counter];
 
-				digitLabel->setText(std::to_string(digit % 10), ren);
+				digitLabel->setText(std::to_string(digit % 10));
 				nGrid[i][j].setElement(digitLabel);
 
 				digit /= 10;
 				++counter;
-			}	
+			}
+
+		// Remove labels from other grids.
+		GridPanel& otherGrid = &nGrid == &fourGrid ? nineGrid : fourGrid;
+
+		for (int i = 0; i < otherGrid.getNumRows(); i++)
+			for (int j = 0; j < otherGrid[0].getNumCols(); j++)
+				otherGrid[i][j].setElement(nullptr);
+
+		oneGrid[0][0].setElement(nullptr);
 	}
 	// oneGrid case
 	else
@@ -53,11 +61,20 @@ void IndexWidget::setIndex(int i)
 
 		// Append an extra '0' to the label if necessary.
 		if (digit < 10)
-			digitLabel->setText("0" + std::to_string(digit), ren);
+			digitLabel->setText("0" + std::to_string(digit));
 		else
-			digitLabel->setText(std::to_string(digit), ren);
+			digitLabel->setText(std::to_string(digit));
 		
 		oneGrid[0][0].setElement(digitLabel);
+
+		// Remove labels from other grids.
+		for (int i = 0; i < fourGrid.getNumRows(); i++)
+			for (int j = 0; j < fourGrid[0].getNumCols(); j++)
+				fourGrid[i][j].setElement(nullptr);
+
+		for (int i = 0; i < nineGrid.getNumRows(); i++)
+			for (int j = 0; j < nineGrid[0].getNumCols(); j++)
+				nineGrid[i][j].setElement(nullptr);
 	}
 
 	index = i;
@@ -204,10 +221,7 @@ void IndexWidget::draw(SDL_Renderer* ren)
 {
 	GridPanel& nGrid = index >= 10000 ? nineGrid : (index >= 100 ? fourGrid : oneGrid);
 
-	if (ren)
-		nGrid.draw(ren);
-	else
-		nGrid.draw(this->ren);
+	nGrid.draw(ren);
 
 	PControl::draw(nullptr);
 }
