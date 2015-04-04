@@ -1,7 +1,18 @@
 #include "PFonts.h"
+#include <iostream>
+
+using namespace std;
 
 namespace
 {
+	struct PFontRef
+	{
+		TTF_Font* ref;
+		int refCount;
+		int ptSize;
+		int height;
+	};
+
 	const int pointSizes[] = { 16, 32, 64, 128, 256 };
 
 	const std::string cwd = PUtils::getcwd();
@@ -10,7 +21,28 @@ namespace
 															{ PFontType::MPLUSLIGHT, cwd + "\\assets\\fonts\\mplus-2p-light.ttf" },
 															{ PFontType::MPLUSTHIN, cwd + "\\assets\\fonts\\mplus-2p-thin.ttf" } };
 
-	std::map<PFontType, std::vector<std::tuple<int, int, int, TTF_Font*>>> fonts;
+	std::map<PFontType, std::vector<PFontRef>> fontRefs;
+
+	void dereferenceFont(PFontRef& fontRef)
+	{
+		assert(fontRef.refCount> 0);
+
+		// Decrement the reference count for the font.
+		--fontRef.refCount;
+
+		cout << "dec ref count: " << fontRef.refCount << endl;
+
+		// If no references are left, close the font.
+		if (fontRef.refCount == 0)
+		{
+			assert(fontRef.ref);
+
+			cout << "font closed" << endl;
+
+			TTF_CloseFont(fontRef.ref);
+			fontRef.ref = nullptr;
+		}
+	}
 }
 
 namespace PFonts
@@ -20,88 +52,131 @@ namespace PFonts
 		for (auto& kv : fontPaths)
 			for (const int& ptSize : pointSizes)
 			{
-				// Open the font with the specified point size.
+				// Open the font with the specified point size to query its height.
 				TTF_Font* font = TTF_OpenFont(kv.second.c_str(), ptSize);
-
-				// Query the height of the font.
-				int height = TTF_FontHeight(font);
-
+				int fontHeight = TTF_FontHeight(font);
 				TTF_CloseFont(font);
 
-				// Generate a tuple for this font with the current point size - (point size, height, ref. count, font ptr)
-				fonts[kv.first].push_back(std::tuple < int, int, int, TTF_Font* > { height, ptSize, 0, nullptr });
+				fontRefs[kv.first].push_back(PFontRef{ nullptr, 0, ptSize, fontHeight });
 			}
 	}
 
 	void freeFonts()
 	{
 		for (auto& kv : fontPaths)
-			for (auto& fontTuple : fonts[kv.first])
-			{
-				TTF_Font* font = std::get<3>(fontTuple);
-
-				if (font)
-					TTF_CloseFont(font);
-			}
+			for (PFontRef& fontRef : fontRefs[kv.first])
+				if (fontRef.ref)
+				{
+					TTF_CloseFont(fontRef.ref);
+					fontRef.ref = nullptr;
+				}
 	}
 
-	TTF_Font* requestFont(PFontType fontType, int height)
+	bool requestFont(PFontType fontType, TTF_Font** fontptr, int height)
 	{
-		for (size_t i = 0; i < fonts[fontType].size(); i++)
+		for (size_t i = 0; i < fontRefs[fontType].size(); i++)
 		{
-			auto& fontTuple = fonts[fontType][i];
+			PFontRef& fontRef = fontRefs[fontType][i];
 
-			int ptSizeHeight = std::get<0>(fontTuple);
-
-			// Use the respective point size for requested font which matches the height.
-			if (height <= ptSizeHeight || i == fonts[fontType].size() - 1)
+			// Use font size with closest matching height, or largest one possible.
+			if (height <= fontRef.height || i == fontRefs[fontType].size() - 1)
 			{
-				int& refCount = std::get<2>(fontTuple);
-
-				// If font has not been requested before, open it for use.
-				if (refCount == 0)
+				if (*fontptr)
 				{
-					int& ptSize = std::get<1>(fontTuple);
+					// Font picked is the same as the one passed in, so do nothing.
+					if (*fontptr == fontRef.ref)
+						return false;
+					// Decrement reference to passed font otherwise.
+					else
+						freeFont(fontptr);
+				}
+	
+				// If font has not been requested before, open it for use.
+				if (fontRef.refCount == 0)
+				{
+					assert(fontRef.ref == nullptr);
+
+					cout << "font opened" << endl;
+
 					const std::string& fontPath = fontPaths.at(fontType);
 
-					std::get<3>(fontTuple) = TTF_OpenFont(fontPath.c_str(), ptSize);
+					fontRef.ref = TTF_OpenFont(fontPath.c_str(), fontRef.ptSize);
 				}
 
 				// Update the font's respective reference count.
-				++refCount;
+				++fontRef.refCount;
 
-				TTF_Font* requestedFont = std::get<3>(fontTuple);
+				switch (fontType)
+				{
+					case PFontType::CENTURYGOTHIC:
+						cout << "inc CENTURYGOTHIC pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
+						break;
+					case PFontType::MPLUSLIGHT:
+						cout << "inc MPLUSLIGHT pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
+						break;
+					case PFontType::MPLUSTHIN:
+						cout << "inc MPLUSTHIN pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
+						break;
+				}
 
-				assert(requestedFont != nullptr);
-
-				return requestedFont;
+				*fontptr = fontRef.ref;
+				return true;
 			}
 		}
 
-		return nullptr;
+		// Never reached.
+		assert(false);
+		return false;
 	}
 
-	void dereferenceFont(PFontType fontType, TTF_Font* activeFont)
+	void incRefCount(PFontType fontType, TTF_Font* activeFont)
 	{
-		// Search for matching allocated font.
-		for (auto& fontTuple : fonts[fontType])
-		{
-			TTF_Font* font = std::get<3>(fontTuple);
-
-			if (activeFont == font)
+		for (PFontRef& fontRef : fontRefs[fontType])
+			if (activeFont == fontRef.ref)
 			{
-				assert(std::get<2>(fontTuple) > 0);
+				++fontRef.refCount;
 
-				// Decrement the reference count for the font.
-				int& refCount = --std::get<2>(fontTuple);
-
-				// If no references are left, close the font.
-				if (refCount == 0)
+				switch (fontType)
 				{
-					TTF_CloseFont(activeFont);
-					break;
+					case PFontType::CENTURYGOTHIC:
+						cout << "incRef CENTURYGOTHIC pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
+						break;
+					case PFontType::MPLUSLIGHT:
+						cout << "incRef MPLUSLIGHT pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
+						break;
+					case PFontType::MPLUSTHIN:
+						cout << "incRef MPLUSTHIN pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
+						break;
 				}
+
+				break;
 			}
+	}
+
+	void freeFont(TTF_Font** activeFont, PFontType fontType)
+	{
+		assert(*activeFont != nullptr);
+
+		// Search within a font type if provided for a matching font.
+		if (fontType != PFontType::NONE)
+		{
+			for (PFontRef& fontRef : fontRefs[fontType])
+				if (*activeFont == fontRef.ref)
+				{
+					dereferenceFont(fontRef);
+					*activeFont = nullptr;
+					return;
+				}
 		}
+		// Otherwise search through every font type as well.
+		else
+			for (auto& font_t : fontRefs)
+				for (PFontRef& fontRef : fontRefs[font_t.first])
+					if (*activeFont == fontRef.ref)
+					{
+						dereferenceFont(fontRef);
+						*activeFont = nullptr;
+						return;
+					}
 	}
 }

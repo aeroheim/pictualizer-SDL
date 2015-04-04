@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include <tuple>
 #include <vector>
 #include <string>
 #include <assert.h>
@@ -14,6 +13,7 @@ namespace PFonts
 	void initFonts();
 	void freeFonts();
 
-	TTF_Font* requestFont(PFontType fontType, int height);
-	void freeFont(PFontType fontType, TTF_Font* activeFont);
+	bool requestFont(PFontType fontType, TTF_Font** fontptr, int height);
+	void incRefCount(PFontType fontType, TTF_Font* activeFont);
+	void freeFont(TTF_Font** activeFont, PFontType fontType = PFontType::NONE);
 }

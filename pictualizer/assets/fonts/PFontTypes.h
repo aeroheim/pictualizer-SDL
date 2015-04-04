@@ -3,5 +3,6 @@ enum class PFontType
 {
 	CENTURYGOTHIC,
 	MPLUSLIGHT,
-	MPLUSTHIN
+	MPLUSTHIN,
+	NONE
 };
