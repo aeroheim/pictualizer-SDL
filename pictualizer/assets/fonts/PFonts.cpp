@@ -30,14 +30,10 @@ namespace
 		// Decrement the reference count for the font.
 		--fontRef.refCount;
 
-		cout << "dec ref count: " << fontRef.refCount << endl;
-
 		// If no references are left, close the font.
 		if (fontRef.refCount == 0)
 		{
 			assert(fontRef.ref);
-
-			cout << "font closed" << endl;
 
 			TTF_CloseFont(fontRef.ref);
 			fontRef.ref = nullptr;
@@ -72,8 +68,14 @@ namespace PFonts
 				}
 	}
 
-	bool requestFont(PFontType fontType, TTF_Font** fontptr, int height)
+	bool requestFont(PFontType fontType, TTF_Font** fontptr, int height, PFontType prevFontType)
 	{
+		if (fontType == PFontType::NONE)
+		{
+			*fontptr = nullptr;
+			return true;
+		}
+
 		for (size_t i = 0; i < fontRefs[fontType].size(); i++)
 		{
 			PFontRef& fontRef = fontRefs[fontType][i];
@@ -88,15 +90,13 @@ namespace PFonts
 						return false;
 					// Decrement reference to passed font otherwise.
 					else
-						freeFont(fontptr);
+						freeFont(fontptr, prevFontType);
 				}
 	
 				// If font has not been requested before, open it for use.
 				if (fontRef.refCount == 0)
 				{
 					assert(fontRef.ref == nullptr);
-
-					cout << "font opened" << endl;
 
 					const std::string& fontPath = fontPaths.at(fontType);
 
@@ -105,19 +105,6 @@ namespace PFonts
 
 				// Update the font's respective reference count.
 				++fontRef.refCount;
-
-				switch (fontType)
-				{
-					case PFontType::CENTURYGOTHIC:
-						cout << "inc CENTURYGOTHIC pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
-						break;
-					case PFontType::MPLUSLIGHT:
-						cout << "inc MPLUSLIGHT pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
-						break;
-					case PFontType::MPLUSTHIN:
-						cout << "inc MPLUSTHIN pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
-						break;
-				}
 
 				*fontptr = fontRef.ref;
 				return true;
@@ -135,20 +122,6 @@ namespace PFonts
 			if (activeFont == fontRef.ref)
 			{
 				++fontRef.refCount;
-
-				switch (fontType)
-				{
-					case PFontType::CENTURYGOTHIC:
-						cout << "incRef CENTURYGOTHIC pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
-						break;
-					case PFontType::MPLUSLIGHT:
-						cout << "incRef MPLUSLIGHT pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
-						break;
-					case PFontType::MPLUSTHIN:
-						cout << "incRef MPLUSTHIN pt. " << fontRef.ptSize << ", ref: " << fontRef.refCount << endl;
-						break;
-				}
-
 				break;
 			}
 	}
