@@ -223,5 +223,5 @@ void IndexWidget::draw(SDL_Renderer* ren)
 
 	nGrid.draw(ren);
 
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }

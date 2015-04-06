@@ -147,5 +147,5 @@ void PTexture::draw(SDL_Renderer* ren)
 	if (texture)
 		SDL_RenderCopy(ren, texture, nullptr, &dest);
 
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }

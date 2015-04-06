@@ -1,7 +1,4 @@
 #include "PWidget.h"
-#include <iostream>
-
-using namespace std;
 
 PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
@@ -133,7 +130,7 @@ PWidgetResizeState PWidget::getResizeState()
 void PWidget::draw(SDL_Renderer* ren)
 {
 	background.draw(ren);
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }
 
 void PWidget::handleEvent(Event* e)

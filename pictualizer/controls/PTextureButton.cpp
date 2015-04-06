@@ -12,7 +12,7 @@ PTextureButton::~PTextureButton()
 
 void PTextureButton::setTexture(PTextureType textureType)
 {
-	texture.freeTexture();
+	texture.setTexture(textureType);
 }
 
 void PTextureButton::setX(float x)

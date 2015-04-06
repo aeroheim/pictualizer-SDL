@@ -244,7 +244,7 @@ void GridPanel::draw(SDL_Renderer* ren)
 	for (GridPanelRow& row : rows)
 		row.draw(ren);
 
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }
 
 GridPanelRow& GridPanel::operator[](const int index)

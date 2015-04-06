@@ -108,7 +108,7 @@ void ImageButton::setFadeDelta(float delta)
 void ImageButton::draw(SDL_Renderer* ren)
 {
 	image.draw(ren);
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }
 
 void ImageButton::handleEvent(Event* e)

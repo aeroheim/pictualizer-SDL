@@ -88,5 +88,5 @@ void Image::draw(SDL_Renderer* ren)
 	if (image)
 		SDL_RenderCopy(ren, image, nullptr, &dest);
 
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }

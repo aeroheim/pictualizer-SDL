@@ -196,7 +196,7 @@ void GridPanelRow::draw(SDL_Renderer* ren)
 	for (GridPanelCell& c : cells)
 		c.draw(ren);
 
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }
 
 GridPanelCell& GridPanelRow::operator[](const int index)

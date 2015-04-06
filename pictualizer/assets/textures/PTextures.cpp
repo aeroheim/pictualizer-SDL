@@ -96,8 +96,6 @@ namespace PTextures
 						SDL_DestroyTexture(*activeTexture);
 				}
 
-				std::cout << "texture request: " << textureRef.size << std::endl;
-
 				*activeTexture = IMG_LoadTexture(renderer, textureRef.path.c_str());
 				return true;
 			}
