@@ -13,7 +13,7 @@
 class SeekBar : public PControl, public EventObserver, public EventSubscriber, public InputListener
 {
 	public:
-		SeekBar(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h);
+		SeekBar(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h);
 		~SeekBar();
 
 		void setTime(int seconds);
@@ -48,8 +48,6 @@ class SeekBar : public PControl, public EventObserver, public EventSubscriber, p
 		void handleEvent(Event* e);
 
 	private:
-		SDL_Renderer* ren;
-
 		GridPanel bodyGrid;
 		Label timeLabel;
 		ProgressBar bar;

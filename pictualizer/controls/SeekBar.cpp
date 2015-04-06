@@ -1,17 +1,16 @@
 #include "SeekBar.h"
 #include <iostream>
 
-SeekBar::SeekBar(SDL_Renderer* ren, TTF_Font* font, float x, float y, float w, float h) :
+SeekBar::SeekBar(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
-	ren(ren),
 	bodyGrid(x, y, std::vector <float> { h * (3.0f / 4.0f), h * (1.0f / 4.0f)}, std::vector <float> { w }),
-	timeLabel(font, x, y, w, h),
+	timeLabel(ren, fontType, x, y, w, h),
 	bar(ren, x, y, w, h),
 	durationString("00:00:00"),
 	duration(0),
 	time(0)
 {
-	timeLabel.setText("00:00:00 / 00:00:00", ren);
+	timeLabel.setText("00:00:00 / 00:00:00");
 
 	bodyGrid[0][0].setElement(&timeLabel);
 	bodyGrid[1][0].setElement(&bar);
@@ -34,7 +33,7 @@ void SeekBar::setTime(int seconds)
 
 	std::stringstream ss;
 	ss << std::setw(2) << std::setfill('0') << h << ':' << std::setw(2) << std::setfill('0') << m << ':' << std::setw(2) << std::setfill('0') << s << " / ";
-	timeLabel.setText(ss.str().append(durationString), ren);
+	timeLabel.setText(ss.str().append(durationString));
 }
 
 void SeekBar::setDuration(int seconds)
@@ -171,12 +170,9 @@ void SeekBar::setFadeDelta(float delta)
 	bodyGrid.setFadeDelta(delta);
 }
 
-void SeekBar::draw(SDL_Renderer* ren = nullptr)
+void SeekBar::draw(SDL_Renderer* ren)
 {
-	if (ren)
-		bodyGrid.draw(ren);
-	else
-		bodyGrid.draw(this->ren);
+	bodyGrid.draw(ren);
 
 	PControl::draw(nullptr);
 }
