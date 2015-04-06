@@ -1,7 +1,4 @@
 #include "PUI.h"
-#include <iostream>
-
-using namespace std;
 
 PUI::PUI(SDL_Window* win, SDL_Renderer* ren, int ww, int hh) : 
 	win(win), 
