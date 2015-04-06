@@ -5,22 +5,26 @@
 #include <string>
 #include "PControl.h"
 #include "LabelStates.h"
+#include "../assets/fonts/PFonts.h"
 
 class Label : public PControl
 {
 	public:
-		Label(TTF_Font* font, float x, float y, float w, float h);
-		Label(float x, float y, float w, float h);
+		Label(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h);
+		~Label();
+
+		Label(const Label& other);
+		Label& operator=(const Label& other);
 
 		void setX(float x);
 		void setY(float y);
 		void setWidth(float w);
 		void setHeight(float h);
 		
-		void setFont(TTF_Font* font, SDL_Renderer* ren);
+		void setFont(PFontType fontType);
 		TTF_Font* getFont();
 
-		void setText(std::string text, SDL_Renderer* ren);
+		void setText(std::string text);
 		std::string getText();
 
 		void setClipState(LabelClipState s);
@@ -32,9 +36,11 @@ class Label : public PControl
 		void setColor(float r, float g, float b);
 		void setAlpha(float a);
 
-		void draw(SDL_Renderer* ren);
+		void draw(SDL_Renderer* ren = nullptr);
 
 	private:
+		SDL_Renderer* ren;
+		PFontType fontType;
 		TTF_Font* font;
 		SDL_Texture* texture;
 		SDL_Color color;

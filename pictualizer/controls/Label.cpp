@@ -1,14 +1,17 @@
 #include "Label.h"
 
-Label::Label(TTF_Font* font, float x, float y, float w, float h) : 
+Label::Label(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) : 
+	ren(ren),
 	PControl(x, y, w, h),
-	font(font), 
+	fontType(fontType),
+	font(nullptr),
 	clipState(LabelClipState::CLIP),
 	alignState(LabelAlignState::LEFT),
 	textIsPannable(false),
 	panSpeed(SRC_PAN_SPEED),
 	texture(nullptr)
 {
+	PFonts::requestFont(fontType, &font, getRoundedHeight(), fontType);
 	resetPanning();
 
 	color.r = 255;
@@ -27,31 +30,77 @@ Label::Label(TTF_Font* font, float x, float y, float w, float h) :
 	view.h = 0;
 }
 
-Label::Label(float x, float y, float w, float h) :
-	PControl(x, y, w, h),
-	clipState(LabelClipState::CLIP),
-	alignState(LabelAlignState::LEFT),
-	textIsPannable(false),
-	panSpeed(SRC_PAN_SPEED),
-	texture(nullptr)
+Label::~Label()
 {
-	resetPanning();
+	PFonts::freeFont(&font, fontType);
 
-	color.r = 255;
-	color.g = 255;
-	color.b = 255;
-	color.a = SDL_ALPHA_OPAQUE;
-
-	dest.x = getRoundedX();
-	dest.y = getRoundedY();
-	dest.w = getRoundedWidth();
-	dest.h = getRoundedHeight();
-
-	view.x = 0;
-	view.y = 0;
-	view.w = 0;
-	view.h = 0;
+	if (this->texture)
+		SDL_DestroyTexture(this->texture);
 }
+
+Label::Label(const Label& other) : 
+	PControl(other),
+	ren(other.ren),
+	fontType(other.fontType),
+	font(other.font),
+	texture(nullptr),
+	color(other.color),
+	view(other.view),
+	dest(other.dest),
+	text(other.text),
+	clipState(other.clipState),
+	alignState(other.alignState),
+	panSpeed(other.panSpeed),
+	panX(other.panX),
+	maxPanX(other.maxPanX),
+	frameCount(other.frameCount),
+	textIsPannable(other.textIsPannable),
+	panStopped(other.panStopped)
+{
+	// The reference count to the font must be incremented everytime a label is copied.
+	PFonts::incRefCount(fontType, font);
+
+	// Get a new texture if possible.
+	if (!text.empty())
+		getTextTexture(ren);
+}
+
+
+Label& Label::operator=(const Label& other)
+{
+	setX(((PControl&) other).getX());
+	setY(((PControl&) other).getY());
+	setWidth(((PControl&) other).getWidth());
+	setHeight(((PControl&) other).getHeight());
+
+	ren = other.ren;
+	color = other.color;
+	view = other.view;
+	dest = other.dest;
+	text = other.text;
+	clipState = other.clipState;
+	alignState = other.alignState;
+	panSpeed = other.panSpeed;
+	panX = other.panX;
+	maxPanX = other.maxPanX;
+	frameCount = other.frameCount;
+	textIsPannable = other.textIsPannable;
+	panStopped = other.panStopped;
+
+	// Free current font and inc. reference for new font.
+	PFonts::freeFont(&font, fontType);
+	fontType = other.fontType;
+	font = other.font;
+	PFonts::incRefCount(fontType, font);
+
+	texture = nullptr;
+
+	// Get a new texture.
+	getTextTexture(ren);
+
+	return *this;
+}
+
 
 
 void Label::setX(float x)
@@ -95,16 +144,21 @@ void Label::setHeight(float h)
 {
 	PControl::setHeight(h);
 
+	if (PFonts::requestFont(fontType, &font, getRoundedHeight(), fontType))
+		getTextTexture(ren);
+
 	if (!text.empty())
 		resetView();
 
 	dest.h = getRoundedHeight();
 }
 
-void Label::setFont(TTF_Font* font, SDL_Renderer* ren)
+void Label::setFont(PFontType fontType)
 {
-	this->font = font;
-	getTextTexture(ren);
+	if (PFonts::requestFont(fontType, &font, getRoundedHeight(), this->fontType))
+		getTextTexture(ren);
+
+	this->fontType = fontType;
 }
 
 TTF_Font* Label::getFont()
@@ -112,7 +166,7 @@ TTF_Font* Label::getFont()
 	return font;
 }
 
-void Label::setText(std::string text, SDL_Renderer* ren)
+void Label::setText(std::string text)
 {
 	if (font)
 	{
