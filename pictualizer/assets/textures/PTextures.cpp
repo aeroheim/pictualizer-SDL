@@ -3,6 +3,13 @@
 
 namespace
 {
+	struct PTextureRef
+	{
+		std::string path;
+		int size;
+		int area;
+	};
+
 	const int textureSizes[] = { 32, 64, 128 };
 
 	const std::string cwd = PUtils::getcwd();
@@ -23,7 +30,7 @@ namespace
 
 	SDL_Renderer* renderer;
 
-	std::map<PTextureType, std::vector<std::pair<int, std::string>>> textures;
+	std::map<PTextureType, std::vector<PTextureRef>> textures;
 }
 
 namespace PTextures
@@ -45,40 +52,59 @@ namespace PTextures
 				SDL_DestroyTexture(texture);
 
 				// Add the area and path of the texture to this size for this texture type's list.
-				textures[kv.first].push_back(std::pair < int, std::string > { w * h, path });
+				textures[kv.first].push_back(PTextureRef{ path, textureSize, w * h });
 			}
 	}
 
-	SDL_Texture* requestTexture(PTextureType textureType, int area, SDL_Texture* currentTexture)
+	bool requestTexture(PTextureType textureType, int area, SDL_Texture** activeTexture, PTextureType prevTextureType)
 	{
+		if (textureType == PTextureType::NONE)
+		{
+			*activeTexture = nullptr;
+			return false;
+		}
+
+		// If requesting a texture type different from the previous one, free the active texture.
+		if (prevTextureType != PTextureType::NONE && prevTextureType != textureType)
+		{
+			assert(*activeTexture);
+
+			SDL_DestroyTexture(*activeTexture);
+			*activeTexture = nullptr;
+		}
+
 		for (size_t i = 0; i < textures[textureType].size(); i++)
 		{
-			int& textureArea = textures[textureType][i].first;
-			std::string& texturePath = textures[textureType][i].second;
+			PTextureRef& textureRef = textures[textureType][i];
 
 			// Search for texture to return where its' area most closely matches the given area.
-			if (area <= textureArea || i == textures[textureType].size() - 1)
+			if (area <= textureRef.area || i == textures[textureType].size() - 1)
 			{
 				// Check if current texture is also a texture of the same size.
-				if (currentTexture)
+				if (*activeTexture)
 				{
 					int w, h;
-					SDL_QueryTexture(currentTexture, NULL, NULL, &w, &h);
-					int currentTextureArea = w * h;
-					int prevArea = i == 0 ? 0 : textures[textureType][i - 1].first;
+					SDL_QueryTexture(*activeTexture, NULL, NULL, &w, &h);
+					int activeTextureArea = w * h;
+					int prevArea = i == 0 ? 0 : textures[textureType][i - 1].area;
 
 					// If so, no need to acquire a new texture; simply return the given texture back.
-					if (currentTextureArea >= prevArea && currentTextureArea <= textureArea)
-						return currentTexture;
+					if (activeTextureArea > prevArea && activeTextureArea <= textureRef.area)
+						return false;
 					// Otherwise free the texture so that we can acquire a new one.
 					else
-						SDL_DestroyTexture(currentTexture);
+						SDL_DestroyTexture(*activeTexture);
 				}
 
-				return IMG_LoadTexture(renderer, texturePath.c_str());
+				std::cout << "texture request: " << textureRef.size << std::endl;
+
+				*activeTexture = IMG_LoadTexture(renderer, textureRef.path.c_str());
+				return true;
 			}
 		}
 
-		return currentTexture;
+		// Never reached.
+		assert(false);
+		return false;
 	}
 }

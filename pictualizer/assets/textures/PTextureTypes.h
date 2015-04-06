@@ -11,5 +11,6 @@ enum class PTextureType
 	AP_REPEAT,
 	AP_SHUFFLE,
 	AP_VOL_UP,
-	AP_VOL_DOWN
+	AP_VOL_DOWN,
+	NONE
 };
