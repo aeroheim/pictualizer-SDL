@@ -126,6 +126,12 @@
     <ClInclude Include="assets\textures\PTextureTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\PTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls\PTextureButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -216,6 +222,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="assets\textures\PTextures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\PTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\PTextureButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
