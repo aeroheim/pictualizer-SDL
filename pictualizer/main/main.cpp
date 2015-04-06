@@ -3,6 +3,8 @@
 #include <iostream>
 #include "../io/WindowIOController.h"
 #include "../image/ImageBackground.h"
+#include "../assets/textures/PTextures.h"
+#include "../assets/fonts/PFonts.h"
 #include "../ui/PUI.h"
 
 using std::cout;
@@ -51,6 +53,12 @@ int main(int argc, char** argv)
 	int ww, wh;
 	SDL_GetWindowSize(win, &ww, &wh);
 
+	// Initialize fonts.
+	PFonts::initFonts();
+
+	// Initialize textures.
+	PTextures::initTextures(ren);
+
 	// Initialize image background.
 	ImageBackground imageBackground(ren, ww, wh);
 	
@@ -79,6 +87,9 @@ int main(int argc, char** argv)
 		// Render current frame.
 		SDL_RenderPresent(ren);
 	}
+
+	// Free fonts.
+	PFonts::freeFonts();
 
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(win);
