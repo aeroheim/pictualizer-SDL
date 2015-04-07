@@ -149,12 +149,18 @@ void ImageCamera::handleEvent(Event* e)
 				lMouseHeld = true;
 				mDownX = mouseDownEvent->x;
 				mDownY = mouseDownEvent->y;
+
+				if (keyHeld(ACCESS_KEY))
+					e->handled = true;
 			}
 		}
 		else if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
 		{
 			if (mouseUpEvent->button == SDL_BUTTON_LEFT)
 				lMouseHeld = false;
+
+			if (keyHeld(ACCESS_KEY))
+				e->handled = true;
 		}
 		else if (MouseWheelEvent* mouseWheelEvent = dynamic_cast<MouseWheelEvent*>(e))
 		{

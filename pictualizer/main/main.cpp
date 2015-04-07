@@ -68,8 +68,8 @@ int main(int argc, char** argv)
 	// Initialize IO.
 	WindowIOController windowIOController(win);
 
-	windowIOController.addSubscriber(&ui);
 	windowIOController.addSubscriber(&imageBackground);
+	windowIOController.addSubscriber(&ui);
 
 	while (true)
 	{

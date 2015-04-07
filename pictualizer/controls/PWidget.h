@@ -43,8 +43,6 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		virtual ~PWidget();
 
 	private:
-		SDL_Keycode IGNORE_KEY = SDLK_LCTRL;
-
 		Image background;
 
 		const int DRAG_ZONE_DIST = 12;

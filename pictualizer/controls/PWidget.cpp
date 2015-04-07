@@ -18,8 +18,6 @@ PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	background.setImage(bgTexture);
 
 	SDL_FreeSurface(bgSurface);
-
-	registerKey(IGNORE_KEY);
 }
 
 PWidget::~PWidget() {}
@@ -139,33 +137,18 @@ void PWidget::handleEvent(Event* e)
 
 	if (!e->handled)
 	{
-		if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
-			setKeyHeld(keyDownEvent->key);
-		else if (KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
+		if (MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(e))
 		{
-			setKeyReleased(keyUpEvent->key);
-
-			if (keyUpEvent->key == IGNORE_KEY)
+			if (mouseInside(mouseDownEvent->x, mouseDownEvent->y) && !lMouseHeld && mouseDownEvent->button == SDL_BUTTON_LEFT)
 			{
-				SDL_ShowCursor(SDL_ENABLE);
-				SDL_SetRelativeMouseMode(SDL_FALSE);
-			}
-		}
-		else if (MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(e))
-		{
-			if (!keyHeld(IGNORE_KEY))
-			{
-				if (mouseInside(mouseDownEvent->x, mouseDownEvent->y) && !lMouseHeld && mouseDownEvent->button == SDL_BUTTON_LEFT)
-				{
-					lMouseHeld = true;
-					mDownX = mouseDownEvent->x;
-					mDownY = mouseDownEvent->y;
+				lMouseHeld = true;
+				mDownX = mouseDownEvent->x;
+				mDownY = mouseDownEvent->y;
 
-					if (SDL_GetCursor() != PCursors::ARROW)
-						dragResizing = true;
-					else
-						dragging = true;
-				}
+				if (SDL_GetCursor() != PCursors::ARROW)
+					dragResizing = true;
+				else
+					dragging = true;
 			}
 		}
 		else if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
@@ -179,19 +162,16 @@ void PWidget::handleEvent(Event* e)
 		}
 		else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
 		{
-			if (!keyHeld(IGNORE_KEY))
+			if (!dragResizing && !dragging && mouseInside(mouseMotionEvent->x, mouseMotionEvent->y))
 			{
-				if (!dragResizing && !dragging && mouseInside(mouseMotionEvent->x, mouseMotionEvent->y))
-				{
-					setDragCursor(mouseMotionEvent);
-					e->handled = true;
-				}
-
-				if (lMouseHeld)
-					e->handled = true;
-
-				PWidget::OnMouseMotion(mouseMotionEvent);
+				setDragCursor(mouseMotionEvent);
+				e->handled = true;
 			}
+
+			if (lMouseHeld)
+				e->handled = true;
+
+			PWidget::OnMouseMotion(mouseMotionEvent);
 		}
 		else if (WidgetMoveEvent* widgetMoveEvent = dynamic_cast<WidgetMoveEvent*>(e))
 		{
