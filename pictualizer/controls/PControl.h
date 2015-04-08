@@ -22,29 +22,32 @@ struct PIntColor
 class PControl
 {
 	public:
+		PControl(const PControl& other);
+		PControl& operator=(const PControl& other);
+
 		virtual void setX(float x);
 		virtual void setY(float y);
 		virtual void setWidth(float w);
 		virtual void setHeight(float h);
 
-		float getX();
-		float getY();
-		float getWidth();
-		float getHeight();
+		float getX() const;
+		float getY() const;
+		float getWidth() const;
+		float getHeight() const;
 
-		int getRoundedX();
-		int getRoundedY();
-		int getRoundedWidth();
-		int getRoundedHeight();
+		int getRoundedX() const;
+		int getRoundedY() const;
+		int getRoundedWidth() const;
+		int getRoundedHeight() const;
 
-		bool mouseInside(int x, int y);
+		bool mouseInside(int x, int y) const;
 
 		void moveTo(float x, float y);
 		void resize(float w, float h);
 
 		virtual void setColor(float r, float g, float b);
-		PFloatColor getColor();
-		PIntColor getRoundedColor();
+		PFloatColor getColor() const;
+		PIntColor getRoundedColor() const;
 
 		/*
 		 *  PControl objects provide support for modifying its own TINT value in the
@@ -53,20 +56,20 @@ class PControl
 		 *  the original PControl provided implementation in theirs.
 		 */
 		virtual void setTint(float t);
-		float getTint();
-		Uint8 getRoundedTint();
+		float getTint() const;
+		Uint8 getRoundedTint() const;
 
 		virtual void setBaseTint(float t);
-		float getBaseTint();
+		float getBaseTint() const;
 
 		virtual void setFocusTint(float t);
-		float getFocusTint();
+		float getFocusTint() const;
 
 		virtual void setTintState(PControlTintState s);
-		PControlTintState getTintState();
+		PControlTintState getTintState() const;
 
 		virtual void setTintDelta(float delta);
-		float getTintDelta();
+		float getTintDelta() const;
 
 		/*
 		 *  PControl objects provide support for modifying its own ALPHA value in the
@@ -75,20 +78,20 @@ class PControl
 		 *  the original PControl provided implementation in theirs.
 		 */
 		virtual void setAlpha(float a);
-		float getAlpha();
-		Uint8 getRoundedAlpha();
+		float getAlpha() const;
+		Uint8 getRoundedAlpha() const;
 
 		virtual void setMinAlpha(float a);
-		float getMinAlpha();
+		float getMinAlpha() const;
 
 		virtual void setMaxAlpha(float a);
-		float getMaxAlpha();
+		float getMaxAlpha() const;
 
 		virtual void setFadeState(PControlFadeState s);
-		PControlFadeState getFadeState();
+		PControlFadeState getFadeState() const;
 
 		virtual void setFadeDelta(float delta);
-		float getFadeDelta();
+		float getFadeDelta() const;
 
 		/*
 		 *  Derived classes must call PControl's provided implementation

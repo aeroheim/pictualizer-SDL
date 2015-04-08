@@ -16,6 +16,54 @@ PControl::PControl(float x, float y, float w, float h) :
 
 PControl::~PControl() {};
 
+PControl::PControl(const PControl& other)
+{
+	setX(other.getX());
+	setY(other.getY());
+	setWidth(other.getWidth());
+	setHeight(other.getHeight());
+
+	PFloatColor color = other.getColor();
+	setColor(color.r, color.g, color.b);
+
+	setTint(other.getTint());
+	setBaseTint(other.getBaseTint());
+	setFocusTint(other.getFocusTint());
+	setTintState(other.getTintState());
+	setTintDelta(other.getTintDelta());
+
+	setAlpha(other.getAlpha());
+	setMinAlpha(other.getMinAlpha());
+	setMaxAlpha(other.getMaxAlpha());
+	setFadeState(other.getFadeState());
+	setFadeDelta(other.getFadeDelta());
+}
+
+PControl& PControl::operator=(const PControl& other)
+{
+	setX(other.getX());
+	setY(other.getY());
+	setWidth(other.getWidth());
+	setHeight(other.getHeight());
+
+	PFloatColor color = other.getColor();
+	setColor(color.r, color.g, color.b);
+
+	setTint(other.getTint());
+	setBaseTint(other.getBaseTint());
+	setFocusTint(other.getFocusTint());
+	setTintState(other.getTintState());
+	setTintDelta(other.getTintDelta());
+
+	setAlpha(other.getAlpha());
+	setMinAlpha(other.getMinAlpha());
+	setMaxAlpha(other.getMaxAlpha());
+	setFadeState(other.getFadeState());
+	setFadeDelta(other.getFadeDelta());
+
+	return *this;
+}
+
 void PControl::setX(float x)
 {
 	this->x = x;
@@ -36,47 +84,47 @@ void PControl::setHeight(float h)
 	this->h = h;
 }
 
-float PControl::getX()
+float PControl::getX() const
 {
 	return x;
 }
 
-float PControl::getY()
+float PControl::getY() const
 {
 	return y;
 }
 
-float PControl::getWidth()
+float PControl::getWidth() const
 {
 	return w;
 }
 
-float PControl::getHeight()
+float PControl::getHeight() const
 {
 	return h;
 }
 
-int PControl::getRoundedX()
+int PControl::getRoundedX() const
 {
 	return (int) std::round(x);
 }
 
-int PControl::getRoundedY()
+int PControl::getRoundedY() const
 {
 	return (int) std::round(y);
 }
 
-int PControl::getRoundedWidth()
+int PControl::getRoundedWidth() const
 {
 	return (int) std::round(w);
 }
 
-int PControl::getRoundedHeight()
+int PControl::getRoundedHeight() const
 {
 	return (int) std::round(h);
 }
 
-bool PControl::mouseInside(int x, int y)
+bool PControl::mouseInside(int x, int y) const
 {
 	return ((x >= getRoundedX() && x <= getRoundedX() + getRoundedWidth()) && (y >= getRoundedY() && y <= getRoundedY() + getRoundedHeight()));
 }
@@ -100,13 +148,13 @@ void PControl::setColor(float r, float g, float b)
 	this->b = b;
 }
 
-PFloatColor PControl::getColor()
+PFloatColor PControl::getColor() const
 {
 	PFloatColor color{ r, g, b };
 	return color;
 }
 
-PIntColor PControl::getRoundedColor()
+PIntColor PControl::getRoundedColor() const
 {
 	PIntColor color{ (Uint8) std::round(r), (Uint8) std::round(g), (Uint8) std::round(b) };
 	return color;
@@ -136,12 +184,12 @@ void PControl::setTint(float t)
 	}
 }
 
-float PControl::getTint()
+float PControl::getTint() const
 {
 	return tint;
 }
 
-Uint8 PControl::getRoundedTint()
+Uint8 PControl::getRoundedTint() const
 {
 	return (Uint8) std::round(tint);
 }
@@ -153,7 +201,7 @@ void PControl::setBaseTint(float t)
 	baseTint = t;
 }
 
-float PControl::getBaseTint()
+float PControl::getBaseTint() const
 {
 	return baseTint;
 }
@@ -165,7 +213,7 @@ void PControl::setFocusTint(float t)
 	focusTint = t;
 }
 
-float PControl::getFocusTint()
+float PControl::getFocusTint() const
 {
 	return focusTint;
 }
@@ -178,7 +226,7 @@ void PControl::setTintState(PControlTintState s)
 		setTint(baseTint);
 }
 
-PControlTintState PControl::getTintState()
+PControlTintState PControl::getTintState() const
 {
 	return tintState;
 }
@@ -190,7 +238,7 @@ void PControl::setTintDelta(float delta)
 	tintDelta = delta;
 }
 
-float PControl::getTintDelta()
+float PControl::getTintDelta() const
 {
 	return tintDelta;
 }
@@ -216,12 +264,12 @@ void PControl::setAlpha(float a)
 	}
 }
 
-float PControl::getAlpha()
+float PControl::getAlpha() const
 {
 	return alpha;
 }
 
-Uint8 PControl::getRoundedAlpha()
+Uint8 PControl::getRoundedAlpha() const
 {
 	return (Uint8) std::round(alpha);
 }
@@ -233,7 +281,7 @@ void PControl::setMinAlpha(float a)
 	minAlpha = a;
 }
 
-float PControl::getMinAlpha()
+float PControl::getMinAlpha() const
 {
 	return minAlpha;
 }
@@ -245,7 +293,7 @@ void PControl::setMaxAlpha(float a)
 	maxAlpha = a;
 }
 
-float PControl::getMaxAlpha()
+float PControl::getMaxAlpha() const
 {
 	return maxAlpha;
 }
@@ -255,7 +303,7 @@ void PControl::setFadeState(PControlFadeState s)
 	fadeState = s;
 }
 
-PControlFadeState PControl::getFadeState()
+PControlFadeState PControl::getFadeState() const
 {
 	return fadeState;
 }
@@ -267,7 +315,7 @@ void PControl::setFadeDelta(float delta)
 	alphaDelta = delta;
 }
 
-float PControl::getFadeDelta()
+float PControl::getFadeDelta() const
 {
 	return alphaDelta;
 }
