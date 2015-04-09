@@ -128,7 +128,9 @@ void WindowIOController::OnMouseWheel(SDL_MouseWheelEvent& e)
 void WindowIOController::OnMouseMotion(SDL_MouseMotionEvent& e)
 {
 	MouseMotionEvent mouseMotionEvent(e);
-	notify(&mouseMotionEvent);
+
+	if (!dragging)
+		notify(&mouseMotionEvent);
 
 	if (!mouseMotionEvent.handled)
 	{

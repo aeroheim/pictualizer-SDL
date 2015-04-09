@@ -47,6 +47,7 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 
 		const int DRAG_ZONE_DIST = 12;
 		PWidgetResizeState resizeState;
+		const float SMOOTH_RESIZE_SCALE = 0.50f;
 		bool mouseOver;
 		bool dragResizing;
 		bool dragging;
@@ -55,7 +56,7 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		float minHeight;
 
 		bool widgetIntersects(float x, float y, float w, float h);
-		void setDragCursor(MouseMotionEvent* e);
+		void setDragCursor(int x, int y);
 		void getDragValues(MouseMotionEvent* e, float* newX, float* newY, float* newW, float* newH);
 		void OnMouseMotion(MouseMotionEvent* e);
 };
