@@ -6,9 +6,25 @@ enum class PControlFadeState
 	NONE
 };
 
+enum class PControlFadeStyle
+{
+	LINEAR,
+	EXPONENTIAL,
+	SQRT,
+	LOG
+};
+
 enum class PControlTintState
 {
 	BASE,
 	FOCUS,
 	NONE
+};
+
+enum class PControlTintStyle
+{
+	LINEAR,
+	EXPONENTIAL,
+	SQRT,
+	LOG
 };

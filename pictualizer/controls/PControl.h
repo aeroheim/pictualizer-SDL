@@ -22,7 +22,6 @@ struct PIntColor
 class PControl
 {
 	public:
-		PControl(const PControl& other);
 		PControl& operator=(const PControl& other);
 
 		virtual void setX(float x);
@@ -66,6 +65,7 @@ class PControl
 		float getFocusTint() const;
 
 		virtual void setTintState(PControlTintState s);
+		// virtual void setTintStyle(PControlTintStyle s);
 		PControlTintState getTintState() const;
 
 		virtual void setTintDelta(float delta);
@@ -88,6 +88,7 @@ class PControl
 		float getMaxAlpha() const;
 
 		virtual void setFadeState(PControlFadeState s);
+		// virtual void setFadeStyle(PControlFadeStyle s);
 		PControlFadeState getFadeState() const;
 
 		virtual void setFadeDelta(float delta);
