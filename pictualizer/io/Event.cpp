@@ -30,4 +30,6 @@ WidgetResizeEvent::WidgetResizeEvent(PWidget* widget, float x, float y, float w,
 
 ButtonPressedEvent::ButtonPressedEvent(Button* button) : button(button) {}
 
+ButtonToggledEvent::ButtonToggledEvent(Button* button, bool on) : button(button), on(on) {}
+
 TrackSeekEvent::TrackSeekEvent(int seconds) : seconds(seconds) {}

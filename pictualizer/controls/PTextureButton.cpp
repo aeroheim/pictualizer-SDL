@@ -113,10 +113,28 @@ void PTextureButton::draw(SDL_Renderer* ren)
 
 void PTextureButton::handleEvent(Event* e)
 {
-	if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
-		OnMouseMotion(mouseMotionEvent);
-
 	Button::handleEvent(e);
+	
+	if (MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(e))
+		OnMouseDown(mouseDownEvent);
+	else if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
+		OnMouseUp(mouseUpEvent);
+	else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
+		OnMouseMotion(mouseMotionEvent);
+}
+
+void PTextureButton::OnMouseDown(MouseDownEvent* e)
+{
+	bool mouseOverButton = mouseInside(e->x, e->y);
+
+	if (mouseOverButton)
+		setTintState(PControlTintState::FOCUS);
+}
+
+void PTextureButton::OnMouseUp(MouseUpEvent* e)
+{
+	if (!isToggled())
+		setTintState(PControlTintState::BASE);
 }
 
 void PTextureButton::OnMouseMotion(MouseMotionEvent* e)
@@ -125,7 +143,7 @@ void PTextureButton::OnMouseMotion(MouseMotionEvent* e)
 
 	if (lMouseHeld && getTintState() != PControlTintState::FOCUS)
 		setTintState(PControlTintState::FOCUS);
-	else
+	else if (!isToggled())
 	{
 		if (!mouseOver && mouseOverButton)
 		{

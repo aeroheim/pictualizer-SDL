@@ -121,6 +121,14 @@ class ButtonPressedEvent : public Event
 		Button* button;
 };
 
+class ButtonToggledEvent : public Event
+{
+	public:
+		ButtonToggledEvent(Button* button, bool on);
+		Button *button;
+		bool on;
+};
+
 class TrackSeekEvent : public Event
 {
 	public:

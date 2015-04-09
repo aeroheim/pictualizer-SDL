@@ -132,6 +132,9 @@
     <ClInclude Include="controls\PTextureButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\ButtonStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
