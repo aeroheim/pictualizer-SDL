@@ -13,7 +13,7 @@ class GridPanelCell : public PControl
 		void setElement(PControl* e);
 		PControl* getElement();
 
-		void setPadding(int l, int u, int r, int d);
+		void setPadding(float l, float u, float r, float d);
 
 		void setX(float x);
 		void setY(float y);
@@ -38,5 +38,5 @@ class GridPanelCell : public PControl
 
 	private:
 		PControl* element;
-		int padding[4];
+		float padding[4];
 };

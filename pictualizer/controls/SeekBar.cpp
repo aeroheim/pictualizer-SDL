@@ -1,5 +1,4 @@
 #include "SeekBar.h"
-#include <iostream>
 
 SeekBar::SeekBar(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
@@ -13,8 +12,9 @@ SeekBar::SeekBar(SDL_Renderer* ren, PFontType fontType, float x, float y, float 
 	timeLabel.setText("00:00:00 / 00:00:00");
 
 	bodyGrid[0][0].setElement(&timeLabel);
+	bodyGrid[0][0].setPadding(0, 0.1f, 0, 0);
 	bodyGrid[1][0].setElement(&bar);
-	bodyGrid[1][0].setPadding(0, 1, 0, 3);
+	bodyGrid[1][0].setPadding(0, 0, 0, 0.85f);
 }
 
 SeekBar::~SeekBar() {}

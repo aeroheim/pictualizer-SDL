@@ -43,15 +43,15 @@ PControl* GridPanelCell::getElement()
 	return element;
 }
 
-/*
- *  TODO: Disallow negative padding and prevent width/height from being reduced to zero or below because of padding.
- */
-void GridPanelCell::setPadding(int l, int u, int r, int d)
+void GridPanelCell::setPadding(float l, float u, float r, float d)
 {
 	assert(l >= 0);
 	assert(u >= 0);
 	assert(r >= 0);
 	assert(d >= 0);
+
+	assert(l + r < 1);
+	assert(u + d < 1);
 
 	padding[0] = l;
 	padding[1] = u;
@@ -67,7 +67,7 @@ void GridPanelCell::setPadding(int l, int u, int r, int d)
 void GridPanelCell::setX(float x)
 {
 	if (element)
-		element->setX(x + padding[0]);
+		element->setX(x + (getWidth() * padding[0]));
 
 	PControl::setX(x);
 }
@@ -75,7 +75,7 @@ void GridPanelCell::setX(float x)
 void GridPanelCell::setY(float y)
 {
 	if (element)
-		element->setY(y + padding[1]);
+		element->setY(y + (getHeight() * padding[1]));
 
 	PControl::setY(y);
 }
@@ -85,7 +85,7 @@ void GridPanelCell::setWidth(float w)
 	assert(w >= 0);
 
 	if (element)
-		element->setWidth(w - padding[2] - padding[0]);
+		element->setWidth((w - (w * padding[2])) - (w * padding[0]));
 
 	PControl::setWidth(w);
 }
@@ -95,7 +95,7 @@ void GridPanelCell::setHeight(float h)
 	assert(h >= 0);
 
 	if (element)
-		element->setHeight(h - padding[3] - padding[1]);
+		element->setHeight((h - (h * padding[3])) - (h * padding[1]));
 
 	PControl::setHeight(h);
 }

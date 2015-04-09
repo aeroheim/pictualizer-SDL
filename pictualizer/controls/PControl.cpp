@@ -331,11 +331,8 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	SDL_RenderDrawLine(ren, getRoundedX(), getRoundedY() + getRoundedHeight(), getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
 
 	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
-	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY());
-	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY());
-	SDL_RenderDrawPoint(ren, getRoundedX(), getRoundedY() + getRoundedHeight());
-	SDL_RenderDrawPoint(ren, getRoundedX() + getRoundedWidth(), getRoundedY() + getRoundedHeight());
 	*/
+	
 }
 
 
