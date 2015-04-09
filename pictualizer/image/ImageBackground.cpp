@@ -155,7 +155,9 @@ void ImageBackground::handleEvent(Event* e)
 
 	if (!e->handled)
 	{
-		if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
+		if (WindowResizeEvent* windowResizeEvent = dynamic_cast<WindowResizeEvent*>(e))
+			OnWindowResized(windowResizeEvent);
+		else if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
 		{
 			if (PUtils::pathIsImage(fileDropEvent->path))
 			{
@@ -254,6 +256,17 @@ void ImageBackground::checkSlideshowTimer()
 			else
 				setImage(0);
 		}
+	}
+}
+
+void ImageBackground::OnWindowResized(WindowResizeEvent* e)
+{
+	if (background)
+	{
+		SDL_DestroyTexture(background);
+
+		background = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, e->ww, e->wh);
+		SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
 	}
 }
 

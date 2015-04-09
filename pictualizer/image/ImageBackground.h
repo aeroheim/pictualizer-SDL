@@ -1,4 +1,4 @@
-#pragma once
+#pragma once               
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -42,7 +42,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		int slideshowTimer;
 		int frameCount;
 
-		const float PAN_SPEED = 0.25f;
+		const float PAN_SPEED = 0.2f;
 
 		const float MAX_ALPHA = 50;
 		const float MIN_ALPHA = 0;
@@ -57,6 +57,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 
 		void checkSlideshowTimer();
 
+		void OnWindowResized(WindowResizeEvent* e);
 		void OnImageReady();
 		void OnImageLoaded();
 };
