@@ -2,8 +2,11 @@
 
 #include "PWidget.h"
 #include "IndexWidget.h"
+#include "PTextureButton.h"
 #include "ImageButton.h"
 #include "SeekBar.h"
+#include "../assets/fonts/PFonts.h"
+#include "../assets/textures/PTextures.h"
 #include "../util/PUtils.h"
 
 class AudioPlayerWidget : public PWidget
