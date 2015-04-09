@@ -111,8 +111,8 @@ void ImageCamera::resetCamera()
 
 void ImageCamera::setView(ImageTexture* image)
 {
-	iw = image->getWidth();
-	ih = image->getHeight();
+	iw = image->getRoundedWidth();
+	ih = image->getRoundedHeight();
 	resetCamera();
 
 	int aImage = iw * ih;

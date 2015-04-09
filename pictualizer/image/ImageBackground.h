@@ -39,18 +39,20 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		ImageBackgroundState state;
 		int slideshowTimer;
 		int frameCount;
-		bool fading;
 
-		Uint8 tempAlpha;
+		const float PAN_SPEED = 0.33f;
+
+		const float MAX_ALPHA = 150;
+		const float MIN_ALPHA = 0;
+		const float FADE_DELTA = 12;
 		ImageFadeStyle fadeStyle;
-		Uint8 fadeDelta;
+		float tempAlpha;
 		int fadeDist;
 
 		void calculateFadeDist(float panSpeed);
 		bool viewInFadeZone(ImageCamera& camera, ImageTexture& img);
 
 		void checkSlideshowTimer();
-		void fadeImage(ImageTexture& img, bool in);
 
 		void OnImageReady();
 		void OnImageLoaded();

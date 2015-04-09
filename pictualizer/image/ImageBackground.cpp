@@ -6,17 +6,24 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	setState(ImageBackgroundState::SLIDESHOW);
 	slideshowTimer = 30;
 	frameCount = 0;
-	fading = false;
 
-	tempAlpha = SDL_ALPHA_OPAQUE;
-	fadeDelta = 15;
+	image.setMaxAlpha(MAX_ALPHA);
+	image.setMinAlpha(MIN_ALPHA);
+	image.setAlpha(MAX_ALPHA);
+	image.setFadeDelta(FADE_DELTA);
+	tempImage.setMaxAlpha(MAX_ALPHA);
+	tempImage.setMinAlpha(MIN_ALPHA);
+	tempImage.setAlpha(MAX_ALPHA);
+	tempImage.setFadeDelta(FADE_DELTA);
+	tempAlpha = 0;
+
 	fadeStyle = ImageFadeStyle::ALPHA;
 
 	subscribeTo(&image);
 	addSubscriber(&imageCamera);
 	registerKey(ACCESS_KEY);
 
-	imageCamera.setPanSpeed(0.33f);
+	imageCamera.setPanSpeed(PAN_SPEED);
 	imageCamera.setState(ImageCameraState::ROAMING);
 
 	calculateFadeDist(imageCamera.getPanSpeed());
@@ -36,40 +43,33 @@ void ImageBackground::draw()
 			imageCamera.updateView();
 
 			// Begin fading when the roaming imageCamera hits a fade zone; tempImage is used to facilitate the fade effect.
-			if (viewInFadeZone(imageCamera, image) && !fading)
+			if (viewInFadeZone(imageCamera, image) && tempImage.getFadeState() != PControlFadeState::FADEOUT)
 			{
-				fading = true;
-				tempAlpha = SDL_ALPHA_OPAQUE;
 				tempCamera = imageCamera;
 				tempImage = image;
+
+				tempAlpha = tempImage.getMaxAlpha();
+				tempImage.setAlpha(tempImage.getMaxAlpha());
+				tempImage.setFadeState(PControlFadeState::FADEOUT);
+
 				imageCamera.resetPanning();
 			}
 
-			// For roaming mode fading, we need to both modify tempImage's alpha and tempCamera's position.
-			if (fading)
+			// Since both tempImage and image share the same texture, we must swap alpha values back and forth when fading out.
+			if (tempImage.getFadeState() == PControlFadeState::FADEOUT && tempImage.hasImage())
 			{
-				// When fading only with the current image, tempImage and image are the same, so we need tempAlpha to store our 
-				// current fading alpha value while we draw image with SDL_ALPHA_OPAQUE.
 				tempImage.setAlpha(tempAlpha);
-				fadeImage(tempImage, false);
+				tempImage.draw(ren, tempCamera.getView());
+				tempCamera.updateView();
 
-				if (tempImage.hasImage())
-				{
-					tempImage.draw(ren, tempCamera.getView());
-					tempImage.getAlpha(&tempAlpha);
-					image.setAlpha(SDL_ALPHA_OPAQUE);
-					tempCamera.updateView();
-				}
+				// Restore the shared texture's alpha.
+				tempAlpha = tempImage.getAlpha();
+				image.setAlpha(image.getMaxAlpha());
 			}
 		}
-		// Manual mode fade case, which is only initiated by setImage().
-		else if (fading)
-		{
-			fadeImage(tempImage, false);
-
-			if (tempImage.hasImage())
-				tempImage.draw(ren, tempCamera.getView());
-		}
+		// Draw temp image when fading in MANUAL mode.
+		else if (tempImage.getFadeState() == PControlFadeState::FADEOUT && tempImage.hasImage())
+			tempImage.draw(ren, tempCamera.getView());
 
 		// Check every frame against the slideshow timer when in slideshow mode.
 		if (state == ImageBackgroundState::SLIDESHOW)
@@ -151,9 +151,15 @@ void ImageBackground::handleEvent(Event* e)
 			}
 		}
 		else if (ImageLoadReadyEvent* imageLoadReadyEvent = dynamic_cast<ImageLoadReadyEvent*>(e))
+		{
 			OnImageReady();
+			e->handled = true;
+		}
 		else if (ImageLoadedEvent* imageLoadedEvent = dynamic_cast<ImageLoadedEvent*>(e))
+		{
 			OnImageLoaded();
+			e->handled = true;
+		}
 		else  if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
 			setKeyHeld(keyDownEvent->key);
 		else if (KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
@@ -173,7 +179,7 @@ void ImageBackground::handleEvent(Event* e)
 
 void ImageBackground::calculateFadeDist(float panSpeed)
 {
-	int framesToFade = (int) std::round(SDL_ALPHA_OPAQUE / (float) fadeDelta);
+	int framesToFade = (int) std::round(image.getMaxAlpha() / image.getFadeDelta());
 	fadeDist = (int) std::round(framesToFade * panSpeed);
 }
 
@@ -237,32 +243,16 @@ void ImageBackground::checkSlideshowTimer()
 	}
 }
 
-void ImageBackground::fadeImage(ImageTexture& img, bool in)
-{
-	Uint8 alpha;
-	img.getAlpha(&alpha);
-
-	if (in)
-		alpha = alpha + fadeDelta <= SDL_ALPHA_OPAQUE ? alpha + fadeDelta : SDL_ALPHA_OPAQUE;
-	else
-		alpha = alpha - fadeDelta > 0 ? alpha - fadeDelta : 0;
-
-	img.setAlpha(alpha);
-
-	if (!in && alpha == 0)
-		fading = false;
-	else if (in && alpha == SDL_ALPHA_OPAQUE)
-		fading = false;
-}
-
 void ImageBackground::OnImageReady()
 {
 	// Initiate fading to the new image, if there exists an image to fade to.
 	if (images.size() > 1)
 	{
-		fading = true;
 		tempCamera = imageCamera;
 		tempImage = image;
+
+		tempImage.setAlpha(tempImage.getMaxAlpha());
+		tempImage.setFadeState(PControlFadeState::FADEOUT);
 	}
 
 	// Reset slideshow timer count.
@@ -275,5 +265,5 @@ void ImageBackground::OnImageLoaded()
 	imageCamera.setView(&image);
 
 	// Reset alpha, which is necessary if the previous image did not fully fade out before setImage was called again.
-	tempAlpha = SDL_ALPHA_OPAQUE;
+	tempImage.setAlpha(tempImage.getMaxAlpha());
 }
