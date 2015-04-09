@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include "../io/EventObserver.h"
+#include "../controls/PControl.h"
 
 class ImageTexture;
 
@@ -37,31 +38,27 @@ struct ImageTextureThreadData
 	ThreadSurfaceBuffer* buffer;
 };
 
-class ImageTexture : public EventObserver
+class ImageTexture : public PControl, public EventObserver
 {
 	public:
 		ImageTexture();
 		~ImageTexture();
 
-		void draw(SDL_Renderer* ren, SDL_Rect* view);
-		int getWidth();
-		int getHeight();
+		ImageTexture& operator=(const ImageTexture& other);
+
 		void setImage(SDL_Renderer* ren, std::string path);
 		bool hasImage();
 		void freeImage();
-		void setColor(Uint8 r, Uint8 g, Uint8 b);
-		void getColor(Uint8* r, Uint8* g, Uint8* b);
-		void setTint(Uint8 rgb);
-		void getAlpha(Uint8* alpha);
-		void setAlpha(Uint8 alpha);
+
+		void setColor(float r, float g, float b);
+		void setAlpha(float a);
 		void setBlendMode(SDL_BlendMode blend);
 
-		ImageTexture& operator=(const ImageTexture& rhs);
+		void draw(SDL_Renderer* ren);
+		void draw(SDL_Renderer* ren, SDL_Rect* view);
 
 	private:
 		SharedTexture image;
-		int iw;
-		int ih;
 
 		std::unordered_map<int, ThreadSurfaceBuffer*> imageBuffers;
 		SDL_mutex* mutex;

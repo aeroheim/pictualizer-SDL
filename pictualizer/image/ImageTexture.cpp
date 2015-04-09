@@ -1,12 +1,10 @@
 #include "ImageTexture.h"
 
-ImageTexture::ImageTexture()
+ImageTexture::ImageTexture() : PControl(0, 0, 0, 0)
 {
-	image = NULL;
-	iw = 0;
-	ih = 0;
-	loadQueueCount = 0;
+	image = nullptr;
 
+	loadQueueCount = 0;
 	mutex = SDL_CreateMutex();
 }
 
@@ -21,20 +19,22 @@ ImageTexture::~ImageTexture()
 
 void ImageTexture::draw(SDL_Renderer* ren, SDL_Rect* view)
 { 
+	PControl::draw(ren);
+
 	if (image)
-		SDL_RenderCopy(ren, image.get(), view, NULL);
+		SDL_RenderCopy(ren, image.get(), view, nullptr);
 
 	pollImageBuffers(ren);
 }
 
-int ImageTexture::getWidth()
+void ImageTexture::draw(SDL_Renderer* ren)
 {
-	return iw;
-}
+	PControl::draw(ren);
 
-int ImageTexture::getHeight()
-{
-	return ih;
+	if (image)
+		SDL_RenderCopy(ren, image.get(), nullptr, nullptr);
+
+	pollImageBuffers(ren);
 }
 
 int ImageTexture::asyncImageLoad(void* data)
@@ -52,7 +52,6 @@ int ImageTexture::asyncImageLoad(void* data)
 			threadData->buffer->ready = true;
 		else
 		{
-
 			if (SDL_LockMutex(caller->mutex) == 0)
 			{
 				caller->imageBuffers.erase(threadData->threadNumber);
@@ -104,7 +103,7 @@ void ImageTexture::setImage(SDL_Renderer* ren, std::string path)
 	else
 		throw SDL_GetError();
 
-	SDL_Thread* thread = SDL_CreateThread(asyncImageLoad, NULL, threadData);
+	SDL_Thread* thread = SDL_CreateThread(asyncImageLoad, nullptr, threadData);
 }
 
 bool ImageTexture::hasImage()
@@ -120,34 +119,28 @@ void ImageTexture::freeImage()
 	if (image)
 	{
 		image.reset();
-		iw = 0;
-		ih = 0;
+		setWidth(0.0f);
+		setHeight(0.0f);
 	}
 }
 
-void ImageTexture::setColor(Uint8 r, Uint8 g, Uint8 b)
+void ImageTexture::setColor(float r, float g, float b)
 {
-	SDL_SetTextureColorMod(image.get(), r, g, b);
+	PControl::setColor(r, g, b);
+
+	if (image)
+	{
+		PIntColor color = getRoundedColor();
+		SDL_SetTextureColorMod(image.get(), color.r, color.g, color.b);
+	}
 }
 
-void ImageTexture::getColor(Uint8* r, Uint8* g, Uint8* b)
+void ImageTexture::setAlpha(float a)
 {
-	SDL_GetTextureColorMod(image.get(), r, g, b);
-}
+	PControl::setAlpha(a);
 
-void ImageTexture::setTint(Uint8 rgb)
-{
-	setColor(rgb, rgb, rgb);
-}
-
-void ImageTexture::getAlpha(Uint8* alpha)
-{
-	SDL_GetTextureAlphaMod(image.get(), alpha);
-}
-
-void ImageTexture::setAlpha(Uint8 alpha)
-{
-	SDL_SetTextureAlphaMod(image.get(), alpha);
+	if (image)
+		SDL_SetTextureAlphaMod(image.get(), getRoundedAlpha());
 }
 
 void ImageTexture::setBlendMode(SDL_BlendMode blend)
@@ -155,11 +148,10 @@ void ImageTexture::setBlendMode(SDL_BlendMode blend)
 	SDL_SetTextureBlendMode(image.get(), blend);
 }
 
-ImageTexture& ImageTexture::operator=(const ImageTexture& rhs)
+ImageTexture& ImageTexture::operator=(const ImageTexture& other)
 {
-	image = rhs.image;
-	iw = rhs.iw;
-	ih = rhs.ih;
+	image = other.image;
+	PControl::operator=(other);
 	return *this;
 }
 
@@ -174,7 +166,14 @@ void ImageTexture::pollImageBuffers(SDL_Renderer* ren)
 			notify(&er);
 
 			image = make_shared(SDL_CreateTextureFromSurface(ren, it->second->surface));
-			SDL_QueryTexture(image.get(), NULL, NULL, &iw, &ih);
+
+			setTint(getTint());
+			setAlpha(getAlpha());
+
+			int iw, ih;
+			SDL_QueryTexture(image.get(), nullptr, nullptr, &iw, &ih);
+			setWidth((float) iw);
+			setHeight((float) ih);
 
 			ImageLoadedEvent e(iw, ih);
 			notify(&e);
