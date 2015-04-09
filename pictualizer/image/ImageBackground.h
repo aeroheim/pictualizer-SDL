@@ -24,13 +24,15 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		void handleEvent(Event* e);
 
 	private:
-		std::vector<std::string> images;
-		int imageIndex;
 		SDL_Renderer* ren;
+		SDL_Texture* background;
 		ImageCamera imageCamera;
 		ImageCamera tempCamera;
 		ImageTexture image;
 		ImageTexture tempImage;
+
+		std::vector<std::string> images;
+		int imageIndex;
 
 		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
 		SDL_Keycode PREV_IMG_KEY = SDLK_LEFT;
@@ -40,11 +42,12 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		int slideshowTimer;
 		int frameCount;
 
-		const float PAN_SPEED = 0.33f;
+		const float PAN_SPEED = 0.25f;
 
-		const float MAX_ALPHA = 150;
+		const float MAX_ALPHA = 50;
 		const float MIN_ALPHA = 0;
-		const float FADE_DELTA = 12;
+		const float ROAMING_FADE_DELTA = 3;
+		const float MANUAL_FADE_DELTA = 12;
 		ImageFadeStyle fadeStyle;
 		float tempAlpha;
 		int fadeDist;

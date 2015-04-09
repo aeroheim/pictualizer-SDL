@@ -167,6 +167,7 @@ void ImageTexture::pollImageBuffers(SDL_Renderer* ren)
 
 			image = make_shared(SDL_CreateTextureFromSurface(ren, it->second->surface));
 
+			setBlendMode(SDL_BLENDMODE_BLEND);
 			setTint(getTint());
 			setAlpha(getAlpha());
 

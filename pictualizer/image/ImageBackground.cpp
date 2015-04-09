@@ -7,14 +7,17 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	slideshowTimer = 30;
 	frameCount = 0;
 
+	background = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, ww, wh);
+	SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
+
 	image.setMaxAlpha(MAX_ALPHA);
 	image.setMinAlpha(MIN_ALPHA);
 	image.setAlpha(MAX_ALPHA);
-	image.setFadeDelta(FADE_DELTA);
+	image.setFadeDelta(ROAMING_FADE_DELTA);
 	tempImage.setMaxAlpha(MAX_ALPHA);
 	tempImage.setMinAlpha(MIN_ALPHA);
 	tempImage.setAlpha(MAX_ALPHA);
-	tempImage.setFadeDelta(FADE_DELTA);
+	tempImage.setFadeDelta(ROAMING_FADE_DELTA);
 	tempAlpha = 0;
 
 	fadeStyle = ImageFadeStyle::ALPHA;
@@ -29,12 +32,19 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : ren(ren), 
 	calculateFadeDist(imageCamera.getPanSpeed());
 }
 
-ImageBackground::~ImageBackground() {}
+ImageBackground::~ImageBackground()
+{
+	if (background)
+		SDL_DestroyTexture(background);
+}
 
 void ImageBackground::draw()
 {
 	if (!images.empty())
 	{
+		// Render to the background buffer instead of main Pictualizer buffer.
+		SDL_SetRenderTarget(ren, background);
+
 		// Render the current image.
 		image.draw(ren, imageCamera.getView());
 
@@ -74,6 +84,10 @@ void ImageBackground::draw()
 		// Check every frame against the slideshow timer when in slideshow mode.
 		if (state == ImageBackgroundState::SLIDESHOW)
 			checkSlideshowTimer();
+
+		// Reset rendering target and render the background buffer.
+		SDL_SetRenderTarget(ren, nullptr);
+		SDL_RenderCopy(ren, background, nullptr, nullptr);
 	}
 }
 
