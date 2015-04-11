@@ -1,12 +1,16 @@
 #include "AudioPlayer.h"
+#include <iostream>
 
 void CALLBACK nextSongCallback(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 AudioPlayer::AudioPlayer()
 {
 	trackIndex = -1;
-	playlistIndex = -1;
+	playlistIndex = 0;
 	shuffleIndex = -1;
+
+	// Add empty playlist.
+	addPlaylist(AudioPlaylist(L"default"));
 
 	repeatState = RepeatState::NONE;
 	shuffleState = ShuffleState::NONE;
@@ -114,6 +118,7 @@ void AudioPlayer::playTrack(int index)
 		// Setup new HSTREAM.
 		BASS_StreamFree(stream);
 		stream = BASS_StreamCreateFile(0, playlists[playlistIndex].getTrack(index)->getPath().c_str(), 0, 0, 0);
+		std::cout << "error code: " << BASS_ErrorGetCode() << std::endl;
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
 		// Play the new song.
@@ -288,4 +293,27 @@ void AudioPlayer::OnSongEnd()
 		play();
 	else
 		nextTrack();
+}
+
+void AudioPlayer::OnFileDrop(FileDropEvent* e)
+{
+	AudioTrack track(e->path);
+
+	AudioPlaylist* currentPlaylist = getCurrentPlaylist();
+	currentPlaylist->enqueueTrack(track);
+	playTrack(0);
+
+	std::cout << "track path: " << e->path << std::endl;
+}
+
+void AudioPlayer::handleEvent(Event* e)
+{
+	if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
+	{
+		if (PUtils::pathIsMusic(fileDropEvent->path))
+		{
+			OnFileDrop(fileDropEvent);
+			e->handled = true;
+		}
+	}
 }

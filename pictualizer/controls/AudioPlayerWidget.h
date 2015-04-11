@@ -5,6 +5,7 @@
 #include "PTextureButton.h"
 #include "ImageButton.h"
 #include "SeekBar.h"
+#include "../audio/AudioPlayer.h"
 #include "../assets/fonts/PFonts.h"
 #include "../assets/textures/PTextures.h"
 #include "../util/PUtils.h"
@@ -25,6 +26,7 @@ class AudioPlayerWidget : public PWidget
 		void handleEvent(Event* e);
 
 	private:
+		AudioPlayer* player;
 		SDL_Renderer* ren;
 		GridPanel playerControlGrid;
 		GridPanel bodyGrid;

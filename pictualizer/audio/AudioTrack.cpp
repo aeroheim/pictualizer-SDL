@@ -1,6 +1,6 @@
 #include "AudioTrack.h"
 
-AudioTrack::AudioTrack(std::wstring path) : filePath(path)
+AudioTrack::AudioTrack(std::string path)
 {
 	/*
 	 *	FileRef is too simplistic for our eventual needs, which will involve extracting and
@@ -8,13 +8,17 @@ AudioTrack::AudioTrack(std::wstring path) : filePath(path)
 	 *	using Taglib's format specific subclasses for handling tags. (TODO)
 	 */
 
-	TagLib::FileRef track(path.c_str());
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	std::wstring wstrpath = converter.from_bytes(path);
+
+	TagLib::FileRef track(wstrpath.c_str());
 
 	assert(!track.isNull());
 
-	title = track.tag()->title().toCWString();
-	artist = track.tag()->artist().toCWString();
-	album = track.tag()->album().toCWString();
+	filePath = wstrpath;
+	title = track.tag()->title().toCString();
+	artist = track.tag()->artist().toCString();
+	album = track.tag()->album().toCString();
 
 	// Duration is ignored for now.
 	duration = 0;
@@ -29,17 +33,17 @@ std::wstring AudioTrack::getPath()
 	return filePath;
 }
 
-std::wstring AudioTrack::getTitle()
+std::string AudioTrack::getTitle()
 {
 	return title;
 }
 
-std::wstring AudioTrack::getArtist()
+std::string AudioTrack::getArtist()
 {
 	return artist;
 }
 
-std::wstring AudioTrack::getAlbum()
+std::string AudioTrack::getAlbum()
 {
 	return album;
 }

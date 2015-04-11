@@ -2,6 +2,7 @@
 
 #include "../io/EventObserver.h"
 #include "../io/InputListener.h"
+#include "../util/PUtils.h"
 #include "AudioPlayerStates.h"
 #include "AudioPlaylist.h"
 #include "AudioTrack.h"
@@ -15,7 +16,7 @@
  *	The AudioPlayer class serves as the main internal audio player for pictualizer. Objects may interact with
  *	and query the AudioPlayer by calling its public methods. Audio related IO must be routed through this class as well.
  */
-class AudioPlayer : public EventObserver
+class AudioPlayer : public EventObserver, public EventSubscriber
 {
 	public:
 		AudioPlayer();
@@ -85,6 +86,9 @@ class AudioPlayer : public EventObserver
 
 		// BASS callbacks 
 		void OnSongEnd();
+		void OnFileDrop(FileDropEvent* e);
+
+		void handleEvent(Event* e);
 
 	private:
 		HSTREAM stream;
@@ -104,5 +108,7 @@ class AudioPlayer : public EventObserver
 		ShuffleState shuffleState;
 
 		void shuffle();
+
+
 };
 

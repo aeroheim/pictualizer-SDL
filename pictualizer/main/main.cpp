@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_syswm.h>
 #include <SDL_ttf.h>
 #include <iostream>
 #include "../io/WindowIOController.h"
@@ -47,6 +48,19 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	// Init BASS
+	SDL_SysWMinfo windowInfo;
+	SDL_VERSION(&windowInfo.version);
+	SDL_GetWindowWMInfo(win, &windowInfo);
+
+	if (!BASS_Init(-1, 44100, 0, windowInfo.info.win.window, NULL))
+	{
+		SDL_DestroyWindow(win);
+		cout << "BASS_Init Error: " << BASS_ErrorGetCode() << endl;
+		SDL_Quit();
+		return 1;
+	}
+
 	// Use linear filtering to preserve image quality when scaled.
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");
 
@@ -62,12 +76,16 @@ int main(int argc, char** argv)
 	// Initialize image background.
 	ImageBackground imageBackground(ren, ww, wh);
 	
+	// Initialize audio player.
+	AudioPlayer audioPlayer;
+
 	// Initialize UI.
 	PUI ui(win, ren, ww, wh);
 
 	// Initialize IO.
 	WindowIOController windowIOController(win);
 
+	windowIOController.addSubscriber(&audioPlayer);
 	windowIOController.addSubscriber(&imageBackground);
 	windowIOController.addSubscriber(&ui);
 

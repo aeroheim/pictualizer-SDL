@@ -4,6 +4,9 @@
 #include <fileref.h>
 #include <taglib.h>
 #include <assert.h>
+#include <string>
+#include <locale>
+#include <codecvt>
 
 /*
  *	The AudioTrack class serves as the default object representation of tracks in pictualizer.
@@ -12,7 +15,7 @@
 class AudioTrack : public EventObserver
 {
 	public:
-		AudioTrack(std::wstring path);
+		AudioTrack(std::string path);
 		virtual ~AudioTrack();
 
 		/*
@@ -21,16 +24,16 @@ class AudioTrack : public EventObserver
 		 *	the respective metadata be retrieved. (TODO)
 		 */
 		std::wstring getPath();
-		std::wstring getTitle();
-		std::wstring getArtist();
-		std::wstring getAlbum();
+		std::string getTitle();
+		std::string getArtist();
+		std::string getAlbum();
 		int getDuration();
 		friend bool operator== (AudioTrack& lhs, AudioTrack& rhs);
 
 	private:
 		std::wstring filePath;
-		std::wstring title;
-		std::wstring artist;
-		std::wstring album;
+		std::string title;
+		std::string artist;
+		std::string album;
 		int duration;
 };

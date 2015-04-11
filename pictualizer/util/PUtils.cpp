@@ -36,8 +36,10 @@ namespace PUtils
 	{
 		size_t extensionIndex = path.find_last_of(".", path.length() - 1);
 		std::string extension = path.substr(extensionIndex);
+		
+		if (extension.compare(".MP3") || extension.compare(".mp3"))
+			return true;
 
-		// fix this later
 		return false;
 	}
 }
