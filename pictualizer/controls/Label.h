@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <string>
+#include <locale>
+#include <codecvt>
 #include "PControl.h"
 #include "LabelStates.h"
 #include "../assets/fonts/PFonts.h"
@@ -25,7 +27,8 @@ class Label : public PControl
 		TTF_Font* getFont();
 
 		void setText(std::string text);
-		std::string getText();
+		void setText(std::wstring text);
+		std::wstring getText();
 
 		void setClipState(LabelClipState s);
 		LabelClipState getClipState();
@@ -47,7 +50,8 @@ class Label : public PControl
 		SDL_Rect view;
 		SDL_Rect dest;
 
-		std::string text;
+		std::wstring text;
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wstrConverter;
 
 		LabelClipState clipState;
 		LabelAlignState alignState;

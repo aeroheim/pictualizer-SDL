@@ -57,6 +57,8 @@ Label::Label(const Label& other) :
 	textIsPannable(other.textIsPannable),
 	panStopped(other.panStopped)
 {
+	// TODO: refactor to use PControl copy constructor
+
 	// The reference count to the font must be incremented everytime a label is copied.
 	PFonts::incRefCount(fontType, font);
 
@@ -68,6 +70,7 @@ Label::Label(const Label& other) :
 
 Label& Label::operator=(const Label& other)
 {
+	// TODO: refactor to use PControl assignment operator
 	setX(((PControl&) other).getX());
 	setY(((PControl&) other).getY());
 	setWidth(((PControl&) other).getWidth());
@@ -168,6 +171,12 @@ TTF_Font* Label::getFont()
 
 void Label::setText(std::string text)
 {
+	std::wstring wstrtext = wstrConverter.from_bytes(text);
+	setText(wstrtext);
+}
+
+void Label::setText(std::wstring text)
+{
 	if (font)
 	{
 		this->text = text;
@@ -175,7 +184,7 @@ void Label::setText(std::string text)
 	}
 }
 
-std::string Label::getText()
+std::wstring Label::getText()
 {
 	return text;
 }
@@ -294,7 +303,7 @@ void Label::OnPanStopped()
 
 void Label::resetView()
 {
-	TTF_SizeUTF8(font, text.c_str(), &view.w, &view.h);
+	TTF_SizeUNICODE(font, reinterpret_cast<const Uint16*>(text.c_str()), &view.w, &view.h);
 
 	panSpeed = view.w * SRC_PAN_SPEED;
 
@@ -347,7 +356,7 @@ void Label::resetView()
 void Label::getTextTexture(SDL_Renderer* ren)
 {
 	// Use UTF8 for unicode support and blended rendering for optimal text quality.
-	SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+	SDL_Surface* surface = TTF_RenderUNICODE_Blended(font, reinterpret_cast<const Uint16*>(text.c_str()), color);
 
 	if (!surface)
 		throw "Label::getTextTexture() failed to load font surface.\n";
