@@ -51,7 +51,7 @@ void WindowIOController::pollEvents()
 
 void WindowIOController::OnDrop(SDL_DropEvent& e)
 {
-	FileDropEvent fileDropEvent(e);
+	FileDropEvent fileDropEvent(e, mouseX, mouseY);
 	notify(&fileDropEvent);
 	SDL_free(e.file);
 }
@@ -72,6 +72,9 @@ void WindowIOController::OnMouseButtonDown(SDL_MouseButtonEvent& e)
 {
 	MouseDownEvent mouseDownEvent(e);
 	notify(&mouseDownEvent);
+
+	mouseX = e.x;
+	mouseY = e.y;
 
 	if (!mouseDownEvent.handled)
 	{
@@ -101,6 +104,9 @@ void WindowIOController::OnMouseButtonUp(SDL_MouseButtonEvent& e)
 	MouseUpEvent mouseUpEvent(e);
 	notify(&mouseUpEvent);
 
+	mouseX = e.x;
+	mouseY = e.y;
+
 	if (!mouseUpEvent.handled)
 	{
 		if (e.button == SDL_BUTTON_LEFT)
@@ -128,6 +134,9 @@ void WindowIOController::OnMouseWheel(SDL_MouseWheelEvent& e)
 void WindowIOController::OnMouseMotion(SDL_MouseMotionEvent& e)
 {
 	MouseMotionEvent mouseMotionEvent(e);
+
+	mouseX = e.x;
+	mouseY = e.y;
 
 	if (!dragging)
 		notify(&mouseMotionEvent);

@@ -25,8 +25,10 @@ class WindowResizeEvent : public Event
 class FileDropEvent : public Event
 {
 	public:
-		FileDropEvent(SDL_DropEvent& e);
+		FileDropEvent(SDL_DropEvent& e, int x, int y);
 		std::string path;
+		int x;
+		int y;
 };
 
 class KeyDownEvent : public Event
