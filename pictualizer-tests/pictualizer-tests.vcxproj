@@ -77,12 +77,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\pictualizer\audio\AudioPlayer.cpp" />
-    <ClCompile Include="..\pictualizer\audio\AudioPlaylist.cpp" />
-    <ClCompile Include="..\pictualizer\audio\AudioTrack.cpp" />
-    <ClCompile Include="..\pictualizer\io\EventObserver.cpp" />
-    <ClCompile Include="..\pictualizer\io\EventSubscriber.cpp" />
-    <ClCompile Include="..\pictualizer\util\PUtils.cpp" />
     <ClCompile Include="audio\test_AudioPlayer.cpp" />
     <ClCompile Include="audio\test_AudioPlaylist.cpp" />
     <ClCompile Include="audio\test_AudioTrack.cpp">

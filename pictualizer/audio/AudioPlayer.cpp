@@ -14,6 +14,8 @@ AudioPlayer::AudioPlayer()
 
 	repeatState = RepeatState::NONE;
 	shuffleState = ShuffleState::NONE;
+
+	BASS_SetVolume(0.1f);
 }
 
 AudioPlayer::~AudioPlayer()
@@ -94,6 +96,13 @@ void AudioPlayer::setCurrentPlaylist(int index)
 		subscribeTo(newPlaylist);
 
 		trackIndex == newPlaylist->getSize() == 0 ? -1 : 0;
+
+		// Shuffle again for new playlist if necessary.
+		shuffledPlaylist.clear();
+		shuffledPlaylist.resize(currentPlaylist->getSize());
+
+		if (shuffleState == ShuffleState::PLAYLIST)
+			shuffle();
 	}
 }
 
@@ -250,7 +259,9 @@ ShuffleState AudioPlayer::getShuffle()
 void AudioPlayer::setShuffle(ShuffleState s)
 {
 	shuffleState = s;
-	shuffle();
+
+	if (s == ShuffleState::PLAYLIST)
+		shuffle();
 }
 
 /*
@@ -314,6 +325,9 @@ void CALLBACK nextSongCallback(HSYNC handle, DWORD channel, DWORD data, void *us
 
 void AudioPlayer::OnSongEnd()
 {
+	PlayerStoppedEvent playerStoppedEvent;
+	notify(&playerStoppedEvent);
+
 	if (repeatState == RepeatState::SONG)
 		play();
 	else
@@ -343,6 +357,11 @@ void AudioPlayer::OnTrackRemoved(TrackRemovedEvent* e)
 {
 	if (trackIndex >= e->index)
 		--trackIndex;
+
+	shuffledPlaylist.pop_back();
+
+	if (shuffleState == ShuffleState::PLAYLIST)
+		shuffle();
 }
 
 void AudioPlayer::OnTrackEnqueued(TrackEnqueuedEvent* e)
@@ -354,6 +373,11 @@ void AudioPlayer::OnTrackEnqueued(TrackEnqueuedEvent* e)
 		++trackIndex;
 		playTrack(trackIndex);
 	}
+
+	shuffledPlaylist.push_back(0);
+
+	if (shuffleState == ShuffleState::PLAYLIST)
+		shuffle();
 }
 
 void AudioPlayer::OnPlaylistCleared(PlaylistClearedEvent* e)

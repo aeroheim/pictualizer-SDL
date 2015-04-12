@@ -37,7 +37,7 @@ namespace PUtils
 		size_t extensionIndex = path.find_last_of(".", path.length() - 1);
 		std::string extension = path.substr(extensionIndex);
 		
-		if (extension.compare(".MP3") == 0 || extension.compare(".mp3") == 0)
+		if (extension.compare(".MP3") == 0 || extension.compare(".mp3") == 0 || extension.compare(".FLAC") == 0 || extension.compare(".flac") == 0)
 			return true;
 
 		return false;

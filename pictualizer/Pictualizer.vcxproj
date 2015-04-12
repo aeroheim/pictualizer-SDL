@@ -38,6 +38,7 @@
     <ClInclude Include="controls\PWidget.h" />
     <ClInclude Include="controls\PWidgetStates.h" />
     <ClInclude Include="controls\SeekBar.h" />
+    <ClInclude Include="controls\WaveformVisualizer.h" />
     <ClInclude Include="image\ImageBackground.h" />
     <ClInclude Include="image\ImageBackgroundStates.h" />
     <ClInclude Include="image\ImageCameraStates.h" />
@@ -73,6 +74,7 @@
     <ClCompile Include="controls\PTextureButton.cpp" />
     <ClCompile Include="controls\PWidget.cpp" />
     <ClCompile Include="controls\SeekBar.cpp" />
+    <ClCompile Include="controls\WaveformVisualizer.cpp" />
     <ClCompile Include="image\ImageBackground.cpp" />
     <ClCompile Include="image\ImageCamera.cpp" />
     <ClCompile Include="image\ImageTexture.cpp" />
