@@ -38,4 +38,4 @@ TrackEnqueuedEvent::TrackEnqueuedEvent(int index) : index(index) {}
 
 TrackRemovedEvent::TrackRemovedEvent(int index) : index(index) {}
 
-TracksClearedEvent::TracksClearedEvent() {}
+PlaylistClearedEvent::PlaylistClearedEvent() {}

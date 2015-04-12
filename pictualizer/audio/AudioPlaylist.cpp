@@ -50,8 +50,8 @@ void AudioPlaylist::removeAllTracks()
 	duration = 0;
 	playlist.clear();
 
-	TracksClearedEvent tracksClearedEvent;
-	notify(&tracksClearedEvent);
+	PlaylistClearedEvent playlistClearedEvent;
+	notify(&playlistClearedEvent);
 }
 
 int AudioPlaylist::getDuration()

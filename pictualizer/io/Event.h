@@ -152,9 +152,9 @@ class TrackRemovedEvent : public Event
 		int index;
 };
 
-class TracksClearedEvent : public Event
+class PlaylistClearedEvent : public Event
 {
 	public:
-		TracksClearedEvent();
+		PlaylistClearedEvent();
 };
 
