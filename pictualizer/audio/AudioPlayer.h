@@ -86,7 +86,6 @@ class AudioPlayer : public EventObserver, public EventSubscriber
 
 		// BASS callbacks 
 		void OnSongEnd();
-		void OnFileDrop(FileDropEvent* e);
 
 		void handleEvent(Event* e);
 
@@ -109,6 +108,8 @@ class AudioPlayer : public EventObserver, public EventSubscriber
 
 		void shuffle();
 
-
+		void OnTrackRemoved(TrackRemovedEvent* e);
+		void OnTrackEnqueued(TrackEnqueuedEvent* e);
+		void OnPlaylistCleared(PlaylistClearedEvent* e);
 };
 

@@ -1,16 +1,16 @@
 #include "AudioPlayer.h"
-#include <iostream>
 
 void CALLBACK nextSongCallback(HSYNC handle, DWORD channel, DWORD data, void *user);
 
 AudioPlayer::AudioPlayer()
 {
 	trackIndex = -1;
-	playlistIndex = 0;
+	playlistIndex = -1;
 	shuffleIndex = -1;
 
-	// Add empty playlist.
-	addPlaylist(AudioPlaylist(L"default"));
+	// Use default playlist on startup.
+	addPlaylist(AudioPlaylist(L"default playlist"));
+	nextPlaylist();
 
 	repeatState = RepeatState::NONE;
 	shuffleState = ShuffleState::NONE;
@@ -43,7 +43,7 @@ AudioPlayerState AudioPlayer::getPlayerState()
 
 AudioPlaylist* AudioPlayer::getCurrentPlaylist()
 {
-	if (playlistIndex >= 0 && (size_t) playlistIndex < playlists.size())
+	if (playlistIndex >= 0 && playlistIndex < (int) playlists.size())
 		return &playlists[playlistIndex];
 
 	return NULL;
@@ -51,7 +51,7 @@ AudioPlaylist* AudioPlayer::getCurrentPlaylist()
 
 AudioPlaylist* AudioPlayer::getPlaylist(int index)
 {
-	if (index >= 0 && (size_t)index < playlists.size())
+	if (index >= 0 && index < (int) playlists.size())
 		return &playlists[index];
 
 	return NULL;
@@ -64,34 +64,49 @@ void AudioPlayer::addPlaylist(AudioPlaylist playlist)
 
 void AudioPlayer::removePlaylist(int index)
 {
+	// TODO: figure out which playlist to set ourselves to if current one is removed.
 	if (playlistIndex >= index)
+	{
+		if (playlistIndex == index)
+			unsubscribeFrom(getCurrentPlaylist());
+
 		--playlistIndex;
+	}
 
 	playlists.erase(playlists.begin() + index);
 }
 
 void AudioPlayer::setCurrentPlaylist(int index)
 {
-	if (playlists.size() > (size_t) 0 && index >= 0 && (size_t) index < playlists.size())
+	if ((int) playlists.size() > 0 && index >= 0 && index < (int) playlists.size())
+	{
+		// Set current playlistIndex to new index.
 		playlistIndex = index;
+
+		// Unsubscribe from the old playlist if possible.
+		AudioPlaylist* currentPlaylist = getCurrentPlaylist();
+
+		if (currentPlaylist)
+			unsubscribeFrom(currentPlaylist);
+
+		// Subscribe to new playlist and set appropriate trackIndex based on its size.
+		AudioPlaylist* newPlaylist = getPlaylist(playlistIndex = index);
+		subscribeTo(newPlaylist);
+
+		trackIndex == newPlaylist->getSize() == 0 ? -1 : 0;
+	}
 }
 
 void AudioPlayer::nextPlaylist()
 {
-	if ((size_t) playlistIndex < playlists.size() - 1)
-	{
-		trackIndex = 0;
-		++playlistIndex;
-	}
+	if (playlistIndex < (int) playlists.size() - 1)
+		setCurrentPlaylist(playlistIndex + 1);
 }
 
 void AudioPlayer::prevPlaylist()
 {
 	if (playlistIndex > 0)
-	{
-		trackIndex = 0;
-		--playlistIndex;
-	}
+		setCurrentPlaylist(playlistIndex - 1);
 }
 
 AudioTrack* AudioPlayer::getCurrentTrack()
@@ -101,7 +116,7 @@ AudioTrack* AudioPlayer::getCurrentTrack()
 	if (currentPlaylist)
 		return playlists[playlistIndex].getTrack(trackIndex);
 
-	return NULL;
+	return nullptr;
 }
 
 int AudioPlayer::getCurrentTrackIndex()
@@ -115,11 +130,16 @@ void AudioPlayer::playTrack(int index)
 	
 	if (currentPlaylist && index >= 0 && index < currentPlaylist->getSize())
 	{
+		// Set current trackIndex to new index.
+		trackIndex = index;
+
 		// Setup new HSTREAM.
 		BASS_StreamFree(stream);
-		stream = BASS_StreamCreateFile(0, playlists[playlistIndex].getTrack(index)->getPath().c_str(), 0, 0, 0);
-		std::cout << "error code: " << BASS_ErrorGetCode() << std::endl;
+		stream = BASS_StreamCreateFile(0, getCurrentTrack()->getPath().c_str(), 0, 0, 0);
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
+
+		NewTrackEvent newTrackEvent(getCurrentTrack());
+		notify(&newTrackEvent);
 
 		// Play the new song.
 		play();
@@ -136,25 +156,23 @@ void AudioPlayer::nextTrack()
 		if (shuffleState != ShuffleState::NONE)
 		{
 			// The shuffle list is circular if PLAYLIST REPEAT is enabled.
-			if (repeatState == RepeatState::PLAYLIST && (size_t) (shuffleIndex + 1) > shuffledPlaylist.size())
+			if (repeatState == RepeatState::PLAYLIST && shuffleIndex + 1 > (int) shuffledPlaylist.size())
 			{
 				shuffleIndex = 0;
-				trackIndex = shuffledPlaylist[shuffleIndex];
+				playTrack(shuffledPlaylist[shuffleIndex]);
 			}
-			else if ((size_t)(shuffleIndex + 1) < shuffledPlaylist.size())
-				trackIndex = shuffledPlaylist[++shuffleIndex];
+			else if (shuffleIndex + 1 < (int) shuffledPlaylist.size())
+				playTrack(shuffledPlaylist[++shuffleIndex]);
 		}
 		// Non-shuffle standard next track.
 		else
 		{
 			// The playlist is circular if PLAYLIST REPEAT is enabled.
 			if (repeatState == RepeatState::PLAYLIST && trackIndex + 1 > playlistSize)
-				trackIndex = 0;
+				playTrack(0);
 			else if (trackIndex + 1 < playlistSize)
-				++trackIndex;
+				playTrack(trackIndex + 1);
 		}
-
-		playTrack(trackIndex);
 	}
 }
 
@@ -171,22 +189,20 @@ void AudioPlayer::prevTrack()
 			if (repeatState == RepeatState::PLAYLIST && shuffleIndex == 0)
 			{
 				shuffleIndex = shuffledPlaylist.size() - 1;
-				trackIndex = shuffledPlaylist[shuffleIndex];
+				playTrack(shuffledPlaylist[shuffleIndex]);
 			}
 			else if (shuffleIndex != 0)
-				trackIndex = shuffledPlaylist[--shuffleIndex];
+				playTrack(shuffledPlaylist[--shuffleIndex]);
 		}
 		// Non-shuffle standard previous track.
 		else
 		{
 			// The playlist is circular if PLAYLIST REPEAT is enabled.
 			if (repeatState == RepeatState::PLAYLIST && trackIndex == 0)
-				trackIndex = playlistSize - 1;
+				playTrack(playlistSize - 1);
 			else if (trackIndex != 0)
-				--trackIndex;
+				playTrack(trackIndex - 1);
 		}
-
-		playTrack(trackIndex);
 	}
 }
 
@@ -195,16 +211,25 @@ void AudioPlayer::play()
 	// Playing a stopped song should restart from the beginning.
 	bool restart = BASS_ChannelIsActive(stream) == BASS_ACTIVE_STOPPED ? true : false;
 	BASS_ChannelPlay(stream, restart);
+
+	PlayerStartedEvent playerStartedEvent;
+	notify(&playerStartedEvent);
 }
 
 void AudioPlayer::pause()
 {
 	BASS_ChannelPause(stream);
+
+	PlayerPausedEvent playerPausedEvent;
+	notify(&playerPausedEvent);
 }
 
 void AudioPlayer::stop()
 {
 	BASS_ChannelStop(stream);
+
+	PlayerStoppedEvent playerStoppedEvent;
+	notify(&playerStoppedEvent);
 }
 
 RepeatState AudioPlayer::getRepeat()
@@ -284,7 +309,7 @@ void AudioPlayer::shuffle()
  */
 void CALLBACK nextSongCallback(HSYNC handle, DWORD channel, DWORD data, void *user)
 {
-	((AudioPlayer*)user)->OnSongEnd();
+	((AudioPlayer*) user)->OnSongEnd();
 }
 
 void AudioPlayer::OnSongEnd()
@@ -295,25 +320,43 @@ void AudioPlayer::OnSongEnd()
 		nextTrack();
 }
 
-void AudioPlayer::OnFileDrop(FileDropEvent* e)
-{
-	AudioTrack track(e->path);
-
-	AudioPlaylist* currentPlaylist = getCurrentPlaylist();
-	currentPlaylist->enqueueTrack(track);
-	playTrack(0);
-
-	std::cout << "track path: " << e->path << std::endl;
-}
-
 void AudioPlayer::handleEvent(Event* e)
 {
-	if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
+	if (TrackRemovedEvent* trackRemovedEvent = dynamic_cast<TrackRemovedEvent*>(e))
 	{
-		if (PUtils::pathIsMusic(fileDropEvent->path))
-		{
-			OnFileDrop(fileDropEvent);
-			e->handled = true;
-		}
+		OnTrackRemoved(trackRemovedEvent);
+		e->handled = true;
 	}
+	else if (TrackEnqueuedEvent* trackEnqueuedEvent = dynamic_cast<TrackEnqueuedEvent*>(e))
+	{
+		OnTrackEnqueued(trackEnqueuedEvent);
+		e->handled = true;
+	}
+	else if (PlaylistClearedEvent* playlistClearedEvent = dynamic_cast<PlaylistClearedEvent*>(e))
+	{
+		OnPlaylistCleared(playlistClearedEvent);
+		e->handled = true;
+	}
+}
+
+void AudioPlayer::OnTrackRemoved(TrackRemovedEvent* e)
+{
+	if (trackIndex >= e->index)
+		--trackIndex;
+}
+
+void AudioPlayer::OnTrackEnqueued(TrackEnqueuedEvent* e)
+{
+	if (trackIndex >= e->index)
+		++trackIndex;
+	else if (trackIndex == -1)
+	{
+		++trackIndex;
+		playTrack(trackIndex);
+	}
+}
+
+void AudioPlayer::OnPlaylistCleared(PlaylistClearedEvent* e)
+{
+	trackIndex = -1;
 }
