@@ -138,3 +138,23 @@ class TrackSeekEvent : public Event
 		int seconds;
 };
 
+class TrackEnqueuedEvent : public Event
+{
+	public:
+		TrackEnqueuedEvent(int index);
+		int index;
+};
+
+class TrackRemovedEvent : public Event
+{
+	public:
+		TrackRemovedEvent(int index);
+		int index;
+};
+
+class TracksClearedEvent : public Event
+{
+	public:
+		TracksClearedEvent();
+};
+

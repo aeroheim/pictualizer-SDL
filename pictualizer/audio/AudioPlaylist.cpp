@@ -28,6 +28,9 @@ void AudioPlaylist::enqueueTrack(AudioTrack track)
 {
 	duration += track.getDuration();
 	playlist.push_back(track);
+
+	TrackEnqueuedEvent trackEnqueuedEvent(playlist.size() - 1);
+	notify(&trackEnqueuedEvent);
 }
 
 void AudioPlaylist::removeTrack(int index)
@@ -36,6 +39,9 @@ void AudioPlaylist::removeTrack(int index)
 	{
 		duration -= playlist[index].getDuration();
 		playlist.erase(playlist.begin() + index);
+
+		TrackRemovedEvent trackRemovedEvent(index);
+		notify(&trackRemovedEvent);
 	}
 }
 
@@ -43,6 +49,9 @@ void AudioPlaylist::removeAllTracks()
 {
 	duration = 0;
 	playlist.clear();
+
+	TracksClearedEvent tracksClearedEvent;
+	notify(&tracksClearedEvent);
 }
 
 int AudioPlaylist::getDuration()
