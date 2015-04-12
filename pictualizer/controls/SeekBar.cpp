@@ -221,6 +221,9 @@ void SeekBar::OnMouseDown(MouseDownEvent* e)
 	seekTime = seekTime < 0 ? 0 : seekTime;
 
 	setTime(seekTime);
+
+	SeekEvent seekEvent;
+	notify(&seekEvent);
 }
 
 void SeekBar::OnMouseUp(MouseUpEvent* e)
@@ -232,8 +235,8 @@ void SeekBar::OnMouseUp(MouseUpEvent* e)
 
 	setTime(seekTime);
 
-	TrackSeekEvent trackSeekEvent(seekTime);
-	notify(&trackSeekEvent);
+	SeekRequestEvent seekRequestEvent(seekTime);
+	notify(&seekRequestEvent);
 }
 
 void SeekBar::OnMouseMotion(MouseMotionEvent* e)

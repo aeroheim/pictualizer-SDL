@@ -133,10 +133,16 @@ class ButtonToggledEvent : public Event
 		bool on;
 };
 
-class TrackSeekEvent : public Event
+class SeekEvent : public Event
 {
 	public:
-		TrackSeekEvent(int seconds);
+		SeekEvent();
+};
+
+class SeekRequestEvent : public Event
+{
+	public:
+		SeekRequestEvent(int seconds);
 		int seconds;
 };
 

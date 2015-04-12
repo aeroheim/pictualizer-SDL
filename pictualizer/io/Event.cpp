@@ -32,7 +32,9 @@ ButtonPressedEvent::ButtonPressedEvent(Button* button) : button(button) {}
 
 ButtonToggledEvent::ButtonToggledEvent(Button* button, bool on) : button(button), on(on) {}
 
-TrackSeekEvent::TrackSeekEvent(int seconds) : seconds(seconds) {}
+SeekEvent::SeekEvent() {}
+
+SeekRequestEvent::SeekRequestEvent(int seconds) : seconds(seconds) {}
 
 TrackEnqueuedEvent::TrackEnqueuedEvent(int index) : index(index) {}
 
