@@ -25,8 +25,8 @@ namespace PUtils
 		size_t extensionIndex = path.find_last_of(".", path.length() - 1);
 		std::string extension = path.substr(extensionIndex);
 
-		if (extension.compare(".JPG") || extension.compare(".jpg") || extension.compare(".PNG") || extension.compare(".png")
-			|| extension.compare(".JPEG") || extension.compare(".jpeg"))
+		if (extension.compare(".JPG") == 0 || extension.compare(".jpg") == 0 || extension.compare(".PNG") == 0 || extension.compare(".png") == 0 || 
+			extension.compare(".JPEG") == 0 || extension.compare(".jpeg") == 0)
 			return true;
 		
 		return false;
@@ -37,7 +37,7 @@ namespace PUtils
 		size_t extensionIndex = path.find_last_of(".", path.length() - 1);
 		std::string extension = path.substr(extensionIndex);
 		
-		if (extension.compare(".MP3") || extension.compare(".mp3"))
+		if (extension.compare(".MP3") == 0 || extension.compare(".mp3") == 0)
 			return true;
 
 		return false;
