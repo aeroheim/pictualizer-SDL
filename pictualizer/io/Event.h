@@ -168,6 +168,18 @@ class NewTrackEvent : public Event
 		const AudioTrack* const track;
 };
 
+class PlayerStartedEvent : public Event
+{
+	public:
+		PlayerStartedEvent();
+};
+
+class PlayerPausedEvent : public Event
+{
+	public:
+		PlayerPausedEvent();
+};
+
 class PlayerStoppedEvent : public Event
 {
 	public:

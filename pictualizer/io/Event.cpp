@@ -42,4 +42,8 @@ PlaylistClearedEvent::PlaylistClearedEvent(const AudioPlaylist* playlist) : play
 
 NewTrackEvent::NewTrackEvent(const AudioTrack* track) : track(track) {}
 
+PlayerStartedEvent::PlayerStartedEvent() {}
+
+PlayerPausedEvent::PlayerPausedEvent() {}
+
 PlayerStoppedEvent::PlayerStoppedEvent() {}
