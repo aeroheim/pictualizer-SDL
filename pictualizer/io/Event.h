@@ -5,6 +5,8 @@
 
 class PWidget;
 class Button;
+class AudioTrack;
+class AudioPlaylist;
 
 class Event
 {
@@ -127,7 +129,7 @@ class ButtonToggledEvent : public Event
 {
 	public:
 		ButtonToggledEvent(Button* button, bool on);
-		Button *button;
+		Button* button;
 		bool on;
 };
 
@@ -155,6 +157,20 @@ class TrackRemovedEvent : public Event
 class PlaylistClearedEvent : public Event
 {
 	public:
-		PlaylistClearedEvent();
+		PlaylistClearedEvent(const AudioPlaylist* playlist);
+		const AudioPlaylist* const playlist;
+};
+
+class NewTrackEvent : public Event
+{
+	public:
+		NewTrackEvent(const AudioTrack* track);
+		const AudioTrack* const track;
+};
+
+class PlayerStoppedEvent : public Event
+{
+	public:
+		PlayerStoppedEvent();
 };
 

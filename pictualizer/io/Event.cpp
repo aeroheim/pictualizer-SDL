@@ -38,4 +38,8 @@ TrackEnqueuedEvent::TrackEnqueuedEvent(int index) : index(index) {}
 
 TrackRemovedEvent::TrackRemovedEvent(int index) : index(index) {}
 
-PlaylistClearedEvent::PlaylistClearedEvent() {}
+PlaylistClearedEvent::PlaylistClearedEvent(const AudioPlaylist* playlist) : playlist(playlist) {}
+
+NewTrackEvent::NewTrackEvent(const AudioTrack* track) : track(track) {}
+
+PlayerStoppedEvent::PlayerStoppedEvent() {}

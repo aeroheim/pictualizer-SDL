@@ -8,7 +8,7 @@ AudioPlaylist::~AudioPlaylist()
 
 AudioTrack* AudioPlaylist::getTrack(int index)
 {
-	if (index >= 0 && (size_t)index < playlist.size())
+	if (index >= 0 && index < (int) playlist.size())
 		return &playlist[index];
 
 	return NULL;
@@ -35,7 +35,7 @@ void AudioPlaylist::enqueueTrack(AudioTrack track)
 
 void AudioPlaylist::removeTrack(int index)
 {
-	if (index >= 0 && (size_t) index < playlist.size())
+	if (index >= 0 && index < (int) playlist.size())
 	{
 		duration -= playlist[index].getDuration();
 		playlist.erase(playlist.begin() + index);
@@ -50,7 +50,7 @@ void AudioPlaylist::removeAllTracks()
 	duration = 0;
 	playlist.clear();
 
-	PlaylistClearedEvent playlistClearedEvent;
+	PlaylistClearedEvent playlistClearedEvent(this);
 	notify(&playlistClearedEvent);
 }
 
