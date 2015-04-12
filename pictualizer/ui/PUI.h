@@ -9,20 +9,17 @@
 class PUI : public EventSubscriber, public EventObserver
 {
 	public:
-		PUI(SDL_Window* win, SDL_Renderer* r, int ww, int wh);
+		PUI(SDL_Renderer* r, AudioPlayer* audioPlayer, int ww, int wh);
 
 		void draw();
 
 		void handleEvent(Event* e);
 
 	private:
-		SDL_Window* win;
 		SDL_Renderer* ren;
 		int ww;
 		int wh;
 
+		AudioPlayer* audioPlayer;
 		AudioPlayerWidget audioPlayerWidget;
-
-		TTF_Font* gothic;
-		TTF_Font* mplus;
 };

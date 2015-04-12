@@ -80,12 +80,11 @@ int main(int argc, char** argv)
 	AudioPlayer audioPlayer;
 
 	// Initialize UI.
-	PUI ui(win, ren, ww, wh);
+	PUI ui(ren, &audioPlayer, ww, wh);
 
 	// Initialize IO.
 	WindowIOController windowIOController(win);
 
-	windowIOController.addSubscriber(&audioPlayer);
 	windowIOController.addSubscriber(&imageBackground);
 	windowIOController.addSubscriber(&ui);
 
