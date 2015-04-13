@@ -91,6 +91,7 @@ int main(int argc, char** argv)
 	while (true)
 	{
 		windowIOController.pollEvents();
+		audioPlayer.pollStatus();
 
 		// Clear previous frame.
 		SDL_RenderClear(ren);

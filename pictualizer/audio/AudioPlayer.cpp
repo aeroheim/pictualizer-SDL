@@ -1,19 +1,21 @@
 #include "AudioPlayer.h"
+#include <iostream>
+
+using namespace std;
 
 void CALLBACK nextSongCallback(HSYNC handle, DWORD channel, DWORD data, void *user);
 
-AudioPlayer::AudioPlayer()
+AudioPlayer::AudioPlayer() : 
+	finished(false), 
+	trackIndex(-1), 
+	playlistIndex(-1), 
+	shuffleIndex(-1), 
+	repeatState(RepeatState::NONE), 
+	shuffleState(ShuffleState::NONE)
 {
-	trackIndex = -1;
-	playlistIndex = -1;
-	shuffleIndex = -1;
-
 	// Use default playlist on startup.
 	addPlaylist(AudioPlaylist(L"default playlist"));
 	nextPlaylist();
-
-	repeatState = RepeatState::NONE;
-	shuffleState = ShuffleState::NONE;
 
 	BASS_SetVolume(0.1f);
 }
@@ -142,8 +144,11 @@ void AudioPlayer::playTrack(int index)
 		// Set current trackIndex to new index.
 		trackIndex = index;
 
-		// Setup new HSTREAM.
+		// Cleanup old HSTREAM.
+		BASS_ChannelRemoveSync(stream, BASS_SYNC_END);
 		BASS_StreamFree(stream);
+
+		// Setup new HSTREAM.
 		stream = BASS_StreamCreateFile(0, getCurrentTrack()->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
@@ -293,6 +298,11 @@ double AudioPlayer::getPosition()
 	return BASS_ChannelBytes2Seconds(stream, BASS_ChannelGetPosition(stream, BASS_POS_BYTE));
 }
 
+
+double AudioPlayer::getBASSDuration()
+{
+	return BASS_ChannelBytes2Seconds(stream, BASS_ChannelGetLength(stream, BASS_POS_BYTE));
+}
 /*
  *	Performs a Fisher-Yates shuffle on the shuffle list.
  */
@@ -312,7 +322,7 @@ void AudioPlayer::shuffle()
 		std::swap(shuffledPlaylist[j], shuffledPlaylist[i]);
 	}
 
-	shuffleIndex = 0;
+	shuffleIndex = -1;
 }
 
 /*
@@ -325,13 +335,23 @@ void CALLBACK nextSongCallback(HSYNC handle, DWORD channel, DWORD data, void *us
 
 void AudioPlayer::OnSongEnd()
 {
-	PlayerStoppedEvent playerStoppedEvent;
-	notify(&playerStoppedEvent);
+	finished = true;
+}
 
-	if (repeatState == RepeatState::SONG)
-		play();
-	else
-		nextTrack();
+void AudioPlayer::pollStatus()
+{
+	if (finished)
+	{
+		finished = false;
+
+		PlayerStoppedEvent playerStoppedEvent;
+		notify(&playerStoppedEvent);
+
+		if (repeatState == RepeatState::SONG)
+			play();
+		else
+			nextTrack();
+	}
 }
 
 void AudioPlayer::handleEvent(Event* e)

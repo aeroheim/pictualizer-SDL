@@ -84,13 +84,19 @@ class AudioPlayer : public EventObserver, public EventSubscriber
 		void setPosition(double pos);
 		double getPosition();
 
+		double getBASSDuration();
+
 		// BASS callbacks 
 		void OnSongEnd();
+
+		void pollStatus();
 
 		void handleEvent(Event* e);
 
 	private:
 		HSTREAM stream;
+
+		bool finished;
 		
 		// Index of the current track in the current playlist.
 		int trackIndex;
