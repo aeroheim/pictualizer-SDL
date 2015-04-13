@@ -3,15 +3,15 @@
 
 using namespace std;
 
-AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer, float x, float y, float w, float h) : 
+AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer, float x, float y, float w, float h) :
 	PWidget(ren, x, y, w, h),
 	ren(ren),
 	audioPlayer(audioPlayer),
-	playerControlGrid(getInnerX(), getInnerY(), std::vector<float> { getInnerHeight() / 2, getInnerHeight() / 2 }, std::vector<float> { getInnerHeight() / 2, getInnerHeight() / 2 }),
-	bodyGrid(getInnerX(), getInnerY(), std::vector<float> { getInnerHeight() }, std::vector<float> { getInnerHeight(), getInnerWidth() - getInnerHeight() }),
-	rightGrid(getInnerX() + getInnerHeight(), getInnerY(), std::vector<float> { getInnerHeight() * (5.0f / 18), getInnerHeight() * (3.0f / 18), getInnerHeight() * (8.0f / 18), getInnerHeight() * (2.0f / 18) }, std::vector<float> { getInnerWidth() - getInnerHeight() }),
-	bottomGrid(getInnerX(), getInnerY(), std::vector<float> { getInnerHeight() * (2.0f / 18) }, std::vector<float> { getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), (getInnerWidth() - getInnerHeight()) - ((getInnerHeight() * (2.0f / 18)) * 7.5f), getInnerHeight() * (2.0f / 18), 2.5f * (getInnerHeight() * (2.0f / 18)) }),
-	volButtonGrid(getInnerX(), getInnerY(), std::vector<float> { 100, 100 }, std::vector<float> { 200 }),
+	playerControlGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() / 2, getInnerHeight() / 2 }, std::vector < float > { getInnerHeight() / 2, getInnerHeight() / 2 }),
+	bodyGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() }, std::vector < float > { getInnerHeight(), getInnerWidth() - getInnerHeight() }),
+	rightGrid(getInnerX() + getInnerHeight(), getInnerY(), std::vector < float > { getInnerHeight() * (5.0f / 18), getInnerHeight() * (3.0f / 18), getInnerHeight() * (8.0f / 18), getInnerHeight() * (2.0f / 18) }, std::vector < float > { getInnerWidth() - getInnerHeight() }),
+	bottomGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() * (2.0f / 18) }, std::vector < float > { getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), (getInnerWidth() - getInnerHeight()) - ((getInnerHeight() * (2.0f / 18)) * 7.5f), getInnerHeight() * (2.0f / 18), 2.5f * (getInnerHeight() * (2.0f / 18)) }),
+	volButtonGrid(getInnerX(), getInnerY(), std::vector < float > { 100, 100 }, std::vector < float > { 200 }),
 	indexWidget(ren, PFontType::CENTURYGOTHIC, 0, 0, 100, 100),
 	seekBar(ren, PFontType::MPLUSLIGHT, 0, 0, 64, 64),
 	title(ren, PFontType::MPLUSLIGHT, 0, 0, 100, 100),
@@ -27,6 +27,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	info(PTextureType::AP_INFO, 0, 0, 64, 64),
 	volUp(PTextureType::AP_VOL_UP, 0, 0, 64, 32),
 	volDown(PTextureType::AP_VOL_DOWN, 0, 0, 64, 32),
+	waveformVisualizer(ren, 0, 0, 200, 100),
 	seeking(false)
 {
 
@@ -96,6 +97,14 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	volDb.setClipState(LabelClipState::CLIP);
 	volDb.setText(ss.str() + "dB");
 
+	// Visualizations - WAVEFORM & SPECTRUM visualizers.
+	waveformVisualizer.setMsOffset(330);
+	waveformVisualizer.setAlpha(0);
+	waveformVisualizer.setMinAlpha(0);
+	waveformVisualizer.setMaxAlpha(255);
+	waveformVisualizer.setFadeDelta(30);
+
+
 	// Grids.
 	playerControlGrid[0][0].setElement(&playPause);
 	playerControlGrid[0][0].setPadding(0.3f, 0.3f, 0, 0);
@@ -117,6 +126,8 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	rightGrid[0][0].setElement(&title);
 	rightGrid[1][0].setElement(&artist);
+	rightGrid[2][0].setElement(&waveformVisualizer);
+	rightGrid[2][0].setPadding(0, 0.05f, 0, 0.05f);
 	rightGrid[3][0].setElement(&bottomGrid);
 
 	bottomGrid[0][0].setElement(&playlist);
@@ -374,20 +385,24 @@ void AudioPlayerWidget::OnNewTrack(NewTrackEvent * e)
 	indexWidget.setIndex(audioPlayer->getCurrentTrackIndex() + 1);
 	seekBar.setTime(0);
 	seekBar.setDuration(e->track->getDuration());
+	waveformVisualizer.setStream(audioPlayer->getStream());
 }
 
 void AudioPlayerWidget::OnPlayerStarted(PlayerStartedEvent* e)
 {
 	playPause.setTexture(PTextureType::AP_PAUSE);
+	waveformVisualizer.setFadeState(PControlFadeState::FADEIN);
 }
 
 void AudioPlayerWidget::OnPlayerPaused(PlayerPausedEvent* e)
 {
 	playPause.setTexture(PTextureType::AP_PLAY);
+	waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
 }
 
 void AudioPlayerWidget::OnPlayerStopped(PlayerStoppedEvent* e)
 {
 	playPause.setTexture(PTextureType::AP_PLAY);
+	waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
 	seekBar.setTime(0);
 }

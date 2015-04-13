@@ -144,7 +144,7 @@ void AudioPlayer::playTrack(int index)
 
 		// Setup new HSTREAM.
 		BASS_StreamFree(stream);
-		stream = BASS_StreamCreateFile(0, getCurrentTrack()->getPath().c_str(), 0, 0, 0);
+		stream = BASS_StreamCreateFile(0, getCurrentTrack()->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
 		NewTrackEvent newTrackEvent(getCurrentTrack());

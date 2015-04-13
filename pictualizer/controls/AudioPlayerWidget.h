@@ -7,6 +7,7 @@
 #include "PTextureButton.h"
 #include "ImageButton.h"
 #include "SeekBar.h"
+#include "WaveformVisualizer.h"
 #include "../audio/AudioPlayer.h"
 #include "../assets/fonts/PFonts.h"
 #include "../assets/textures/PTextures.h"
@@ -52,6 +53,8 @@ class AudioPlayerWidget : public PWidget
 		PTextureButton info;
 		PTextureButton volUp;
 		PTextureButton volDown;
+
+		WaveformVisualizer waveformVisualizer;
 
 		const float VOL_DELTA = 0.01f;
 		bool seeking;

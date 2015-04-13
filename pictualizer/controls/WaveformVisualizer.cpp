@@ -26,7 +26,9 @@ WaveformVisualizer::~WaveformVisualizer()
 void WaveformVisualizer::setStream(HSTREAM* stream)
 {
 	this->stream = stream;
-	setSamples();
+
+	if (this->stream)
+		setSamples();
 }
 
 HSTREAM* WaveformVisualizer::getStream() const
@@ -37,7 +39,9 @@ HSTREAM* WaveformVisualizer::getStream() const
 void WaveformVisualizer::setMsOffset(int ms)
 {
 	msOffset = ms;
-	setSamples();
+
+	if (stream)
+		setSamples();
 }
 
 int WaveformVisualizer::getMsOffset() const
@@ -63,13 +67,29 @@ void WaveformVisualizer::setWidth(float w)
 	dest.w = getRoundedWidth();
 
 	// Sample unit depends on width, so we must adjust it.
-	sampleUnit = (int) std::round(samples.size() / getWidth());
+	sampleUnit = (int) std::floor(samples.size() / getWidth());
+
+	// Recreate the texture since dimensions have changed.
+	if (texture)
+	{
+		SDL_DestroyTexture(texture);
+		texture = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, getRoundedWidth(), getRoundedHeight());
+		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	}
 }
 
 void WaveformVisualizer::setHeight(float h)
 {
 	PControl::setHeight(h);
 	dest.h = getRoundedHeight();
+
+	// Recreate the texture since dimensions have changed.
+	if (texture)
+	{
+		SDL_DestroyTexture(texture);
+		texture = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, getRoundedWidth(), getRoundedHeight());
+		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	}
 }
 
 void WaveformVisualizer::setColor(float r, float g, float b)
@@ -95,33 +115,38 @@ void WaveformVisualizer::draw(SDL_Renderer* ren)
 {
 	PControl::draw(this->ren);
 
-	SDL_SetRenderTarget(ren, texture);
-	SDL_RenderClear(ren);
+	if (stream)
+	{
+		SDL_SetRenderTarget(ren, texture);
 
-	// Query the current frame's audio samples.
-	BASS_ChannelGetData(*stream, &samples[0], samples.size() * 4);
+		// Clear previous frame.
+		SDL_RenderClear(ren);
 
-	// Store the renderer's previous color and set it to the visualizer's colors.
-	Uint8 prevR, prevG, prevB, prevA;
-	SDL_GetRenderDrawColor(ren, &prevR, &prevG, &prevB, &prevA);
-	PIntColor color = getRoundedColor();
-	SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, getRoundedAlpha());
+		// Query the current frame's audio samples.
+		BASS_ChannelGetData(*stream, &samples[0], samples.size() * 4);
 
-	// Draw the points that make up the waveform visualization.
-	std::vector<SDL_Point> points;
-	int midline = (int) std::round(getRoundedY() + (getRoundedHeight() / 2.0f));
-	int waveHeight = (int) std::round(getRoundedHeight() / 2.0f);
+		// Store the renderer's previous color and set it to the visualizer's colors.
+		Uint8 prevR, prevG, prevB, prevA;
+		SDL_GetRenderDrawColor(ren, &prevR, &prevG, &prevB, &prevA);
+		PIntColor color = getRoundedColor();
+		SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, getRoundedAlpha());
 
-	for (int i = 0; i < getRoundedWidth(); i++)
-		points.push_back({ getRoundedX() + i, (int) std::round(midline + samples[i * sampleUnit] * waveHeight) });
+		// Draw the points that make up the waveform visualization.
+		std::vector<SDL_Point> points;
+		int midline = (int) std::round(getRoundedHeight() / 2.0f);
 
-	SDL_RenderDrawLines(ren, &points[0], getRoundedWidth() - 1);
+		for (int i = 0; i < getRoundedWidth(); i++)
+			points.push_back({ i, midline + (int) std::round(samples[i * sampleUnit] * midline) });
 
-	// Restore the renderer's previous color.
-	SDL_SetRenderDrawColor(ren, prevR, prevG, prevB, prevA);
+		SDL_RenderDrawLines(ren, &points[0], getRoundedWidth() - 1);
 
-	SDL_SetRenderTarget(ren, nullptr);
-	SDL_RenderCopy(ren, texture, nullptr, &dest);
+		// Restore the renderer's previous color.
+		SDL_SetRenderDrawColor(ren, prevR, prevG, prevB, prevA);
+
+		SDL_SetRenderTarget(ren, nullptr);
+
+		SDL_RenderCopy(ren, texture, nullptr, &dest);
+	}
 }
 
 void WaveformVisualizer::setSamples()
