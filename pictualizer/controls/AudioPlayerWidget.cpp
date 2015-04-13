@@ -1,7 +1,4 @@
 #include "AudioPlayerWidget.h"
-#include <iostream>
-
-using namespace std;
 
 AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer, float x, float y, float w, float h) :
 	PWidget(ren, x, y, w, h),
@@ -375,7 +372,9 @@ void AudioPlayerWidget::OnSeek(SeekEvent* e)
 void AudioPlayerWidget::OnSeekRequest(SeekRequestEvent* e)
 {
 	seeking = false;
-	audioPlayer->setPosition(e->seconds);
+	
+	int position = e->seconds > audioPlayer->getBASSDuration() ? (int) audioPlayer->getBASSDuration() : e->seconds;
+	audioPlayer->setPosition(position);
 }
 
 void AudioPlayerWidget::OnNewTrack(NewTrackEvent * e)
