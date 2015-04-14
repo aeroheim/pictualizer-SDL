@@ -1,7 +1,4 @@
 #include "AudioTrack.h"
-#include <iostream>
-
-using namespace std;
 
 AudioTrack::AudioTrack(std::string path) : filePath(L""), title(L""), artist(L""), album(L""), duration(0), populated(false)
 {
