@@ -192,3 +192,10 @@ class PlayerStoppedEvent : public Event
 		PlayerStoppedEvent();
 };
 
+class VolumeChangedEvent : public Event
+{
+	public:
+		VolumeChangedEvent(double vol);
+		double vol;
+};
+
