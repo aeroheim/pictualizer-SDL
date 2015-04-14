@@ -132,13 +132,16 @@ void WaveformVisualizer::draw(SDL_Renderer* ren)
 		SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, getRoundedAlpha());
 
 		// Draw the points that make up the waveform visualization.
-		std::vector<SDL_Point> points;
+		SDL_Point* points = new SDL_Point[getRoundedWidth()];
+
 		int midline = (int) std::round(getRoundedHeight() / 2.0f);
 
-		for (int i = 0; i < getRoundedWidth(); i++)
-			points.push_back({ i, midline + (int) std::round(samples[i * sampleUnit] * midline) });
+		for (int i = 0; i < getRoundedWidth() - 1; i++)
+			points[i] = { i, midline + (int)std::round(samples[i * sampleUnit] * midline) };
 
-		SDL_RenderDrawLines(ren, &points[0], getRoundedWidth() - 1);
+		SDL_RenderDrawLines(ren, points, getRoundedWidth() - 1);
+
+		delete[] points;
 
 		// Restore the renderer's previous color.
 		SDL_SetRenderDrawColor(ren, prevR, prevG, prevB, prevA);
