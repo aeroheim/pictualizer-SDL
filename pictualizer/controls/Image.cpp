@@ -18,7 +18,7 @@ Image::~Image()
 		SDL_DestroyTexture(image);
 }
 
-void Image::setImage(SDL_Texture* image, bool free = true)
+void Image::setImage(SDL_Texture* image, bool free)
 {
 	if (free && this->image)
 		SDL_DestroyTexture(this->image);
@@ -30,7 +30,7 @@ void Image::setImage(SDL_Texture* image, bool free = true)
 	setAlpha(getAlpha());
 }
 
-void Image::setImage(std::string path, SDL_Renderer* ren, bool free = true)
+void Image::setImage(std::string path, SDL_Renderer* ren, bool free)
 {
 	if (free && this->image)
 		SDL_DestroyTexture(this->image);
