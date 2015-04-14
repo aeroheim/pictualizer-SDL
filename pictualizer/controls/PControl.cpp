@@ -2,7 +2,7 @@
 
 PControl::PControl(float x, float y, float w, float h) : 
 	x(x), y(y), w(w), h(h), 
-	r(-1), g(-1), b(-1),
+	r(255), g(255), b(255),
 	tintState(PControlTintState::NONE),
 	baseTint(255),
 	focusTint(255),
@@ -332,7 +332,6 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 
 	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
 	*/
-	
 }
 
 
