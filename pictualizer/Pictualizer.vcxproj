@@ -20,6 +20,7 @@
     <ClInclude Include="audio\AudioPlaylist.h" />
     <ClInclude Include="audio\AudioTrack.h" />
     <ClInclude Include="controls\AudioPlayerWidget.h" />
+    <ClInclude Include="controls\AudioPlayerWidgetStates.h" />
     <ClInclude Include="controls\Button.h" />
     <ClInclude Include="controls\ButtonStates.h" />
     <ClInclude Include="controls\GridPanelCell.h" />

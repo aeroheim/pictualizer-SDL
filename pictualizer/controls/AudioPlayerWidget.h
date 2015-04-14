@@ -8,6 +8,7 @@
 #include "ImageButton.h"
 #include "SeekBar.h"
 #include "WaveformVisualizer.h"
+#include "AudioPlayerWidgetStates.h"
 #include "../audio/AudioPlayer.h"
 #include "../assets/fonts/PFonts.h"
 #include "../assets/textures/PTextures.h"
@@ -29,6 +30,7 @@ class AudioPlayerWidget : public PWidget
 		void handleEvent(Event* e);
 
 	private:
+		AudioPlayerWidgetDisplayState displayState;
 		AudioPlayer* audioPlayer;
 		SDL_Renderer* ren;
 
@@ -61,6 +63,8 @@ class AudioPlayerWidget : public PWidget
 		int frameCount;
 		bool seeking;
 
+		void OnMouseUp(MouseUpEvent* e);
+		void OnMouseMotion(MouseMotionEvent* e);
 		void OnFileDrop(FileDropEvent* e);
 		void OnButtonPressed(ButtonPressedEvent* e);
 		void OnButtonToggled(ButtonToggledEvent* e);

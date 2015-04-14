@@ -5,6 +5,7 @@ using namespace std;
 
 AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer, float x, float y, float w, float h) :
 	PWidget(ren, x, y, w, h),
+	displayState(AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER),
 	ren(ren),
 	audioPlayer(audioPlayer),
 	playerControlGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() / 2, getInnerHeight() / 2 }, std::vector < float > { getInnerHeight() / 2, getInnerHeight() / 2 }),
@@ -54,6 +55,10 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	indexWidget.setIndex(0);
 
 	// Album Art - displays album art from current track.
+	albumArt.setAlpha(0);
+	albumArt.setMinAlpha(0);
+	albumArt.setMaxAlpha(255);
+	albumArt.setFadeDelta(15);
 	albumArt.setX(bodyGrid[0][0].getX());
 	albumArt.setY(bodyGrid[0][0].getY());
 	albumArt.setWidth(bodyGrid[0][0].getWidth());
@@ -112,7 +117,6 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	waveformVisualizer.setMaxAlpha(230);
 	waveformVisualizer.setFadeDelta(30);
 
-
 	// Grids.
 	playerControlGrid[0][0].setElement(&playPause);
 	playerControlGrid[0][0].setPadding(0.3f, 0.3f, 0, 0);
@@ -127,9 +131,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	playerControlGrid.setMaxAlpha(255);
 	playerControlGrid.setFadeDelta(15);
 
-	// bodyGrid[0][0].setElement(&indexWidget);
-	bodyGrid[0][0].setElement(&albumArt);
-	bodyGrid[0][0].setPadding(0.1f, 0.06f, 0.0f, 0.028f);
+	bodyGrid[0][0].setElement(&indexWidget);
 	bodyGrid[0][0].setMinAlpha(0);
 	bodyGrid[0][0].setMaxAlpha(255);
 	bodyGrid[0][0].setFadeDelta(15);
@@ -160,7 +162,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	bottomGrid[0][6].setPadding(0, 0.08f, 0, 0);
 
 	bodyGrid[0][1].setElement(&rightGrid);
-	bodyGrid[0][1].setPadding(0.05f, 0, 0, 0);
+	bodyGrid[0][1].setPadding(0.05f, 0, 0.02f, 0);
 
 	// PWidget background settings.
 	setBackgroundMinAlpha(150);
@@ -190,28 +192,32 @@ void AudioPlayerWidget::setX(float x)
 {
 	PWidget::setX(x);
 	bodyGrid.setX(getInnerX());
-	playerControlGrid.setX(getInnerX());
+	playerControlGrid.setX(indexWidget.getX());
+	albumArt.setX(indexWidget.getX());
 }
 
 void AudioPlayerWidget::setY(float y)
 {
 	PWidget::setY(y);
 	bodyGrid.setY(getInnerY());
-	playerControlGrid.setY(getInnerY());
+	playerControlGrid.setY(indexWidget.getY());
+	albumArt.setY(indexWidget.getY());
 }
 
 void AudioPlayerWidget::setWidth(float w)
 {
 	PWidget::setWidth(w);
 	bodyGrid.setWidth(getInnerWidth());
-	playerControlGrid.setWidth(bodyGrid[0][0].getWidth());
+	playerControlGrid.setWidth(indexWidget.getWidth());
+	albumArt.setWidth(indexWidget.getWidth());
 }
 
 void AudioPlayerWidget::setHeight(float h)
 {
 	PWidget::setHeight(h);
 	bodyGrid.setHeight(getInnerHeight());
-	playerControlGrid.setHeight(bodyGrid[0][0].getHeight());
+	playerControlGrid.setHeight(indexWidget.getHeight());
+	albumArt.setHeight(indexWidget.getHeight());
 }
 
 void AudioPlayerWidget::draw(SDL_Renderer* ren)
@@ -228,11 +234,13 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 	if (ren)
 	{
 		bodyGrid.draw(ren);
+		albumArt.draw(ren);
 		playerControlGrid.draw(ren);
 	}
 	else
 	{
 		bodyGrid.draw(this->ren);
+		albumArt.draw(this->ren);
 		playerControlGrid.draw(this->ren);
 	}
 
@@ -297,21 +305,9 @@ void AudioPlayerWidget::handleEvent(Event* e)
 			e->handled = true;
 		}
 		else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
-		{
-			if (playerControlGrid.mouseInside(mouseMotionEvent->x, mouseMotionEvent->y))
-			{
-				playerControlGrid.setFadeState(PControlFadeState::FADEIN);
-				bodyGrid[0][0].setFadeState(PControlFadeState::FADEOUT);
-			}
-			else
-			{
-				if (playerControlGrid.getAlpha() != 0)
-					playerControlGrid.setFadeState(PControlFadeState::FADEOUT);
-
-				if (bodyGrid[0][0].getAlpha() != 255)
-					bodyGrid[0][0].setFadeState(PControlFadeState::FADEIN);
-			}
-		}
+			OnMouseMotion(mouseMotionEvent);
+		else if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
+			OnMouseUp(mouseUpEvent);
 
 		PWidget::handleEvent(e);
 	}
@@ -351,6 +347,63 @@ void AudioPlayerWidget::OnButtonPressed(ButtonPressedEvent* e)
 	else if (e->button == &info)
 		// bring out info widget
 	*/
+}
+
+void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
+{
+	if (playerControlGrid.mouseInside(e->x, e->y))
+	{
+		// Fade the playlist number/album art out.
+		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && indexWidget.getAlpha() != 0)
+			indexWidget.setFadeState(PControlFadeState::FADEOUT);
+		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && albumArt.getAlpha() != 0)
+			albumArt.setFadeState(PControlFadeState::FADEOUT);
+
+		// Fade the player control grid in.
+		if (playerControlGrid.getAlpha() != 255)
+			playerControlGrid.setFadeState(PControlFadeState::FADEIN);
+	}
+	else 
+	{
+		// Fade the player control grid out.
+		if (playerControlGrid.getAlpha() != 0)
+			playerControlGrid.setFadeState(PControlFadeState::FADEOUT);
+
+		// Fade the playlist number/album art in.
+		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && indexWidget.getAlpha() != 255)
+			indexWidget.setFadeState(PControlFadeState::FADEIN);
+		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && albumArt.getAlpha() != 255)
+			albumArt.setFadeState(PControlFadeState::FADEIN);
+	}
+}
+
+void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
+{
+	if (mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
+	{
+		// Switch to album art.
+		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER)
+		{
+			displayState = AudioPlayerWidgetDisplayState::ALBUM_ART;
+			
+			if (!playerControlGrid.mouseInside(e->x, e->y))
+			{
+				indexWidget.setFadeState(PControlFadeState::FADEOUT);
+				albumArt.setFadeState(PControlFadeState::FADEIN);
+			}
+		}
+		// Switch to playlist number.
+		else
+		{
+			displayState = AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER;
+
+			if (!playerControlGrid.mouseInside(e->x, e->y))
+			{
+				albumArt.setFadeState(PControlFadeState::FADEOUT);
+				indexWidget.setFadeState(PControlFadeState::FADEIN);
+			}
+		}
+	}
 }
 
 void AudioPlayerWidget::OnButtonToggled(ButtonToggledEvent* e)

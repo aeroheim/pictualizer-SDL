@@ -138,6 +138,9 @@
     <ClInclude Include="controls\WaveformVisualizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\AudioPlayerWidgetStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
