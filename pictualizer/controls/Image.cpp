@@ -24,6 +24,10 @@ void Image::setImage(SDL_Texture* image)
 		SDL_DestroyTexture(this->image);
 
 	this->image = image;
+
+	PFloatColor color = getColor();
+	setColor(color.r, color.g, color.b);
+	setAlpha(getAlpha());
 }
 
 void Image::setImage(std::string path, SDL_Renderer* ren)
