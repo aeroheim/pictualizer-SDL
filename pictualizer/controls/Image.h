@@ -12,8 +12,9 @@ class Image : public PControl
 		Image(float x, float y, float w, float h);
 		~Image();
 
-		void setImage(SDL_Texture* image);
-		void setImage(std::string path, SDL_Renderer* ren);
+		void setImage(SDL_Texture* image, bool free);
+		void setImage(std::string path, SDL_Renderer* ren, bool free); 
+		SDL_Texture* getImage();
 
 		void freeImage();
 

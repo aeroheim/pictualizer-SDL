@@ -18,9 +18,9 @@ Image::~Image()
 		SDL_DestroyTexture(image);
 }
 
-void Image::setImage(SDL_Texture* image)
+void Image::setImage(SDL_Texture* image, bool free = true)
 {
-	if (this->image)
+	if (free && this->image)
 		SDL_DestroyTexture(this->image);
 
 	this->image = image;
@@ -30,12 +30,21 @@ void Image::setImage(SDL_Texture* image)
 	setAlpha(getAlpha());
 }
 
-void Image::setImage(std::string path, SDL_Renderer* ren)
+void Image::setImage(std::string path, SDL_Renderer* ren, bool free = true)
 {
-	if (this->image)
+	if (free && this->image)
 		SDL_DestroyTexture(this->image);
 
 	this->image = IMG_LoadTexture(ren, path.c_str());
+
+	PFloatColor color = getColor();
+	setColor(color.r, color.g, color.b);
+	setAlpha(getAlpha());
+}
+
+SDL_Texture* Image::getImage()
+{
+	return image;
 }
 
 void Image::freeImage()
