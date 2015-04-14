@@ -228,7 +228,7 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 	if (audioPlayer->getPlayerState() == AudioPlayerState::PLAYING && !seeking && frameCount % 60 == 0)
 	{
 		frameCount = 1;
-		seekBar.setTime((int) std::round(audioPlayer->getPosition()));
+		seekBar.setTime((int) std::floor(audioPlayer->getPosition()));
 	}
 
 	if (ren)
@@ -446,7 +446,7 @@ void AudioPlayerWidget::OnNewTrack(NewTrackEvent * e)
 	albumArt.setImage(e->track->getAlbumArt(ren));
 	indexWidget.setIndex(audioPlayer->getCurrentTrackIndex() + 1);
 	seekBar.setTime(0);
-	seekBar.setDuration((int) std::ceil(audioPlayer->getBASSDuration()));
+	seekBar.setDuration((int) std::floor(audioPlayer->getBASSDuration()));
 	waveformVisualizer.setStream(audioPlayer->getStream());
 }
 
