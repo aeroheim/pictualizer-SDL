@@ -96,6 +96,8 @@ class AudioPlayer : public EventObserver, public EventSubscriber
 	private:
 		HSTREAM stream;
 
+		float volume;
+
 		bool finished;
 		
 		// Index of the current track in the current playlist.

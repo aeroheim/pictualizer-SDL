@@ -1,4 +1,7 @@
 #include "AudioPlayerWidget.h"
+#include <iostream>
+
+using namespace std;
 
 AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer, float x, float y, float w, float h) :
 	PWidget(ren, x, y, w, h),
@@ -10,6 +13,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	bottomGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() * (2.0f / 18) }, std::vector < float > { getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), (getInnerWidth() - getInnerHeight()) - ((getInnerHeight() * (2.0f / 18)) * 7.5f), getInnerHeight() * (2.0f / 18), 2.5f * (getInnerHeight() * (2.0f / 18)) }),
 	volButtonGrid(getInnerX(), getInnerY(), std::vector < float > { 100, 100 }, std::vector < float > { 200 }),
 	indexWidget(ren, PFontType::CENTURYGOTHIC, 0, 0, 100, 100),
+	albumArt(0, 0, 100, 100),
 	seekBar(ren, PFontType::MPLUSLIGHT, 0, 0, 64, 64),
 	title(ren, PFontType::MPLUSLIGHT, 0, 0, 100, 100),
 	artist(ren, PFontType::MPLUSLIGHT, 0, 0, 100, 100),
@@ -25,6 +29,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	volUp(PTextureType::AP_VOL_UP, 0, 0, 64, 32),
 	volDown(PTextureType::AP_VOL_DOWN, 0, 0, 64, 32),
 	waveformVisualizer(ren, 0, 0, 200, 100),
+	frameCount(1),
 	seeking(false)
 {
 
@@ -47,6 +52,12 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	// IndexWidget - supports track numbers from 0 to 999,999,999.
 	indexWidget.setIndex(0);
+
+	// Album Art - displays album art from current track.
+	albumArt.setX(bodyGrid[0][0].getX());
+	albumArt.setY(bodyGrid[0][0].getY());
+	albumArt.setWidth(bodyGrid[0][0].getWidth());
+	albumArt.setHeight(bodyGrid[0][0].getHeight());
 
 	// Metadata labels - TITLE, ARTIST.
 	title.setClipState(LabelClipState::PAN);
@@ -89,16 +100,16 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	addSubscriber(&volDown);
 
 	std::stringstream ss;
-	ss << std::fixed << std::setprecision(2) << BASS_GetVolume();
+	ss << std::fixed << std::setprecision(2) << audioPlayer->getVolume();
 
 	volDb.setClipState(LabelClipState::CLIP);
 	volDb.setText(ss.str() + "dB");
 
 	// Visualizations - WAVEFORM & SPECTRUM visualizers.
-	waveformVisualizer.setMsOffset(330);
+	waveformVisualizer.setMsOffset(150);
 	waveformVisualizer.setAlpha(0);
 	waveformVisualizer.setMinAlpha(0);
-	waveformVisualizer.setMaxAlpha(255);
+	waveformVisualizer.setMaxAlpha(230);
 	waveformVisualizer.setFadeDelta(30);
 
 
@@ -116,7 +127,9 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	playerControlGrid.setMaxAlpha(255);
 	playerControlGrid.setFadeDelta(15);
 
-	bodyGrid[0][0].setElement(&indexWidget);
+	// bodyGrid[0][0].setElement(&indexWidget);
+	bodyGrid[0][0].setElement(&albumArt);
+	bodyGrid[0][0].setPadding(0.1f, 0.06f, 0.0f, 0.028f);
 	bodyGrid[0][0].setMinAlpha(0);
 	bodyGrid[0][0].setMaxAlpha(255);
 	bodyGrid[0][0].setFadeDelta(15);
@@ -124,7 +137,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	rightGrid[0][0].setElement(&title);
 	rightGrid[1][0].setElement(&artist);
 	rightGrid[2][0].setElement(&waveformVisualizer);
-	rightGrid[2][0].setPadding(0, 0.05f, 0, 0.05f);
+	rightGrid[2][0].setPadding(0, 0.1f, 0, 0.1f);
 	rightGrid[3][0].setElement(&bottomGrid);
 
 	bottomGrid[0][0].setElement(&playlist);
@@ -147,7 +160,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	bottomGrid[0][6].setPadding(0, 0.08f, 0, 0);
 
 	bodyGrid[0][1].setElement(&rightGrid);
-	bodyGrid[0][1].setPadding(0.03f, 0, 0, 0);
+	bodyGrid[0][1].setPadding(0.05f, 0, 0, 0);
 
 	// PWidget background settings.
 	setBackgroundMinAlpha(150);
@@ -205,9 +218,12 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 {
 	PWidget::draw(this->ren);
 
-	// Poll the AudioPlayer for position in current track;
-	if (audioPlayer->getPlayerState() == AudioPlayerState::PLAYING && !seeking)
-		seekBar.setTime((int) audioPlayer->getPosition());
+	// Poll the AudioPlayer for position in current track every second.
+	if (audioPlayer->getPlayerState() == AudioPlayerState::PLAYING && !seeking && frameCount % 60 == 0)
+	{
+		frameCount = 1;
+		seekBar.setTime((int) std::round(audioPlayer->getPosition()));
+	}
 
 	if (ren)
 	{
@@ -219,6 +235,8 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 		bodyGrid.draw(this->ren);
 		playerControlGrid.draw(this->ren);
 	}
+
+	++frameCount;
 }
 
 void AudioPlayerWidget::handleEvent(Event* e)
@@ -273,6 +291,11 @@ void AudioPlayerWidget::handleEvent(Event* e)
 			OnPlayerStopped(playerStoppedEvent);
 			e->handled = true;
 		}
+		else if (VolumeChangedEvent* volumeChangedEvent = dynamic_cast<VolumeChangedEvent*>(e))
+		{
+			OnVolumeChanged(volumeChangedEvent);
+			e->handled = true;
+		}
 		else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
 		{
 			if (playerControlGrid.mouseInside(mouseMotionEvent->x, mouseMotionEvent->y))
@@ -318,25 +341,9 @@ void AudioPlayerWidget::OnButtonPressed(ButtonPressedEvent* e)
 	else if (e->button == &nextTrack)
 		audioPlayer->nextTrack();
 	else if (e->button == &volUp)
-	{
-		float newVol = BASS_GetVolume() + VOL_DELTA <= 1 ? BASS_GetVolume() + VOL_DELTA : 1;
-		BASS_SetVolume(newVol);
-
-		std::stringstream ss;
-		ss << std::fixed << std::setprecision(2) << BASS_GetVolume();
-
-		volDb.setText(ss.str() + "dB");
-	}
+		audioPlayer->setVolume(audioPlayer->getVolume() + VOL_DELTA);
 	else if (e->button == &volDown)
-	{
-		float newVol = BASS_GetVolume() - VOL_DELTA >= 0 ? BASS_GetVolume() - VOL_DELTA : 0;
-		BASS_SetVolume(newVol);
-
-		std::stringstream ss;
-		ss << std::fixed << std::setprecision(2) << BASS_GetVolume();
-
-		volDb.setText(ss.str() + "dB");
-	}
+		audioPlayer->setVolume(audioPlayer->getVolume() - VOL_DELTA);
 
 	/*
 	else if (e->button == &playlist)
@@ -375,15 +382,18 @@ void AudioPlayerWidget::OnSeekRequest(SeekRequestEvent* e)
 	
 	int position = e->seconds > audioPlayer->getBASSDuration() ? (int) audioPlayer->getBASSDuration() : e->seconds;
 	audioPlayer->setPosition(position);
+
+	frameCount = 1;
 }
 
 void AudioPlayerWidget::OnNewTrack(NewTrackEvent * e)
 {
 	title.setText(e->track->getTitle());
 	artist.setText(e->track->getArtist());
+	albumArt.setImage(e->track->getAlbumArt(ren));
 	indexWidget.setIndex(audioPlayer->getCurrentTrackIndex() + 1);
 	seekBar.setTime(0);
-	seekBar.setDuration(e->track->getDuration());
+	seekBar.setDuration((int) std::ceil(audioPlayer->getBASSDuration()));
 	waveformVisualizer.setStream(audioPlayer->getStream());
 }
 
@@ -404,4 +414,12 @@ void AudioPlayerWidget::OnPlayerStopped(PlayerStoppedEvent* e)
 	playPause.setTexture(PTextureType::AP_PLAY);
 	waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
 	seekBar.setTime(0);
+}
+
+void AudioPlayerWidget::OnVolumeChanged(VolumeChangedEvent* e)
+{
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(2) << audioPlayer->getVolume();
+
+	volDb.setText(ss.str() + "dB");
 }

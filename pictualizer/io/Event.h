@@ -195,7 +195,7 @@ class PlayerStoppedEvent : public Event
 class VolumeChangedEvent : public Event
 {
 	public:
-		VolumeChangedEvent(double vol);
-		double vol;
+		VolumeChangedEvent(float vol);
+		float vol;
 };
 

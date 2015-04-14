@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	}
 
 	// Create renderer
-	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
 	if (ren == nullptr)
 	{
 		SDL_DestroyWindow(win);
@@ -78,6 +78,7 @@ int main(int argc, char** argv)
 	
 	// Initialize audio player.
 	AudioPlayer audioPlayer;
+	audioPlayer.setVolume(0.5f);
 
 	// Initialize UI.
 	PUI ui(ren, &audioPlayer, ww, wh);

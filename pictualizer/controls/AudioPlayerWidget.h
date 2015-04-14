@@ -39,6 +39,7 @@ class AudioPlayerWidget : public PWidget
 		GridPanel volButtonGrid;
 
 		IndexWidget indexWidget;
+		Image albumArt;
 		SeekBar seekBar;
 		Label title;
 		Label artist;
@@ -56,7 +57,8 @@ class AudioPlayerWidget : public PWidget
 
 		WaveformVisualizer waveformVisualizer;
 
-		const float VOL_DELTA = 0.01f;
+		const float VOL_DELTA = 0.05f;
+		int frameCount;
 		bool seeking;
 
 		void OnFileDrop(FileDropEvent* e);
@@ -68,4 +70,5 @@ class AudioPlayerWidget : public PWidget
 		void OnPlayerStarted(PlayerStartedEvent* e);
 		void OnPlayerPaused(PlayerPausedEvent* e);
 		void OnPlayerStopped(PlayerStoppedEvent* e);
+		void OnVolumeChanged(VolumeChangedEvent* e);
 };

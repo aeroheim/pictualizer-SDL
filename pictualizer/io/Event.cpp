@@ -50,4 +50,4 @@ PlayerPausedEvent::PlayerPausedEvent() {}
 
 PlayerStoppedEvent::PlayerStoppedEvent() {}
 
-VolumeChangedEvent::VolumeChangedEvent(double vol) : vol(vol) {}
+VolumeChangedEvent::VolumeChangedEvent(float vol) : vol(vol) {}

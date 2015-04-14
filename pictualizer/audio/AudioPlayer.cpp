@@ -11,13 +11,12 @@ AudioPlayer::AudioPlayer() :
 	playlistIndex(-1), 
 	shuffleIndex(-1), 
 	repeatState(RepeatState::NONE), 
-	shuffleState(ShuffleState::NONE)
+	shuffleState(ShuffleState::NONE),
+	volume(0)
 {
 	// Use default playlist on startup.
 	addPlaylist(AudioPlaylist(L"default playlist"));
 	nextPlaylist();
-
-	BASS_SetVolume(0.1f);
 }
 
 AudioPlayer::~AudioPlayer()
@@ -150,6 +149,7 @@ void AudioPlayer::playTrack(int index)
 
 		// Setup new HSTREAM.
 		stream = BASS_StreamCreateFile(0, getCurrentTrack()->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, volume);
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
 		NewTrackEvent newTrackEvent(getCurrentTrack());
@@ -197,7 +197,7 @@ void AudioPlayer::prevTrack()
 	if (playlistSize > 1)
 	{
 		// Use the shuffle list to select the previous track if shuffling.
-		if (shuffleState != ShuffleState::NONE)
+		if (shuffleState != ShuffleState::NONE && shuffleIndex != - 1)
 		{
 			// The shuffle list is circular if PLAYLIST REPEAT is enabled.
 			if (repeatState == RepeatState::PLAYLIST && shuffleIndex == 0)
@@ -274,12 +274,21 @@ void AudioPlayer::setShuffle(ShuffleState s)
  */
 void AudioPlayer::setVolume(float v)
 {
-	BASS_SetVolume(v);
+	float newVolume = v < 0 ? 0 : (v <= 1.0f ? v : 1.0f);
+
+	if (newVolume != volume)
+	{
+		BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, newVolume);
+		volume = newVolume;
+
+		VolumeChangedEvent volumeChangedEvent(volume);
+		notify(&volumeChangedEvent);
+	}
 }
 
 float AudioPlayer::getVolume()
 {
-	return BASS_GetVolume();
+	return volume;
 }
 
 /*
