@@ -11,7 +11,7 @@ PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	minHeight(20)
 {
 	SDL_Surface* bgSurface = SDL_CreateRGBSurface(0, (int) std::round(w), (int) std::round(h), 32, 0, 0, 0, 0);
-	SDL_FillRect(bgSurface, NULL, SDL_MapRGBA(bgSurface->format, 0, 0, 0, 255));
+	SDL_FillRect(bgSurface, NULL, SDL_MapRGBA(bgSurface->format, 255, 255, 255, 255));
 	
 	SDL_Texture* bgTexture = SDL_CreateTextureFromSurface(ren, bgSurface);
 	SDL_SetTextureBlendMode(bgTexture, SDL_BLENDMODE_BLEND);
@@ -115,6 +115,16 @@ void PWidget::setBackgroundFadeDelta(float delta)
 	background.setFadeDelta(delta);
 }
 
+void PWidget::setBackgroundColor(float r, float g, float b)
+{
+	background.setColor(r, g, b);
+}
+
+PFloatColor PWidget::getBackgroundColor()
+{
+	return background.getColor();
+}
+
 void PWidget::setResizeState(PWidgetResizeState s)
 {
 	resizeState = s;
@@ -185,7 +195,7 @@ void PWidget::handleEvent(Event* e)
 		}
 		else if (WidgetResizeEvent* widgetResizeEvent = dynamic_cast<WidgetResizeEvent*>(e))
 		{
-			// If a widget reszie event will collide with us, handle the event to prevent it from resizing.
+			// If a widget resize event will collide with us, handle the event to prevent it from resizing.
 			if (widgetResizeEvent->widget != this && widgetIntersects(widgetResizeEvent->x, widgetResizeEvent->y, widgetResizeEvent->w, widgetResizeEvent->h))
 				e->handled = true;
 		}

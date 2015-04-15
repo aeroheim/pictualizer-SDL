@@ -30,6 +30,8 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		void setBackgroundMaxAlpha(float a);
 		void setBackgroundFadeState(PControlFadeState s);
 		void setBackgroundFadeDelta(float delta);
+		void setBackgroundColor(float r, float g, float b);
+		PFloatColor getBackgroundColor();
 
 		void setResizeState(PWidgetResizeState s);
 		PWidgetResizeState getResizeState();
