@@ -29,8 +29,6 @@ class WaveformVisualizer : public PControl
 
 	private:
 		SDL_Renderer* ren;
-		SDL_Texture* texture;
-		SDL_Rect dest;
 
 		HSTREAM* stream;
 		std::vector<float> samples;

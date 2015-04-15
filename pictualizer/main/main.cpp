@@ -39,6 +39,9 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
+	// Set blend mode on renderer.
+	SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_BLEND);
+
 	// Initialize SDL_TTF
 	if (TTF_Init() < 0)
 	{
