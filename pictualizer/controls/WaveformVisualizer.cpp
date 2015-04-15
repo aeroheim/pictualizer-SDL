@@ -49,7 +49,7 @@ void WaveformVisualizer::draw(SDL_Renderer* ren)
 {
 	PControl::draw(this->ren);
 
-	if (stream)
+	if (stream && getAlpha() != 0)
 	{
 		// Query the current frame's audio samples.
 		BASS_ChannelGetData(*stream, &samples[0], samples.size() * 4);

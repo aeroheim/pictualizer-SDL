@@ -51,7 +51,7 @@ class SpectrumVisualizer : public PControl
 		float barWidth;
 		float dividerWidth;
 
-		const float SMOOTH_CONSTANT = 0.8f;
+		const float SMOOTH_CONSTANT = 0.9f;
 
 		static const int MAX_SAMPLES = 8192;
 		float samples[MAX_SAMPLES];
