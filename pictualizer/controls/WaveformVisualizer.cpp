@@ -37,37 +37,12 @@ int WaveformVisualizer::getMsOffset() const
 	return msOffset;
 }
 
-void WaveformVisualizer::setX(float x)
-{
-	PControl::setX(x);
-}
-
-void WaveformVisualizer::setY(float y)
-{
-	PControl::setY(y);
-}
-
 void WaveformVisualizer::setWidth(float w)
 {
 	PControl::setWidth(w);
 
 	// Sample unit depends on width, so we must adjust it.
 	sampleUnit = (int) std::floor(samples.size() / getWidth());
-}
-
-void WaveformVisualizer::setHeight(float h)
-{
-	PControl::setHeight(h);
-}
-
-void WaveformVisualizer::setColor(float r, float g, float b)
-{
-	PControl::setColor(r, g, b);
-}
-
-void WaveformVisualizer::setAlpha(float a)
-{
-	PControl::setAlpha(a);
 }
 
 void WaveformVisualizer::draw(SDL_Renderer* ren)
