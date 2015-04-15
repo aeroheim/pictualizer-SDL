@@ -62,6 +62,7 @@ class AudioPlayerWidget : public PWidget
 		WaveformVisualizer waveformVisualizer;
 		SpectrumVisualizer spectrumVisualizer;
 
+		const float ALBUM_ART_MIN_ALPHA = 100.0f;
 		const float VOL_DELTA = 0.05f;
 		int frameCount;
 		bool seeking;

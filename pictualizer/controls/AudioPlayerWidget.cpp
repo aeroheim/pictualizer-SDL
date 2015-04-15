@@ -36,19 +36,19 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	seeking(false)
 {
 	// AudioPlayer control buttons - PLAY, PAUSE, STOP, PREV, NEXT.
-	playPause.setBaseTint(160);
+	playPause.setBaseTint(180);
 	playPause.setTintDelta(7);
 	addSubscriber(&playPause);
 
-	stop.setBaseTint(160);
+	stop.setBaseTint(180);
 	stop.setTintDelta(7);
 	addSubscriber(&stop);
 
-	prevTrack.setBaseTint(160);
+	prevTrack.setBaseTint(180);
 	prevTrack.setTintDelta(7);
 	addSubscriber(&prevTrack);
 
-	nextTrack.setBaseTint(160);
+	nextTrack.setBaseTint(180);
 	nextTrack.setTintDelta(7);
 	addSubscriber(&nextTrack);
 
@@ -118,9 +118,9 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	waveformVisualizer.setMaxAlpha(230);
 	waveformVisualizer.setFadeDelta(30);
 
-	spectrumVisualizer.addBin(0, 300);
-	spectrumVisualizer.addBin(300, 600);
-	spectrumVisualizer.addBin(600, 1200);
+	spectrumVisualizer.addBin(0, 300, 0.5);
+	spectrumVisualizer.addBin(300, 900, 1.5);
+	spectrumVisualizer.addBin(900, 1500, 1.5);
 	spectrumVisualizer.setBarWidth(2);
 	spectrumVisualizer.setDividerWidth(15);
 	spectrumVisualizer.setMinAlpha(0);
@@ -129,13 +129,13 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	// Grids.
 	playerControlGrid[0][0].setElement(&playPause);
-	playerControlGrid[0][0].setPadding(0.3f, 0.3f, 0, 0);
+	playerControlGrid[0][0].setPadding(0.5f, 0.5f, 0, 0);
 	playerControlGrid[0][1].setElement(&stop);
-	playerControlGrid[0][1].setPadding(0, 0.3f, 0.3f, 0);
+	playerControlGrid[0][1].setPadding(0, 0.5f, 0.5f, 0);
 	playerControlGrid[1][0].setElement(&prevTrack);
-	playerControlGrid[1][0].setPadding(0.3f, 0, 0.05f, 0.3f);
+	playerControlGrid[1][0].setPadding(0.5f, 0, 0.05f, 0.5f);
 	playerControlGrid[1][1].setElement(&nextTrack);
-	playerControlGrid[1][1].setPadding(0.05f, 0, 0.3f, 0.3f);
+	playerControlGrid[1][1].setPadding(0.05f, 0, 0.5f, 0.5f);
 	playerControlGrid.setAlpha(0);
 	playerControlGrid.setMinAlpha(0);
 	playerControlGrid.setMaxAlpha(255);
@@ -180,11 +180,21 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	waveformVisualizer.setWidth(spectrumVisualizer.getWidth());
 	waveformVisualizer.setHeight(spectrumVisualizer.getHeight());
 
+	// CUHRAYZEE COLORS!!!
+	/*
+	waveformVisualizer.setColor(0, 0, 0);
+	spectrumVisualizer.setColor(30, 250, 96);
+	title.setColor(69, 130, 250);
+	artist.setColor(150, 50, 150);
+	volDb.setColor(69, 69, 150);
+	*/
+
 	// PWidget background settings.
 	setBackgroundMinAlpha(150);
 	setBackgroundAlpha(0);
 	setBackgroundMaxAlpha(200);
 	setBackgroundFadeDelta(4.5);
+	setBackgroundColor(0, 0, 0);
 	
 	// Event subscribing.
 	subscribeTo(&playPause);
@@ -395,7 +405,12 @@ void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
 		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && indexWidget.getAlpha() != 255)
 			indexWidget.setFadeState(PControlFadeState::FADEIN);
 		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && albumArt.getAlpha() != 255)
+		{
 			albumArt.setFadeState(PControlFadeState::FADEIN);
+			
+			if (albumArt.getMaxAlpha() != 255)
+				albumArt.setMaxAlpha(255);
+		}
 	}
 }
 
@@ -407,23 +422,25 @@ void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER)
 		{
 			displayState = AudioPlayerWidgetDisplayState::ALBUM_ART;
+			albumArt.setMinAlpha(ALBUM_ART_MIN_ALPHA);
 			
 			if (!playerControlGrid.mouseInside(e->x, e->y))
-			{
 				indexWidget.setFadeState(PControlFadeState::FADEOUT);
-				albumArt.setFadeState(PControlFadeState::FADEIN);
-			}
+			else
+				albumArt.setMaxAlpha(ALBUM_ART_MIN_ALPHA);
+
+			albumArt.setFadeState(PControlFadeState::FADEIN);
 		}
 		// Switch to playlist number.
 		else
 		{
 			displayState = AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER;
+			albumArt.setMinAlpha(0);
 
 			if (!playerControlGrid.mouseInside(e->x, e->y))
-			{
-				albumArt.setFadeState(PControlFadeState::FADEOUT);
 				indexWidget.setFadeState(PControlFadeState::FADEIN);
-			}
+
+			albumArt.setFadeState(PControlFadeState::FADEOUT);
 		}
 	}
 
