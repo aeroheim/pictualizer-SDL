@@ -8,7 +8,7 @@
 class WaveformVisualizer : public PControl
 {
 	public:
-		WaveformVisualizer(SDL_Renderer* ren, float x, float y, float w, float h);
+		WaveformVisualizer(float x, float y, float w, float h);
 		~WaveformVisualizer();
 
 		void setStream(HSTREAM* stream);
