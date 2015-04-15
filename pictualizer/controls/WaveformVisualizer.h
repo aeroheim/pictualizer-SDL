@@ -22,8 +22,6 @@ class WaveformVisualizer : public PControl
 		void draw(SDL_Renderer* ren = nullptr);
 
 	private:
-		SDL_Renderer* ren;
-
 		HSTREAM* stream;
 		std::vector<float> samples;
 		int msOffset;

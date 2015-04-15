@@ -1,8 +1,7 @@
 #include "WaveformVisualizer.h"
 
-WaveformVisualizer::WaveformVisualizer(SDL_Renderer* ren, float x, float y, float w, float h) : 
+WaveformVisualizer::WaveformVisualizer(float x, float y, float w, float h) : 
 	PControl(x, y, w, h),
-	ren(ren),
 	stream(nullptr),
 	msOffset(0),
 	sampleUnit(0)
@@ -47,7 +46,7 @@ void WaveformVisualizer::setWidth(float w)
 
 void WaveformVisualizer::draw(SDL_Renderer* ren)
 {
-	PControl::draw(this->ren);
+	PControl::draw(ren);
 
 	if (stream && getAlpha() != 0)
 	{
