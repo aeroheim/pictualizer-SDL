@@ -8,6 +8,7 @@
 #include "ImageButton.h"
 #include "SeekBar.h"
 #include "WaveformVisualizer.h"
+#include "SpectrumVisualizer.h"
 #include "AudioPlayerWidgetStates.h"
 #include "../audio/AudioPlayer.h"
 #include "../assets/fonts/PFonts.h"
@@ -31,6 +32,7 @@ class AudioPlayerWidget : public PWidget
 
 	private:
 		AudioPlayerWidgetDisplayState displayState;
+		AudioPlayerWidgetVisualizationState visualizationState;
 		AudioPlayer* audioPlayer;
 		SDL_Renderer* ren;
 
@@ -58,6 +60,7 @@ class AudioPlayerWidget : public PWidget
 		PTextureButton volDown;
 
 		WaveformVisualizer waveformVisualizer;
+		SpectrumVisualizer spectrumVisualizer;
 
 		const float VOL_DELTA = 0.05f;
 		int frameCount;

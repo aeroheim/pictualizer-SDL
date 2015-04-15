@@ -6,6 +6,7 @@ using namespace std;
 AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer, float x, float y, float w, float h) :
 	PWidget(ren, x, y, w, h),
 	displayState(AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER),
+	visualizationState(AudioPlayerWidgetVisualizationState::SPECTRUM),
 	ren(ren),
 	audioPlayer(audioPlayer),
 	playerControlGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() / 2, getInnerHeight() / 2 }, std::vector < float > { getInnerHeight() / 2, getInnerHeight() / 2 }),
@@ -30,10 +31,10 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	volUp(PTextureType::AP_VOL_UP, 0, 0, 64, 32),
 	volDown(PTextureType::AP_VOL_DOWN, 0, 0, 64, 32),
 	waveformVisualizer(ren, 0, 0, 200, 100),
+	spectrumVisualizer(ren, 0, 0, 200, 200),
 	frameCount(1),
 	seeking(false)
 {
-
 	// AudioPlayer control buttons - PLAY, PAUSE, STOP, PREV, NEXT.
 	playPause.setBaseTint(160);
 	playPause.setTintDelta(7);
@@ -117,6 +118,15 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	waveformVisualizer.setMaxAlpha(230);
 	waveformVisualizer.setFadeDelta(30);
 
+	spectrumVisualizer.addBin(0, 300);
+	spectrumVisualizer.addBin(300, 600);
+	spectrumVisualizer.addBin(600, 1200);
+	spectrumVisualizer.setBarWidth(2);
+	spectrumVisualizer.setDividerWidth(15);
+	spectrumVisualizer.setMinAlpha(0);
+	spectrumVisualizer.setMaxAlpha(230);
+	spectrumVisualizer.setFadeDelta(30);
+
 	// Grids.
 	playerControlGrid[0][0].setElement(&playPause);
 	playerControlGrid[0][0].setPadding(0.3f, 0.3f, 0, 0);
@@ -138,7 +148,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	rightGrid[0][0].setElement(&title);
 	rightGrid[1][0].setElement(&artist);
-	rightGrid[2][0].setElement(&waveformVisualizer);
+	rightGrid[2][0].setElement(&spectrumVisualizer);
 	rightGrid[2][0].setPadding(0, 0.1f, 0, 0.1f);
 	rightGrid[3][0].setElement(&bottomGrid);
 
@@ -163,6 +173,12 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	bodyGrid[0][1].setElement(&rightGrid);
 	bodyGrid[0][1].setPadding(0.05f, 0, 0.02f, 0);
+
+	// Additional positioning.
+	waveformVisualizer.setX(spectrumVisualizer.getX());
+	waveformVisualizer.setY(spectrumVisualizer.getY());
+	waveformVisualizer.setWidth(spectrumVisualizer.getWidth());
+	waveformVisualizer.setHeight(spectrumVisualizer.getHeight());
 
 	// PWidget background settings.
 	setBackgroundMinAlpha(150);
@@ -194,6 +210,7 @@ void AudioPlayerWidget::setX(float x)
 	bodyGrid.setX(getInnerX());
 	playerControlGrid.setX(indexWidget.getX());
 	albumArt.setX(indexWidget.getX());
+	waveformVisualizer.setX(spectrumVisualizer.getX());
 }
 
 void AudioPlayerWidget::setY(float y)
@@ -202,6 +219,7 @@ void AudioPlayerWidget::setY(float y)
 	bodyGrid.setY(getInnerY());
 	playerControlGrid.setY(indexWidget.getY());
 	albumArt.setY(indexWidget.getY());
+	waveformVisualizer.setY(spectrumVisualizer.getY());
 }
 
 void AudioPlayerWidget::setWidth(float w)
@@ -210,6 +228,7 @@ void AudioPlayerWidget::setWidth(float w)
 	bodyGrid.setWidth(getInnerWidth());
 	playerControlGrid.setWidth(indexWidget.getWidth());
 	albumArt.setWidth(indexWidget.getWidth());
+	waveformVisualizer.setWidth(spectrumVisualizer.getWidth());
 }
 
 void AudioPlayerWidget::setHeight(float h)
@@ -218,6 +237,7 @@ void AudioPlayerWidget::setHeight(float h)
 	bodyGrid.setHeight(getInnerHeight());
 	playerControlGrid.setHeight(indexWidget.getHeight());
 	albumArt.setHeight(indexWidget.getHeight());
+	waveformVisualizer.setHeight(spectrumVisualizer.getHeight());
 }
 
 void AudioPlayerWidget::draw(SDL_Renderer* ren)
@@ -234,12 +254,14 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 	if (ren)
 	{
 		bodyGrid.draw(ren);
+		waveformVisualizer.draw(ren);
 		albumArt.draw(ren);
 		playerControlGrid.draw(ren);
 	}
 	else
 	{
 		bodyGrid.draw(this->ren);
+		waveformVisualizer.draw(this->ren);
 		albumArt.draw(this->ren);
 		playerControlGrid.draw(this->ren);
 	}
@@ -404,6 +426,24 @@ void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 			}
 		}
 	}
+
+	if (spectrumVisualizer.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_LEFT)
+	{
+		if (visualizationState == AudioPlayerWidgetVisualizationState::SPECTRUM)
+		{
+			spectrumVisualizer.setFadeState(PControlFadeState::FADEOUT);
+			waveformVisualizer.setFadeState(PControlFadeState::FADEIN);
+
+			visualizationState = AudioPlayerWidgetVisualizationState::WAVEFORM;
+		}
+		else
+		{
+			spectrumVisualizer.setFadeState(PControlFadeState::FADEIN);
+			waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
+
+			visualizationState = AudioPlayerWidgetVisualizationState::SPECTRUM;
+		}
+	}
 }
 
 void AudioPlayerWidget::OnButtonToggled(ButtonToggledEvent* e)
@@ -448,24 +488,31 @@ void AudioPlayerWidget::OnNewTrack(NewTrackEvent * e)
 	seekBar.setTime(0);
 	seekBar.setDuration((int) std::floor(audioPlayer->getBASSDuration()));
 	waveformVisualizer.setStream(audioPlayer->getStream());
+	spectrumVisualizer.setStream(audioPlayer->getStream());
 }
 
 void AudioPlayerWidget::OnPlayerStarted(PlayerStartedEvent* e)
 {
 	playPause.setTexture(PTextureType::AP_PAUSE);
-	waveformVisualizer.setFadeState(PControlFadeState::FADEIN);
+
+	if (visualizationState == AudioPlayerWidgetVisualizationState::WAVEFORM)
+		waveformVisualizer.setFadeState(PControlFadeState::FADEIN);
 }
 
 void AudioPlayerWidget::OnPlayerPaused(PlayerPausedEvent* e)
 {
 	playPause.setTexture(PTextureType::AP_PLAY);
-	waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
+
+	if (visualizationState == AudioPlayerWidgetVisualizationState::WAVEFORM)
+		waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
 }
 
 void AudioPlayerWidget::OnPlayerStopped(PlayerStoppedEvent* e)
 {
 	playPause.setTexture(PTextureType::AP_PLAY);
-	waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
+
+	if (visualizationState == AudioPlayerWidgetVisualizationState::WAVEFORM)
+		waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
 	seekBar.setTime(0);
 }
 
