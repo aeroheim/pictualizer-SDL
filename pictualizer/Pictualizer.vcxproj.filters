@@ -141,6 +141,9 @@
     <ClInclude Include="controls\AudioPlayerWidgetStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\SpectrumVisualizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -240,6 +243,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="controls\WaveformVisualizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\SpectrumVisualizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
