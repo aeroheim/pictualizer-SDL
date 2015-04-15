@@ -32,6 +32,8 @@
     <ClInclude Include="controls\LabelStates.h" />
     <ClInclude Include="controls\PControl.h" />
     <ClInclude Include="controls\IndexWidget.h" />
+    <ClInclude Include="controls\PControlContainer.h" />
+    <ClInclude Include="controls\PControlContainerStates.h" />
     <ClInclude Include="controls\PControlStates.h" />
     <ClInclude Include="controls\ProgressBar.h" />
     <ClInclude Include="controls\PTexture.h" />
@@ -71,6 +73,7 @@
     <ClCompile Include="controls\IndexWidget.cpp" />
     <ClCompile Include="controls\Label.cpp" />
     <ClCompile Include="controls\PControl.cpp" />
+    <ClCompile Include="controls\PControlContainer.cpp" />
     <ClCompile Include="controls\ProgessBar.cpp" />
     <ClCompile Include="controls\PTexture.cpp" />
     <ClCompile Include="controls\PTextureButton.cpp" />

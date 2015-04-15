@@ -40,7 +40,7 @@ void PControlContainer::addElement(PControl* element)
 
 void PControlContainer::insertElement(int index, PControl* element)
 {
-	assert(index <= elements.size());
+	assert(index <= (int) elements.size());
 
 	if (elementIndex >= index)
 		setElementIndex(elementIndex + 1);
@@ -130,15 +130,22 @@ void PControlContainer::draw(SDL_Renderer* ren)
 {
 	PControl::draw(ren);
 
-	if (transitionState == PControlContainerTransitionState::FADE)
+	if (elementIndex >= 0 && elementIndex < (int) elements.size())
 	{
-		// Draw the current element and all elements that have yet to fade out.
-		for (PControl* element : elements)
-			if (element->getAlpha() != 0)
-				element->draw(ren);
+		if (transitionState == PControlContainerTransitionState::FADE)
+		{
+			// Draw the current element and all elements that have yet to fade out.
+			for (size_t i = 0; i < elements.size(); i++)
+			{
+				if (i == elementIndex)
+					elements[i]->draw(ren);
+				else if (elements[i]->getAlpha() != 0)
+					elements[i]->draw(ren);
+			}
+		}
+		else
+			elements[elementIndex]->draw(ren);
 	}
-	else
-		elements[elementIndex]->draw(ren);
 }
 
 void PControlContainer::setElementDimensions(PControl* element)

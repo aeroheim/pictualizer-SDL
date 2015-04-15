@@ -14,6 +14,8 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	rightGrid(getInnerX() + getInnerHeight(), getInnerY(), std::vector < float > { getInnerHeight() * (5.0f / 18), getInnerHeight() * (3.0f / 18), getInnerHeight() * (8.0f / 18), getInnerHeight() * (2.0f / 18) }, std::vector < float > { getInnerWidth() - getInnerHeight() }),
 	bottomGrid(getInnerX(), getInnerY(), std::vector < float > { getInnerHeight() * (2.0f / 18) }, std::vector < float > { getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), getInnerHeight() * (2.0f / 18), (getInnerWidth() - getInnerHeight()) - ((getInnerHeight() * (2.0f / 18)) * 7.5f), getInnerHeight() * (2.0f / 18), 2.5f * (getInnerHeight() * (2.0f / 18)) }),
 	volButtonGrid(getInnerX(), getInnerY(), std::vector < float > { 100, 100 }, std::vector < float > { 200 }),
+	leftControlsContainer(0, 0, 100, 100),
+	visualizationContainer(0, 0, 100, 100),
 	indexWidget(ren, PFontType::CENTURYGOTHIC, 0, 0, 100, 100),
 	albumArt(0, 0, 100, 100),
 	seekBar(ren, PFontType::MPLUSLIGHT, 0, 0, 64, 64),
@@ -30,8 +32,8 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	info(PTextureType::AP_INFO, 0, 0, 64, 64),
 	volUp(PTextureType::AP_VOL_UP, 0, 0, 64, 32),
 	volDown(PTextureType::AP_VOL_DOWN, 0, 0, 64, 32),
-	waveformVisualizer(ren, 0, 0, 200, 100),
-	spectrumVisualizer(ren, 0, 0, 200, 200),
+	waveformVisualizer(0, 0, 200, 100),
+	spectrumVisualizer(0, 0, 200, 200),
 	frameCount(1),
 	seeking(false)
 {
@@ -54,6 +56,9 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	// IndexWidget - supports track numbers from 0 to 999,999,999.
 	indexWidget.setIndex(0);
+	indexWidget.setMinAlpha(0);
+	indexWidget.setMaxAlpha(255);
+	indexWidget.setFadeDelta(15);
 
 	// Album Art - displays album art from current track.
 	albumArt.setAlpha(0);
@@ -127,6 +132,17 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	spectrumVisualizer.setMaxAlpha(230);
 	spectrumVisualizer.setFadeDelta(30);
 
+	// Containers.
+	visualizationContainer.addElement(&spectrumVisualizer);
+	visualizationContainer.addElement(&waveformVisualizer);
+	visualizationContainer.setElementIndex(0);
+	visualizationContainer.setTransitionState(PControlContainerTransitionState::FADE);
+
+	leftControlsContainer.addElement(&indexWidget);
+	leftControlsContainer.addElement(&albumArt);
+	leftControlsContainer.setElementIndex(0);
+	leftControlsContainer.setTransitionState(PControlContainerTransitionState::FADE);
+
 	// Grids.
 	playerControlGrid[0][0].setElement(&playPause);
 	playerControlGrid[0][0].setPadding(0.5f, 0.5f, 0, 0);
@@ -141,14 +157,12 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	playerControlGrid.setMaxAlpha(255);
 	playerControlGrid.setFadeDelta(15);
 
-	bodyGrid[0][0].setElement(&indexWidget);
-	bodyGrid[0][0].setMinAlpha(0);
-	bodyGrid[0][0].setMaxAlpha(255);
-	bodyGrid[0][0].setFadeDelta(15);
+	bodyGrid[0][0].setElement(&leftControlsContainer);
+	leftControlsContainer.addElement(&playerControlGrid);
 
 	rightGrid[0][0].setElement(&title);
 	rightGrid[1][0].setElement(&artist);
-	rightGrid[2][0].setElement(&spectrumVisualizer);
+	rightGrid[2][0].setElement(&visualizationContainer);
 	rightGrid[2][0].setPadding(0, 0.1f, 0, 0.1f);
 	rightGrid[3][0].setElement(&bottomGrid);
 
@@ -173,12 +187,6 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	bodyGrid[0][1].setElement(&rightGrid);
 	bodyGrid[0][1].setPadding(0.05f, 0, 0.02f, 0);
-
-	// Additional positioning.
-	waveformVisualizer.setX(spectrumVisualizer.getX());
-	waveformVisualizer.setY(spectrumVisualizer.getY());
-	waveformVisualizer.setWidth(spectrumVisualizer.getWidth());
-	waveformVisualizer.setHeight(spectrumVisualizer.getHeight());
 
 	// CUHRAYZEE COLORS!!!
 	/*
@@ -218,36 +226,24 @@ void AudioPlayerWidget::setX(float x)
 {
 	PWidget::setX(x);
 	bodyGrid.setX(getInnerX());
-	playerControlGrid.setX(indexWidget.getX());
-	albumArt.setX(indexWidget.getX());
-	waveformVisualizer.setX(spectrumVisualizer.getX());
 }
 
 void AudioPlayerWidget::setY(float y)
 {
 	PWidget::setY(y);
 	bodyGrid.setY(getInnerY());
-	playerControlGrid.setY(indexWidget.getY());
-	albumArt.setY(indexWidget.getY());
-	waveformVisualizer.setY(spectrumVisualizer.getY());
 }
 
 void AudioPlayerWidget::setWidth(float w)
 {
 	PWidget::setWidth(w);
 	bodyGrid.setWidth(getInnerWidth());
-	playerControlGrid.setWidth(indexWidget.getWidth());
-	albumArt.setWidth(indexWidget.getWidth());
-	waveformVisualizer.setWidth(spectrumVisualizer.getWidth());
 }
 
 void AudioPlayerWidget::setHeight(float h)
 {
 	PWidget::setHeight(h);
 	bodyGrid.setHeight(getInnerHeight());
-	playerControlGrid.setHeight(indexWidget.getHeight());
-	albumArt.setHeight(indexWidget.getHeight());
-	waveformVisualizer.setHeight(spectrumVisualizer.getHeight());
 }
 
 void AudioPlayerWidget::draw(SDL_Renderer* ren)
@@ -262,19 +258,9 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 	}
 
 	if (ren)
-	{
 		bodyGrid.draw(ren);
-		waveformVisualizer.draw(ren);
-		albumArt.draw(ren);
-		playerControlGrid.draw(ren);
-	}
 	else
-	{
 		bodyGrid.draw(this->ren);
-		waveformVisualizer.draw(this->ren);
-		albumArt.draw(this->ren);
-		playerControlGrid.draw(this->ren);
-	}
 
 	++frameCount;
 }
@@ -383,81 +369,75 @@ void AudioPlayerWidget::OnButtonPressed(ButtonPressedEvent* e)
 
 void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
 {
-	if (playerControlGrid.mouseInside(e->x, e->y))
+	if (leftControlsContainer.mouseInside(e->x, e->y))
 	{
-		// Fade the playlist number/album art out.
-		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && indexWidget.getAlpha() != 0)
-			indexWidget.setFadeState(PControlFadeState::FADEOUT);
-		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && albumArt.getAlpha() != 0)
-			albumArt.setFadeState(PControlFadeState::FADEOUT);
+		// Fade to player controls.
+		if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && albumArt.getMinAlpha() != ALBUM_ART_MIN_ALPHA)
+			albumArt.setMinAlpha(ALBUM_ART_MIN_ALPHA);
 
-		// Fade the player control grid in.
-		if (playerControlGrid.getAlpha() != 255)
-			playerControlGrid.setFadeState(PControlFadeState::FADEIN);
+		if (leftControlsContainer.getElementIndex() != 2)
+			leftControlsContainer.setElementIndex(2);
 	}
 	else 
 	{
-		// Fade the player control grid out.
-		if (playerControlGrid.getAlpha() != 0)
-			playerControlGrid.setFadeState(PControlFadeState::FADEOUT);
-
-		// Fade the playlist number/album art in.
-		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && indexWidget.getAlpha() != 255)
-			indexWidget.setFadeState(PControlFadeState::FADEIN);
-		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && albumArt.getAlpha() != 255)
+		// Fade to album art.
+		if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART && leftControlsContainer.getElementIndex() != 1)
 		{
-			albumArt.setFadeState(PControlFadeState::FADEIN);
-			
-			if (albumArt.getMaxAlpha() != 255)
+			if (albumArt.getMaxAlpha() == ALBUM_ART_MIN_ALPHA)
 				albumArt.setMaxAlpha(255);
+
+			leftControlsContainer.setElementIndex(1);
 		}
+		// Fade to playlist number.
+		else if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && leftControlsContainer.getElementIndex() != 0)
+		{
+			if (albumArt.getMinAlpha() != 0)
+				albumArt.setMinAlpha(0);
+
+			leftControlsContainer.setElementIndex(0);
+		}
+
+		if (playerControlGrid.getMinAlpha() == 255)
+			playerControlGrid.setMinAlpha(0);
 	}
 }
 
 void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 {
-	if (albumArt.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
+	if (leftControlsContainer.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
 	{
-		// Switch to album art.
 		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER)
 		{
+			// Change to album art.
 			displayState = AudioPlayerWidgetDisplayState::ALBUM_ART;
-			albumArt.setMinAlpha(ALBUM_ART_MIN_ALPHA);
-			
-			if (!playerControlGrid.mouseInside(e->x, e->y))
-				indexWidget.setFadeState(PControlFadeState::FADEOUT);
-			else
-				albumArt.setMaxAlpha(ALBUM_ART_MIN_ALPHA);
 
-			albumArt.setFadeState(PControlFadeState::FADEIN);
-		}
-		// Switch to playlist number.
-		else
-		{
-			displayState = AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER;
 			albumArt.setMinAlpha(0);
+			albumArt.setMaxAlpha(ALBUM_ART_MIN_ALPHA);
+			
+			playerControlGrid.setMinAlpha(255);
 
-			if (!playerControlGrid.mouseInside(e->x, e->y))
-				indexWidget.setFadeState(PControlFadeState::FADEIN);
+			leftControlsContainer.setElementIndex(1);
+		}
+		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART)
+		{
+			// Change to playlist number.
+			displayState = AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER;
 
+			albumArt.setMinAlpha(0);
 			albumArt.setFadeState(PControlFadeState::FADEOUT);
 		}
 	}
 
-	if (spectrumVisualizer.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
+	if (visualizationContainer.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
 	{
 		if (visualizationState == AudioPlayerWidgetVisualizationState::SPECTRUM)
 		{
-			spectrumVisualizer.setFadeState(PControlFadeState::FADEOUT);
-			waveformVisualizer.setFadeState(PControlFadeState::FADEIN);
-
+			visualizationContainer.setElementIndex(1);
 			visualizationState = AudioPlayerWidgetVisualizationState::WAVEFORM;
 		}
 		else
 		{
-			spectrumVisualizer.setFadeState(PControlFadeState::FADEIN);
-			waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
-
+			visualizationContainer.setElementIndex(0);
 			visualizationState = AudioPlayerWidgetVisualizationState::SPECTRUM;
 		}
 	}
@@ -530,6 +510,7 @@ void AudioPlayerWidget::OnPlayerStopped(PlayerStoppedEvent* e)
 
 	if (visualizationState == AudioPlayerWidgetVisualizationState::WAVEFORM)
 		waveformVisualizer.setFadeState(PControlFadeState::FADEOUT);
+
 	seekBar.setTime(0);
 }
 

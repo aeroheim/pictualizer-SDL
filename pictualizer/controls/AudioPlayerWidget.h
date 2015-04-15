@@ -10,6 +10,7 @@
 #include "WaveformVisualizer.h"
 #include "SpectrumVisualizer.h"
 #include "AudioPlayerWidgetStates.h"
+#include "PControlContainer.h"
 #include "../audio/AudioPlayer.h"
 #include "../assets/fonts/PFonts.h"
 #include "../assets/textures/PTextures.h"
@@ -41,6 +42,9 @@ class AudioPlayerWidget : public PWidget
 		GridPanel rightGrid;
 		GridPanel bottomGrid;
 		GridPanel volButtonGrid;
+
+		PControlContainer leftControlsContainer;
+		PControlContainer visualizationContainer;
 
 		IndexWidget indexWidget;
 		Image albumArt;
