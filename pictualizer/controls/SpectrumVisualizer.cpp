@@ -1,8 +1,7 @@
 #include "SpectrumVisualizer.h"
 
-SpectrumVisualizer::SpectrumVisualizer(SDL_Renderer* ren, float x, float y, float w, float h) :
+SpectrumVisualizer::SpectrumVisualizer(float x, float y, float w, float h) :
 	PControl(x, y, w, h),
-	ren(ren),
 	stream(nullptr),
 	barWidth(1),
 	dividerWidth(1),
@@ -31,6 +30,8 @@ void SpectrumVisualizer::addBin(int minFreq, int maxFreq, float mod)
 
 void SpectrumVisualizer::insertBin(int index, int minFreq, int maxFreq, float mod)
 {
+	assert(index <= bins.size());
+
 	bins.insert(bins.begin() + index, FrequencyBin{ 0, 0, minFreq, maxFreq, mod });
 	setBinNumBars();
 }

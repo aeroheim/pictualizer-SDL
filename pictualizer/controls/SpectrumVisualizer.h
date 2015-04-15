@@ -20,7 +20,7 @@ struct FrequencyBin
 class SpectrumVisualizer : public PControl
 {
 	public:
-		SpectrumVisualizer(SDL_Renderer* ren, float x, float y, float w, float h);
+		SpectrumVisualizer(float x, float y, float w, float h);
 		~SpectrumVisualizer();
 
 		void setStream(HSTREAM* stream);
@@ -41,11 +41,9 @@ class SpectrumVisualizer : public PControl
 
 		void setWidth(float w);
 
-		void draw(SDL_Renderer* ren = nullptr);
+		void draw(SDL_Renderer* ren);
 
 	private:
-		SDL_Renderer* ren;
-
 		HSTREAM* stream;
 
 		float barWidth;
