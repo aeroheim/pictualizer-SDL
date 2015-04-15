@@ -416,7 +416,7 @@ void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
 
 void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 {
-	if (mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
+	if (albumArt.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
 	{
 		// Switch to album art.
 		if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER)
@@ -444,7 +444,7 @@ void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 		}
 	}
 
-	if (spectrumVisualizer.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_LEFT)
+	if (spectrumVisualizer.mouseInside(e->x, e->y) && e->button == SDL_BUTTON_RIGHT)
 	{
 		if (visualizationState == AudioPlayerWidgetVisualizationState::SPECTRUM)
 		{
