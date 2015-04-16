@@ -12,11 +12,9 @@ namespace
 
 	const int pointSizes[] = { 16, 32, 64, 128, 256 };
 
-	const std::string cwd = PUtils::getcwd();
-
-	const std::map<PFontType, const std::string> fontPaths = { { PFontType::CENTURYGOTHIC, cwd + "\\assets\\fonts\\GOTHIC.ttf" },
-															{ PFontType::MPLUSLIGHT, cwd + "\\assets\\fonts\\mplus-2p-light.ttf" },
-															{ PFontType::MPLUSTHIN, cwd + "\\assets\\fonts\\mplus-2p-thin.ttf" } };
+	const std::map<PFontType, const std::string> fontPaths = { { PFontType::CENTURYGOTHIC, "assets/fonts/GOTHIC.ttf" },
+															{ PFontType::MPLUSLIGHT, "assets/fonts/mplus-2p-light.ttf" },
+															{ PFontType::MPLUSTHIN, "assets/fonts/mplus-2p-thin.ttf" } };
 
 	std::map<PFontType, std::vector<PFontRef>> fontRefs;
 

@@ -11,21 +11,19 @@ namespace
 
 	const int textureSizes[] = { 32, 64, 128 };
 
-	const std::string cwd = PUtils::getcwd();
-
 	const std::string textureFormat(".png");
 
-	const std::map<PTextureType, const std::string> texturePaths = { { PTextureType::AP_LEFT, cwd + "\\assets\\textures\\ap-left-" },
-																	{ PTextureType::AP_RIGHT, cwd + "\\assets\\textures\\ap-right-" },
-																	{ PTextureType::AP_PAUSE, cwd + "\\assets\\textures\\ap-pause-" },
-																	{ PTextureType::AP_STOP, cwd + "\\assets\\textures\\ap-stop-" },
-																	{ PTextureType::AP_PLAY, cwd + "\\assets\\textures\\ap-play-" },
-																	{ PTextureType::AP_INFO, cwd + "\\assets\\textures\\info-" },
-																	{ PTextureType::AP_PLAYLIST, cwd + "\\assets\\textures\\playlist-" },
-																	{ PTextureType::AP_REPEAT, cwd + "\\assets\\textures\\repeat-" },
-																	{ PTextureType::AP_SHUFFLE, cwd + "\\assets\\textures\\shuffle-" },
-																	{ PTextureType::AP_VOL_UP, cwd + "\\assets\\textures\\menu-up-" },
-																	{ PTextureType::AP_VOL_DOWN, cwd + "\\assets\\textures\\menu-down-" }, };
+	const std::map<PTextureType, const std::string> texturePaths = { { PTextureType::AP_LEFT, "assets/textures/ap-left-" },
+																	{ PTextureType::AP_RIGHT, "assets/textures/ap-right-" },
+																	{ PTextureType::AP_PAUSE, "assets/textures/ap-pause-" },
+																	{ PTextureType::AP_STOP, "assets/textures/ap-stop-" },
+																	{ PTextureType::AP_PLAY, "assets/textures/ap-play-" },
+																	{ PTextureType::AP_INFO, "assets/textures/info-" },
+																	{ PTextureType::AP_PLAYLIST, "assets/textures/playlist-" },
+																	{ PTextureType::AP_REPEAT, "assets/textures/repeat-" },
+																	{ PTextureType::AP_SHUFFLE, "assets/textures/shuffle-" },
+																	{ PTextureType::AP_VOL_UP, "assets/textures/menu-up-" },
+																	{ PTextureType::AP_VOL_DOWN, "assets/textures/menu-down-" }, };
 
 	SDL_Renderer* renderer;
 

@@ -6,7 +6,6 @@
 #include <assert.h>
 #include <SDL_ttf.h>
 #include "PFontTypes.h"
-#include "../../util/PUtils.h"
 
 namespace PFonts
 {
