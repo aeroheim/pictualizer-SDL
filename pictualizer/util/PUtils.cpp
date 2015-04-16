@@ -2,42 +2,53 @@
 
 namespace PUtils
 {
-	std::wstring str2wstr(std::string str)
+	std::wstring str2wstr(const std::string& str)
 	{
 		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 		return converter.from_bytes(str);
 	}
 
-	std::string getcwd()
+	std::string wstr2str(const std::wstring& wstr)
 	{
-		const int MAXPATHLEN = 256;
-		char temp[MAXPATHLEN];
-		return _getcwd(temp, MAXPATHLEN) ? std::string(temp) : std::string("");
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		return converter.to_bytes(wstr);
 	}
 
-	std::wstring getwstrcwd()
+	bool pathIsImage(const std::string& path)
 	{
-		return str2wstr(getcwd());
-	}
+		std::string ext = std::tr2::sys::path(path).extension();
 
-	bool pathIsImage(std::string path)
-	{
-		size_t extensionIndex = path.find_last_of(".", path.length() - 1);
-		std::string extension = path.substr(extensionIndex);
-
-		if (extension.compare(".JPG") == 0 || extension.compare(".jpg") == 0 || extension.compare(".PNG") == 0 || extension.compare(".png") == 0 || 
-			extension.compare(".JPEG") == 0 || extension.compare(".jpeg") == 0)
+		if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
 			return true;
 		
 		return false;
 	}
 
-	bool pathIsMusic(std::string path)
+	bool pathIsImage(const std::wstring& wpath)
 	{
-		size_t extensionIndex = path.find_last_of(".", path.length() - 1);
-		std::string extension = path.substr(extensionIndex);
-		
-		if (extension.compare(".MP3") == 0 || extension.compare(".mp3") == 0 || extension.compare(".FLAC") == 0 || extension.compare(".flac") == 0)
+		std::wstring ext = std::tr2::sys::wpath(wpath).extension();
+
+		if (ext == L".jpg" || ext == L".jpeg" || ext == L".png")
+			return true;
+
+		return false;
+	}
+
+	bool pathIsMusic(const std::string& path)
+	{
+		std::string ext = std::tr2::sys::path(path).extension();
+
+		if (ext == ".mp3" || ext == ".flac")
+			return true;
+
+		return false;
+	}
+
+	bool pathIsMusic(const std::wstring& wpath)
+	{
+		std::wstring ext = std::tr2::sys::wpath(wpath).extension();
+
+		if (ext == L".mp3" || ext == L".flac")
 			return true;
 
 		return false;

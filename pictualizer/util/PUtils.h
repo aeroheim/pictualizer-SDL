@@ -3,13 +3,16 @@
 #include <string>
 #include <locale>
 #include <codecvt>
-#include <direct.h>
+#include <filesystem>
 
 namespace PUtils
 {
-	std::wstring str2wstr(std::string);
-	std::string getcwd();
-	std::wstring getwstrcwd();
-	bool pathIsImage(std::string);
-	bool pathIsMusic(std::string);
+	std::wstring str2wstr(const std::string& str);
+	std::string wstr2str(const std::wstring& wstr);
+
+	bool pathIsImage(const std::string& path);
+	bool pathIsImage(const std::wstring& wpath);
+
+	bool pathIsMusic(const std::string& path);
+	bool pathIsMusic(const std::wstring& wpath);
 }
