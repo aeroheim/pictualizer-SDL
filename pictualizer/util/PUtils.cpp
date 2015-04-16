@@ -53,4 +53,14 @@ namespace PUtils
 
 		return false;
 	}
+
+	bool pathIsDirectory(const std::string& path)
+	{
+		return std::tr2::sys::is_directory(std::tr2::sys::path(path));
+	}
+
+	bool pathIsDirectory(const std::wstring& wpath)
+	{
+		return std::tr2::sys::is_directory(std::tr2::sys::wpath(wpath));
+	}
 }

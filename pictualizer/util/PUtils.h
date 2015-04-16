@@ -15,4 +15,7 @@ namespace PUtils
 
 	bool pathIsMusic(const std::string& path);
 	bool pathIsMusic(const std::wstring& wpath);
+
+	bool pathIsDirectory(const std::string& path);
+	bool pathIsDirectory(const std::wstring& wpath);
 }
