@@ -2,6 +2,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <filesystem>
 #include "PWidget.h"
 #include "IndexWidget.h"
 #include "PTextureButton.h"
@@ -71,9 +72,12 @@ class AudioPlayerWidget : public PWidget
 		int frameCount;
 		bool seeking;
 
+		void enqueueTrack(const std::string& path);
+
 		void OnMouseUp(MouseUpEvent* e);
 		void OnMouseMotion(MouseMotionEvent* e);
 		void OnFileDrop(FileDropEvent* e);
+		void OnDirectoryDrop(FileDropEvent* e);
 		void OnButtonPressed(ButtonPressedEvent* e);
 		void OnButtonToggled(ButtonToggledEvent* e);
 		void OnSeek(SeekEvent* e);

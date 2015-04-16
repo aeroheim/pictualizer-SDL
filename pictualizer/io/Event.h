@@ -27,8 +27,9 @@ class WindowResizeEvent : public Event
 class FileDropEvent : public Event
 {
 	public:
-		FileDropEvent(SDL_DropEvent& e, int x, int y);
+		FileDropEvent(SDL_DropEvent& e, int x, int y, bool dir = false);
 		std::string path;
+		bool dir;
 		int x;
 		int y;
 };

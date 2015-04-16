@@ -51,7 +51,7 @@ void WindowIOController::pollEvents()
 
 void WindowIOController::OnDrop(SDL_DropEvent& e)
 {
-	FileDropEvent fileDropEvent(e, mouseX, mouseY);
+	FileDropEvent fileDropEvent(e, mouseX, mouseY, PUtils::pathIsDirectory(PUtils::str2wstr(e.file)));
 	notify(&fileDropEvent);
 	SDL_free(e.file);
 }

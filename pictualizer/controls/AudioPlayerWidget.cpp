@@ -188,6 +188,13 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	bodyGrid[0][1].setElement(&rightGrid);
 	bodyGrid[0][1].setPadding(0.05f, 0, 0.02f, 0);
 
+	// PWidget background settings.
+	setBackgroundMinAlpha(150);
+	setBackgroundAlpha(0);
+	setBackgroundMaxAlpha(200);
+	setBackgroundFadeDelta(4.5);
+	setBackgroundColor(0, 0, 0);
+
 	// CUHRAYZEE COLORS!!!
 	/*
 	waveformVisualizer.setColor(0, 0, 0);
@@ -195,14 +202,8 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	title.setColor(69, 130, 250);
 	artist.setColor(150, 50, 150);
 	volDb.setColor(69, 69, 150);
+	setBackgroundColor(215, 73, 0);
 	*/
-
-	// PWidget background settings.
-	setBackgroundMinAlpha(150);
-	setBackgroundAlpha(0);
-	setBackgroundMaxAlpha(200);
-	setBackgroundFadeDelta(4.5);
-	setBackgroundColor(0, 0, 0);
 	
 	// Event subscribing.
 	subscribeTo(&playPause);
@@ -271,10 +272,18 @@ void AudioPlayerWidget::handleEvent(Event* e)
 	{
 		if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
 		{
-			if (mouseInside(fileDropEvent->x, fileDropEvent->y) && PUtils::pathIsMusic(fileDropEvent->path))
+			if (mouseInside(fileDropEvent->x, fileDropEvent->y))
 			{
-				OnFileDrop(fileDropEvent);
-				e->handled = true;
+				if (PUtils::pathIsMusic(fileDropEvent->path))
+				{
+					OnFileDrop(fileDropEvent);
+					e->handled = true;
+				}
+				else if (fileDropEvent->dir)
+				{
+					OnDirectoryDrop(fileDropEvent);
+					e->handled = true;
+				}
 			}
 		}
 		else if (ButtonPressedEvent* buttonPressedEvent = dynamic_cast<ButtonPressedEvent*>(e))
@@ -331,12 +340,28 @@ void AudioPlayerWidget::handleEvent(Event* e)
 	}
 }
 
-void AudioPlayerWidget::OnFileDrop(FileDropEvent* e)
+void AudioPlayerWidget::enqueueTrack(const std::string& path)
 {
-	AudioTrack newTrack(e->path);
+	AudioTrack newTrack(path);
 
 	AudioPlaylist* currentPlaylist = audioPlayer->getCurrentPlaylist();
 	currentPlaylist->enqueueTrack(newTrack);
+}
+
+void AudioPlayerWidget::OnFileDrop(FileDropEvent* e)
+{
+	enqueueTrack(e->path);
+}
+
+void AudioPlayerWidget::OnDirectoryDrop(FileDropEvent* e)
+{
+	for (auto it = std::tr2::sys::wrecursive_directory_iterator(PUtils::str2wstr(e->path)); it != std::tr2::sys::wrecursive_directory_iterator(); it++)
+	{
+		const auto& file = it->path();
+
+		if (PUtils::pathIsMusic(file.filename()))
+			enqueueTrack(PUtils::wstr2str(file));
+	}
 }
 
 void AudioPlayerWidget::OnButtonPressed(ButtonPressedEvent* e)
