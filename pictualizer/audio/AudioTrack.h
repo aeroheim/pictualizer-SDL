@@ -17,7 +17,9 @@
 #include <string>
 #include <locale>
 #include <codecvt>
+#include <filesystem>
 #include "../io/EventObserver.h"
+#include "../util/PUtils.h"
 
 /*
  *	The AudioTrack class serves as the default object representation of tracks in pictualizer.
@@ -58,6 +60,7 @@ class AudioTrack : public EventObserver
 		SDL_Texture* getMP4AlbumArt(SDL_Renderer* ren, TagLib::MP4::Tag* tag) const;
 		SDL_Texture* getFLACAlbumArt(SDL_Renderer* ren, TagLib::FLAC::File* file) const;
 		SDL_Texture* getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag) const;
+		SDL_Texture* searchDirForAlbumArt(SDL_Renderer* ren) const;
 
 		SDL_Texture* dataToAlbumArt(SDL_Renderer* ren, TagLib::ByteVector& data) const;
 };

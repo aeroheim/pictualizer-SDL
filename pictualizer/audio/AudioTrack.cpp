@@ -82,12 +82,9 @@ SDL_Texture* AudioTrack::getAlbumArt(SDL_Renderer* ren) const
 		if (wavFile->APETag())
 			albumArt = getAPEAlbumArt(ren, wavFile->APETag());
 	}
-
-	// TODO: Add platform specific directory searching to find album art if not embedded in tags.
+	
 	if (!albumArt)
-	{
-
-	}
+		albumArt = searchDirForAlbumArt(ren);
 
 	return albumArt;
 }
@@ -191,6 +188,53 @@ SDL_Texture* AudioTrack::getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag
 
 			if (wmpic.isValid())
 				return dataToAlbumArt(ren, wmpic.picture());
+		}
+	}
+
+	return nullptr;
+}
+
+SDL_Texture* AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
+{
+	std::tr2::sys::wpath path(filePath);
+
+	if (path.has_parent_path())
+	{
+		// Get directory file path.
+		std::tr2::sys::wpath directoryPath(path.parent_path());
+
+		// Search for "cover" or "folder".
+		for (auto it = std::tr2::sys::wdirectory_iterator(directoryPath); it != std::tr2::sys::wdirectory_iterator(); it++)
+		{
+			const auto& file = it->path();
+			std::wstring filename = file.filename().substr(0, file.filename().size() - file.extension().size());
+
+			if ((filename == L"cover" || filename == L"folder") && PUtils::pathIsImage(file.filename()))
+			{
+				SDL_Texture* albumArt = IMG_LoadTexture(ren, PUtils::wstr2str(file.string()).c_str());
+				SDL_SetTextureBlendMode(albumArt, SDL_BLENDMODE_BLEND);
+
+				if (albumArt)
+					return albumArt;
+				
+				// Stop searching if "cover" or "folder" are invalid images.
+				break;
+			}
+		}
+
+		// Search for any other image in the directory.
+		for (auto it = std::tr2::sys::wdirectory_iterator(directoryPath); it != std::tr2::sys::wdirectory_iterator(); it++)
+		{
+			const auto& file = it->path();
+
+			if (PUtils::pathIsImage(file.filename()))
+			{
+				SDL_Texture* albumArt = IMG_LoadTexture(ren, PUtils::wstr2str(file.string()).c_str());
+				SDL_SetTextureBlendMode(albumArt, SDL_BLENDMODE_BLEND);
+
+				if (albumArt)
+					return albumArt;
+			}
 		}
 	}
 
