@@ -7,7 +7,7 @@ PControlContainer::PControlContainer(float x, float y, float w, float h) :
 
 PControlContainer::~PControlContainer() {}
 
-void PControlContainer::setElementIndex(int index)
+void PControlContainer::setDrawElement(int index)
 {
 	assert(index >= 0 && index < (int) elements.size());
 
@@ -43,7 +43,7 @@ void PControlContainer::insertElement(int index, PControl* element)
 	assert(index <= (int) elements.size());
 
 	if (elementIndex >= index)
-		setElementIndex(elementIndex + 1);
+		setDrawElement(elementIndex + 1);
 
 	setElementDimensions(element);
 
@@ -55,12 +55,12 @@ void PControlContainer::removeElement(int index)
 	assert(index >= 0 && index < (int) elements.size());
 
 	if (elementIndex >= index)
-		setElementIndex(elementIndex - 1);
+		setDrawElement(elementIndex - 1);
 
 	elements.erase(elements.begin() + index);
 }
 
-void PControlContainer::setElement(int index, PControl* element)
+void PControlContainer::replaceElement(int index, PControl* element)
 {
 	assert(index >= 0 && index < (int) elements.size());
 

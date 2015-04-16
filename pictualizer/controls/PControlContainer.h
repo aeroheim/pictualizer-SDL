@@ -10,7 +10,7 @@ class PControlContainer : public PControl
 		PControlContainer(float x, float y, float w, float h);
 		~PControlContainer();
 
-		void setElementIndex(int index);
+		void setDrawElement(int index);
 		int getElementIndex();
 		int getNumElements();
 
@@ -18,7 +18,7 @@ class PControlContainer : public PControl
 		void insertElement(int index, PControl* element);
 		void removeElement(int index);
 
-		void setElement(int index, PControl*);
+		void replaceElement(int index, PControl*);
 		PControl* getElement(int index);
 
 		void setTransitionState(PControlContainerTransitionState ts);

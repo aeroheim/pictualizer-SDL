@@ -135,12 +135,12 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	// Containers.
 	visualizationContainer.addElement(&spectrumVisualizer);
 	visualizationContainer.addElement(&waveformVisualizer);
-	visualizationContainer.setElementIndex(0);
+	visualizationContainer.setDrawElement(0);
 	visualizationContainer.setTransitionState(PControlContainerTransitionState::FADE);
 
 	leftControlsContainer.addElement(&indexWidget);
 	leftControlsContainer.addElement(&albumArt);
-	leftControlsContainer.setElementIndex(0);
+	leftControlsContainer.setDrawElement(0);
 	leftControlsContainer.setTransitionState(PControlContainerTransitionState::FADE);
 
 	// Grids.
@@ -376,7 +376,7 @@ void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
 			albumArt.setMinAlpha(ALBUM_ART_MIN_ALPHA);
 
 		if (leftControlsContainer.getElementIndex() != 2)
-			leftControlsContainer.setElementIndex(2);
+			leftControlsContainer.setDrawElement(2);
 	}
 	else 
 	{
@@ -386,7 +386,7 @@ void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
 			if (albumArt.getMaxAlpha() == ALBUM_ART_MIN_ALPHA)
 				albumArt.setMaxAlpha(255);
 
-			leftControlsContainer.setElementIndex(1);
+			leftControlsContainer.setDrawElement(1);
 		}
 		// Fade to playlist number.
 		else if (displayState == AudioPlayerWidgetDisplayState::PLAYLIST_NUMBER && leftControlsContainer.getElementIndex() != 0)
@@ -394,7 +394,7 @@ void AudioPlayerWidget::OnMouseMotion(MouseMotionEvent* e)
 			if (albumArt.getMinAlpha() != 0)
 				albumArt.setMinAlpha(0);
 
-			leftControlsContainer.setElementIndex(0);
+			leftControlsContainer.setDrawElement(0);
 		}
 
 		if (playerControlGrid.getMinAlpha() == 255)
@@ -416,7 +416,7 @@ void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 			
 			playerControlGrid.setMinAlpha(255);
 
-			leftControlsContainer.setElementIndex(1);
+			leftControlsContainer.setDrawElement(1);
 		}
 		else if (displayState == AudioPlayerWidgetDisplayState::ALBUM_ART)
 		{
@@ -432,12 +432,12 @@ void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 	{
 		if (visualizationState == AudioPlayerWidgetVisualizationState::SPECTRUM)
 		{
-			visualizationContainer.setElementIndex(1);
+			visualizationContainer.setDrawElement(1);
 			visualizationState = AudioPlayerWidgetVisualizationState::WAVEFORM;
 		}
 		else
 		{
-			visualizationContainer.setElementIndex(0);
+			visualizationContainer.setDrawElement(0);
 			visualizationState = AudioPlayerWidgetVisualizationState::SPECTRUM;
 		}
 	}
