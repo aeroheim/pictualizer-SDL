@@ -1,12 +1,19 @@
 #include "AudioTrack.h"
 
-AudioTrack::AudioTrack(std::string path) : filePath(L""), title(L""), artist(L""), album(L""), duration(0), populated(false)
+AudioTrack::AudioTrack(std::string path) : format(AudioTrackFormat::INVALID), filePath(L""), title(L""), artist(L""), album(L""), duration(0), populated(false)
 {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	filePath = converter.from_bytes(path);
+	filePath = PUtils::str2wstr(path);
+
+	// Set the track format.
+	setTrackFormat();
 }
 
 AudioTrack::~AudioTrack() {}
+
+AudioTrackFormat AudioTrack::getFormat() const
+{
+	return format;
+}
 
 std::wstring AudioTrack::getPath() const
 {
@@ -102,6 +109,26 @@ bool operator==(AudioTrack& lhs, AudioTrack& rhs)
 	return lhs.filePath == rhs.filePath;
 }
 
+void AudioTrack::setTrackFormat()
+{
+	std::wstring ext = std::tr2::sys::wpath(filePath).extension();
+
+	if (ext == L".mp3")
+		format = AudioTrackFormat::MP3;
+	else if (ext == L".mp2")
+		format = AudioTrackFormat::MP2;
+	else if (ext == L".mp1")
+		format = AudioTrackFormat::MP1;
+	else if (ext == L".ogg")
+		format = AudioTrackFormat::OGG;
+	else if (ext == L".aiff")
+		format = AudioTrackFormat::AIFF;
+	else if (ext == L".wav")
+		format = AudioTrackFormat::WAV;
+	else if (ext == L".flac")
+		format = AudioTrackFormat::FLAC;
+}
+
 void AudioTrack::populateMetadata() const
 {
 	TagLib::FileRef track(getPath().c_str());
@@ -110,8 +137,20 @@ void AudioTrack::populateMetadata() const
 	assert(!track.isNull());
 
 	title = track.tag()->title().toCWString();
+
+	if (title.empty())
+		title.assign(L"unknown");
+
 	artist = track.tag()->artist().toCWString();
+
+	if (artist.empty())
+		artist.assign(L"unknown");
+
 	album = track.tag()->album().toCWString();
+
+	if (album.empty())
+		album.assign(L"unknown");
+
 	duration = track.audioProperties()->length();
 
 	populated = true;

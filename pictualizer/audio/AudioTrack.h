@@ -15,9 +15,8 @@
 #include <apetag.h>
 #include <assert.h>
 #include <string>
-#include <locale>
-#include <codecvt>
 #include <filesystem>
+#include "AudioTrackStates.h"
 #include "../io/EventObserver.h"
 #include "../util/PUtils.h"
 
@@ -36,6 +35,7 @@ class AudioTrack : public EventObserver
 		 *	performance when loading large playlists. The metadata for an audioTrack is
 		 *	populated only when a getter has been called.
 		 */
+		AudioTrackFormat getFormat() const;
 		std::wstring getPath() const;
 		std::wstring getTitle() const;
 		std::wstring getArtist() const;
@@ -46,11 +46,14 @@ class AudioTrack : public EventObserver
 		friend bool operator== (AudioTrack& lhs, AudioTrack& rhs);
 
 	private:
+		AudioTrackFormat format;
 		std::wstring filePath;
 		mutable std::wstring title;
 		mutable std::wstring artist;
 		mutable std::wstring album;
 		mutable int duration;
+
+		void setTrackFormat();
 
 		mutable bool populated;
 		void populateMetadata() const;

@@ -38,7 +38,7 @@ namespace PUtils
 	{
 		std::string ext = std::tr2::sys::path(path).extension();
 
-		if (ext == ".mp3" || ext == ".flac")
+		if (ext == ".mp3" || ext == ".mp2" || ext == ".mp1" || ext == ".wav" || ext == ".ogg" || ext == ".aiff" || ext == ".flac")
 			return true;
 
 		return false;
@@ -48,7 +48,7 @@ namespace PUtils
 	{
 		std::wstring ext = std::tr2::sys::wpath(wpath).extension();
 
-		if (ext == L".mp3" || ext == L".flac")
+		if (ext == L".mp3" || ext == L".mp2" || ext == L".mp1" || ext == L".wav" || ext == L".ogg" || ext == L".aiff" || ext == L".flac")
 			return true;
 
 		return false;

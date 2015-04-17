@@ -7,6 +7,7 @@
 #include "AudioPlaylist.h"
 #include "AudioTrack.h"
 #include <bass.h>
+#include <bassflac.h>
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -113,6 +114,8 @@ class AudioPlayer : public EventObserver, public EventSubscriber
 
 		RepeatState repeatState;
 		ShuffleState shuffleState;
+
+		void setStream(AudioTrack* track);
 
 		void shuffle();
 

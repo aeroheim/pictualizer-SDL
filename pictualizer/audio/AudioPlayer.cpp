@@ -148,7 +148,7 @@ void AudioPlayer::playTrack(int index)
 		BASS_StreamFree(stream);
 
 		// Setup new HSTREAM.
-		stream = BASS_StreamCreateFile(0, getCurrentTrack()->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+		setStream(getCurrentTrack());
 		BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, volume);
 		BASS_ChannelSetSync(stream, BASS_SYNC_END, NULL, nextSongCallback, this);
 
@@ -312,6 +312,38 @@ double AudioPlayer::getBASSDuration()
 {
 	return BASS_ChannelBytes2Seconds(stream, BASS_ChannelGetLength(stream, BASS_POS_BYTE));
 }
+
+void AudioPlayer::setStream(AudioTrack* track)
+{
+	switch (track->getFormat())
+	{
+		case AudioTrackFormat::MP1:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		case AudioTrackFormat::MP2:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		case AudioTrackFormat::MP3:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		case AudioTrackFormat::OGG:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		case AudioTrackFormat::AIFF:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		case AudioTrackFormat::WAV:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		case AudioTrackFormat::FLAC:
+			stream = BASS_FLAC_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+		default:
+			stream = BASS_StreamCreateFile(0, track->getPath().c_str(), 0, 0, BASS_SAMPLE_FLOAT);
+			break;
+	}
+}
+
 /*
  *	Performs a Fisher-Yates shuffle on the shuffle list.
  */
