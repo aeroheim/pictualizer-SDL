@@ -139,7 +139,10 @@ void AudioTrack::populateMetadata() const
 	title = track.tag()->title().toCWString();
 
 	if (title.empty())
-		title.assign(L"unknown");
+	{
+		std::tr2::sys::wpath wpath(filePath);
+		title.assign(wpath.filename().substr(0, wpath.filename().size() - wpath.extension().size()));
+	}
 
 	artist = track.tag()->artist().toCWString();
 
