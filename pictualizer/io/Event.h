@@ -24,6 +24,14 @@ class WindowResizeEvent : public Event
 		int wh;
 };
 
+class WindowResizedEvent : public Event
+{
+	public:
+		WindowResizedEvent(int w, int h);
+		int ww;
+		int wh;
+};
+
 class FileDropEvent : public Event
 {
 	public:

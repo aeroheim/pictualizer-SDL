@@ -28,7 +28,7 @@ class WindowIOController : public EventObserver
 		void OnMouseButtonUp(SDL_MouseButtonEvent& e);
 		void OnMouseWheel(SDL_MouseWheelEvent& e);
 		void OnMouseMotion(SDL_MouseMotionEvent& e);
-		void OnWindowResized();
+		void OnWindowResize();
 
 		int mouseX, mouseY;
 		int mouseDownX, mouseDownY;

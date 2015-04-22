@@ -115,7 +115,15 @@ void WindowIOController::OnMouseButtonUp(SDL_MouseButtonEvent& e)
 			SDL_CaptureMouse(SDL_FALSE);
 
 			dragging = false;
-			dragResizing = false;
+
+			if (dragResizing)
+			{
+				dragResizing = false;
+
+				SDL_GetWindowSize(win, &winWidth, &winHeight);
+				WindowResizedEvent windowResizedEvent(winWidth, winHeight);
+				notify(&windowResizedEvent);
+			}
 		}
 	}
 }
@@ -151,14 +159,14 @@ void WindowIOController::OnMouseMotion(SDL_MouseMotionEvent& e)
 		else if (dragResizing)
 		{
 			doDragResize();
-			OnWindowResized();
+			OnWindowResize();
 		}
 		else
 			setDragCursor(e);
 	}
 }
 
-void WindowIOController::OnWindowResized()
+void WindowIOController::OnWindowResize()
 {
 	SDL_GetWindowSize(win, &winWidth, &winHeight);
 

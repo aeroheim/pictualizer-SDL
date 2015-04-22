@@ -6,6 +6,8 @@ Event::~Event() {}
 
 WindowResizeEvent::WindowResizeEvent(int w, int h) : ww(w), wh(h) {}
 
+WindowResizedEvent::WindowResizedEvent(int w, int h) : ww(w), wh(h) {}
+
 FileDropEvent::FileDropEvent(SDL_DropEvent& e, int x, int y, bool dir) : path(e.file), dir(dir), x(x), y(y) {}
 
 KeyDownEvent::KeyDownEvent(SDL_KeyboardEvent& e) : key(e.keysym.sym) {}
