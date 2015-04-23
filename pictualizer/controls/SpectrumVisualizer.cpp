@@ -127,6 +127,8 @@ void SpectrumVisualizer::draw(SDL_Renderer* ren)
 
 	SDL_RenderFillRects(ren, bars, numBars);
 
+	delete[] bars;
+
 	// Restore the renderer's previous color.
 	SDL_SetRenderDrawColor(ren, prevR, prevG, prevB, prevA);
 }
