@@ -51,9 +51,6 @@
     <ClInclude Include="io\InputListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="image\ImageTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="image\ImageBackgroundStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -186,9 +183,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="io\InputListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="image\ImageTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="controls\PControl.cpp">

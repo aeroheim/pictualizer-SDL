@@ -48,7 +48,6 @@
     <ClInclude Include="image\ImageBackgroundStates.h" />
     <ClInclude Include="image\ImageCameraStates.h" />
     <ClInclude Include="image\ImageCamera.h" />
-    <ClInclude Include="image\ImageTexture.h" />
     <ClInclude Include="assets\cursors\PCursors.h" />
     <ClInclude Include="io\Event.h" />
     <ClInclude Include="io\EventObserver.h" />
@@ -84,7 +83,6 @@
     <ClCompile Include="controls\WaveformVisualizer.cpp" />
     <ClCompile Include="image\ImageBackground.cpp" />
     <ClCompile Include="image\ImageCamera.cpp" />
-    <ClCompile Include="image\ImageTexture.cpp" />
     <ClCompile Include="assets\cursors\PCursors.cpp" />
     <ClCompile Include="io\Event.cpp" />
     <ClCompile Include="io\EventObserver.cpp" />
