@@ -18,6 +18,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	visualizationContainer(0, 0, 100, 100),
 	indexWidget(ren, PFontType::CENTURYGOTHIC, 0, 0, 100, 100),
 	albumArt(0, 0, 100, 100),
+	album(L""),
 	seekBar(ren, PFontType::MPLUSLIGHT, 0, 0, 64, 64),
 	title(ren, PFontType::MPLUSLIGHT, 0, 0, 100, 100),
 	artist(ren, PFontType::MPLUSLIGHT, 0, 0, 100, 100),
@@ -40,19 +41,15 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	// AudioPlayer control buttons - PLAY, PAUSE, STOP, PREV, NEXT.
 	playPause.setBaseTint(180);
 	playPause.setTintDelta(7);
-	addSubscriber(&playPause);
 
 	stop.setBaseTint(180);
 	stop.setTintDelta(7);
-	addSubscriber(&stop);
 
 	prevTrack.setBaseTint(180);
 	prevTrack.setTintDelta(7);
-	addSubscriber(&prevTrack);
 
 	nextTrack.setBaseTint(180);
 	nextTrack.setTintDelta(7);
-	addSubscriber(&nextTrack);
 
 	// IndexWidget - supports track numbers from 0 to 999,999,999.
 	indexWidget.setIndex(0);
@@ -70,6 +67,10 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	albumArt.setWidth(bodyGrid[0][0].getWidth());
 	albumArt.setHeight(bodyGrid[0][0].getHeight());
 
+	// Default album art.
+	defaultAlbumArt = Image::makeImageTexture(getDefaultAlbumArt());
+	albumArt.setImage(defaultAlbumArt);
+
 	// Metadata labels - TITLE, ARTIST.
 	title.setClipState(LabelClipState::PAN);
 	title.setText("Pictualizer");
@@ -80,35 +81,28 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	repeat.setButtonStyle(ButtonStyle::TOGGLE);
 	repeat.setBaseTint(160);
 	repeat.setTintDelta(7);
-	addSubscriber(&repeat);
 
 	shuffle.setButtonStyle(ButtonStyle::TOGGLE);
 	shuffle.setBaseTint(160);
 	shuffle.setTintDelta(7);
-	addSubscriber(&shuffle);
 
 	playlist.setBaseTint(160);
 	playlist.setTintDelta(7);
-	addSubscriber(&playlist);
 
 	info.setBaseTint(160);
 	info.setTintDelta(7);
-	addSubscriber(&info);
 	
 	// SeekBar - linked to AudioPlayer.
 	seekBar.setBaseColor(100, 100, 100);
 	seekBar.setTime(0);
 	seekBar.setDuration(0);
-	addSubscriber(&seekBar);
 
 	// Misc. controls - VOL buttons & labels.
 	volUp.setBaseTint(160);
 	volUp.setTintDelta(7);
-	addSubscriber(&volUp);
 
 	volDown.setBaseTint(160);
 	volDown.setTintDelta(7);
-	addSubscriber(&volDown);
 
 	std::stringstream ss;
 	ss << std::fixed << std::setprecision(2) << audioPlayer->getVolume();
@@ -169,7 +163,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	bottomGrid[0][0].setElement(&playlist);
 	bottomGrid[0][1].setElement(&info);
 	bottomGrid[0][2].setElement(&repeat);
-	bottomGrid[0][2].setPadding(0.15f, 0.15f, 0.15f, 0.15f);
+	bottomGrid[0][2].setPadding(0.15f, 0.14f, 0.15f, 0.16f);
 	bottomGrid[0][3].setElement(&shuffle);
 	bottomGrid[0][3].setPadding(0.1f, 0.1f, 0.1f, 0.1f);
 	bottomGrid[0][4].setElement(&seekBar);
@@ -206,14 +200,26 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	*/
 	
 	// Event subscribing.
+	addSubscriber(&playPause);
+	addSubscriber(&stop);
+	addSubscriber(&prevTrack);
+	addSubscriber(&nextTrack);
+	addSubscriber(&repeat);
+	addSubscriber(&shuffle);
+	addSubscriber(&playlist);
+	addSubscriber(&info);
+	addSubscriber(&volUp);
+	addSubscriber(&volDown);
+	addSubscriber(&seekBar);
+
 	subscribeTo(&playPause);
 	subscribeTo(&stop);
 	subscribeTo(&prevTrack);
 	subscribeTo(&nextTrack);
-	subscribeTo(&playlist);
-	subscribeTo(&info);
 	subscribeTo(&repeat);
 	subscribeTo(&shuffle);
+	subscribeTo(&playlist);
+	subscribeTo(&info);
 	subscribeTo(&volUp);
 	subscribeTo(&volDown);
 	subscribeTo(&seekBar);
@@ -257,12 +263,13 @@ void AudioPlayerWidget::draw(SDL_Renderer* ren)
 		frameCount = 1;
 		seekBar.setTime((int) std::floor(audioPlayer->getPosition()));
 	}
-
+	
 	if (ren)
 		bodyGrid.draw(ren);
 	else
 		bodyGrid.draw(this->ren);
 
+	// TODO: reset this variable every second.
 	++frameCount;
 }
 
@@ -331,10 +338,13 @@ void AudioPlayerWidget::handleEvent(Event* e)
 			OnVolumeChanged(volumeChangedEvent);
 			e->handled = true;
 		}
+		else if (WindowResizedEvent* windowResizedEvent = dynamic_cast<WindowResizedEvent*>(e))
+			OnWindowResized(windowResizedEvent);
 		else if (MouseMotionEvent* mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
 			OnMouseMotion(mouseMotionEvent);
 		else if (MouseUpEvent* mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
 			OnMouseUp(mouseUpEvent);
+
 
 		PWidget::handleEvent(e);
 	}
@@ -346,6 +356,35 @@ void AudioPlayerWidget::enqueueTrack(const std::string& path)
 
 	AudioPlaylist* currentPlaylist = audioPlayer->getCurrentPlaylist();
 	currentPlaylist->enqueueTrack(newTrack);
+}
+
+SDL_Texture* AudioPlayerWidget::getDefaultAlbumArt()
+{
+	// Create the default album art background.
+	SDL_Surface* aaSurface = SDL_CreateRGBSurface(0, 600, 600, 32, 0, 0, 0, 0);
+	SDL_FillRect(aaSurface, NULL, SDL_MapRGBA(aaSurface->format, 85, 85, 85, 85));
+	SDL_Texture* aaBg = SDL_CreateTextureFromSurface(ren, aaSurface);
+	SDL_FreeSurface(aaSurface);
+
+	// Create the "?" text on the default album art.
+	Label aaLabel(ren, PFontType::CENTURYGOTHIC, 0, 0, 600, 600);
+	aaLabel.setAlignState(LabelAlignState::CENTER);
+	aaLabel.setText("?");
+	
+	// Create the default album art texture.
+	SDL_Texture* aaTexture = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 600, 600);
+	SDL_SetTextureBlendMode(aaTexture, SDL_BLENDMODE_BLEND);
+
+	// Render to the default album art.bv
+	SDL_SetRenderTarget(ren, aaTexture);
+	SDL_RenderCopy(ren, aaBg, nullptr, nullptr);
+	aaLabel.draw(ren);
+	SDL_SetRenderTarget(ren, nullptr);
+
+	// Clean-up.
+	SDL_DestroyTexture(aaBg);
+
+	return aaTexture;
 }
 
 void AudioPlayerWidget::OnFileDrop(FileDropEvent* e)
@@ -468,6 +507,17 @@ void AudioPlayerWidget::OnMouseUp(MouseUpEvent* e)
 	}
 }
 
+void AudioPlayerWidget::OnWindowResized(WindowResizedEvent* e)
+{
+	if (defaultAlbumArt == albumArt.getImage())
+	{
+		defaultAlbumArt = Image::makeImageTexture(getDefaultAlbumArt());
+		albumArt.setImage(defaultAlbumArt);
+	}
+	else
+		defaultAlbumArt = Image::makeImageTexture(getDefaultAlbumArt());
+}
+
 void AudioPlayerWidget::OnButtonToggled(ButtonToggledEvent* e)
 {
 	if (e->button == &repeat)
@@ -505,7 +555,21 @@ void AudioPlayerWidget::OnNewTrack(NewTrackEvent * e)
 {
 	title.setText(e->track->getTitle());
 	artist.setText(e->track->getArtist());
-	albumArt.setImage(e->track->getAlbumArt(ren));
+
+	// Fetch a new album art if the album has changed.
+	if (album.compare(e->track->getAlbum()) != 0)
+	{
+	 	album = e->track->getAlbum();
+		albumArt.pollImageBuffers(ren);
+
+		ImageRWops& imageRWops = e->track->getAlbumArt(ren);
+
+		if (imageRWops.rwops)
+			albumArt.asyncSetImage(imageRWops);
+		else
+			albumArt.setImage(defaultAlbumArt);
+	}
+
 	indexWidget.setIndex(audioPlayer->getCurrentTrackIndex() + 1);
 	seekBar.setTime(0);
 	seekBar.setDuration((int) std::floor(audioPlayer->getBASSDuration()));

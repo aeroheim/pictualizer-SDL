@@ -47,6 +47,9 @@ class AudioPlayerWidget : public PWidget
 		PControlContainer leftControlsContainer;
 		PControlContainer visualizationContainer;
 
+		ImageTexture defaultAlbumArt;
+		std::wstring album;
+
 		IndexWidget indexWidget;
 		Image albumArt;
 		SeekBar seekBar;
@@ -74,8 +77,11 @@ class AudioPlayerWidget : public PWidget
 
 		void enqueueTrack(const std::string& path);
 
+		SDL_Texture* getDefaultAlbumArt();
+
 		void OnMouseUp(MouseUpEvent* e);
 		void OnMouseMotion(MouseMotionEvent* e);
+		void OnWindowResized(WindowResizedEvent* e);
 		void OnFileDrop(FileDropEvent* e);
 		void OnDirectoryDrop(FileDropEvent* e);
 		void OnButtonPressed(ButtonPressedEvent* e);
