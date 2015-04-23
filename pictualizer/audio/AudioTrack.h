@@ -17,6 +17,7 @@
 #include <string>
 #include <filesystem>
 #include "AudioTrackStates.h"
+#include "../controls/Image.h"
 #include "../io/EventObserver.h"
 #include "../util/PUtils.h"
 
@@ -40,7 +41,7 @@ class AudioTrack : public EventObserver
 		std::wstring getTitle() const;
 		std::wstring getArtist() const;
 		std::wstring getAlbum() const;
-		SDL_Texture* getAlbumArt(SDL_Renderer* ren) const;
+		ImageRWops getAlbumArt(SDL_Renderer* ren) const;
 		int getDuration() const;
 
 		friend bool operator== (AudioTrack& lhs, AudioTrack& rhs);
@@ -58,12 +59,12 @@ class AudioTrack : public EventObserver
 		mutable bool populated;
 		void populateMetadata() const;
 
-		SDL_Texture* getID3v2AlbumArt(SDL_Renderer* ren, TagLib::ID3v2::Tag* tag) const;
-		SDL_Texture* getAPEAlbumArt(SDL_Renderer* ren, TagLib::APE::Tag* tag) const;
-		SDL_Texture* getMP4AlbumArt(SDL_Renderer* ren, TagLib::MP4::Tag* tag) const;
-		SDL_Texture* getFLACAlbumArt(SDL_Renderer* ren, TagLib::FLAC::File* file) const;
-		SDL_Texture* getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag) const;
-		SDL_Texture* searchDirForAlbumArt(SDL_Renderer* ren) const;
+		ImageRWops getID3v2AlbumArt(SDL_Renderer* ren, TagLib::ID3v2::Tag* tag) const;
+		ImageRWops getAPEAlbumArt(SDL_Renderer* ren, TagLib::APE::Tag* tag) const;
+		ImageRWops getMP4AlbumArt(SDL_Renderer* ren, TagLib::MP4::Tag* tag) const;
+		ImageRWops getFLACAlbumArt(SDL_Renderer* ren, TagLib::FLAC::File* file) const;
+		ImageRWops getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag) const;
+		ImageRWops searchDirForAlbumArt(SDL_Renderer* ren) const;
 
-		SDL_Texture* dataToAlbumArt(SDL_Renderer* ren, TagLib::ByteVector& data) const;
+		ImageRWops dataToAlbumArt(SDL_Renderer* ren, TagLib::ByteVector& data) const;
 };

@@ -44,18 +44,18 @@ std::wstring AudioTrack::getAlbum() const
 	return album;
 }
 
-SDL_Texture* AudioTrack::getAlbumArt(SDL_Renderer* ren) const
+ImageRWops AudioTrack::getAlbumArt(SDL_Renderer* ren) const
 {
 	TagLib::FileRef track(getPath().c_str());
 
-	SDL_Texture* albumArt = nullptr;
+	ImageRWops albumArt = ImageRWops{ nullptr, nullptr };
 
 	if (TagLib::MPEG::File* mpegFile = dynamic_cast<TagLib::MPEG::File*>(track.file()))
 	{
 		if (mpegFile->ID3v2Tag())
 			albumArt = getID3v2AlbumArt(ren, mpegFile->ID3v2Tag());
 		
-		if (mpegFile->APETag() && !albumArt)
+		if (mpegFile->APETag() && !albumArt.rwops)
 			albumArt = getAPEAlbumArt(ren, mpegFile->APETag());
 	}
 	else if (TagLib::MP4::File* mp4File = dynamic_cast<TagLib::MP4::File*>(track.file()))
@@ -67,7 +67,7 @@ SDL_Texture* AudioTrack::getAlbumArt(SDL_Renderer* ren) const
 	{
 		albumArt = getFLACAlbumArt(ren, flacFile);
 
-		if (!albumArt && flacFile->ID3v2Tag())
+		if (!albumArt.rwops && flacFile->ID3v2Tag())
 			albumArt = getID3v2AlbumArt(ren, flacFile->ID3v2Tag());
 	}
 	else if (TagLib::ASF::File* asfFile = dynamic_cast<TagLib::ASF::File*>(track.file()))
@@ -90,7 +90,7 @@ SDL_Texture* AudioTrack::getAlbumArt(SDL_Renderer* ren) const
 			albumArt = getAPEAlbumArt(ren, wavFile->APETag());
 	}
 	
-	if (!albumArt)
+	if (!albumArt.rwops)
 		albumArt = searchDirForAlbumArt(ren);
 
 	return albumArt;
@@ -159,7 +159,7 @@ void AudioTrack::populateMetadata() const
 	populated = true;
 }
 
-SDL_Texture* AudioTrack::getID3v2AlbumArt(SDL_Renderer* ren, TagLib::ID3v2::Tag* tag) const
+ImageRWops AudioTrack::getID3v2AlbumArt(SDL_Renderer* ren, TagLib::ID3v2::Tag* tag) const
 {
 	const TagLib::ID3v2::FrameList& frameList = tag->frameList("APIC");
 
@@ -170,10 +170,10 @@ SDL_Texture* AudioTrack::getID3v2AlbumArt(SDL_Renderer* ren, TagLib::ID3v2::Tag*
 		return dataToAlbumArt(ren, frame->picture());
 	}
 
-	return nullptr;
+	return ImageRWops{ nullptr, nullptr };
 }
 
-SDL_Texture* AudioTrack::getAPEAlbumArt(SDL_Renderer* ren, TagLib::APE::Tag* tag) const
+ImageRWops AudioTrack::getAPEAlbumArt(SDL_Renderer* ren, TagLib::APE::Tag* tag) const
 {
 	const TagLib::APE::ItemListMap& itemListMap = tag->itemListMap();
 
@@ -188,10 +188,10 @@ SDL_Texture* AudioTrack::getAPEAlbumArt(SDL_Renderer* ren, TagLib::APE::Tag* tag
 			return dataToAlbumArt(ren, item.mid(position));
 	}
 
-	return nullptr;
+	return ImageRWops{ nullptr, nullptr };
 }
 
-SDL_Texture* AudioTrack::getMP4AlbumArt(SDL_Renderer* ren, TagLib::MP4::Tag* tag) const
+ImageRWops AudioTrack::getMP4AlbumArt(SDL_Renderer* ren, TagLib::MP4::Tag* tag) const
 {
 	if (tag->itemListMap().contains("covr"))
 	{
@@ -201,10 +201,10 @@ SDL_Texture* AudioTrack::getMP4AlbumArt(SDL_Renderer* ren, TagLib::MP4::Tag* tag
 			return dataToAlbumArt(ren, coverArtList[0].data());
 	}
 
-	return nullptr;
+	return ImageRWops{ nullptr, nullptr };
 }
 
-SDL_Texture* AudioTrack::getFLACAlbumArt(SDL_Renderer* ren, TagLib::FLAC::File* file) const
+ImageRWops AudioTrack::getFLACAlbumArt(SDL_Renderer* ren, TagLib::FLAC::File* file) const
 {
 	const TagLib::List<TagLib::FLAC::Picture*>& pictureList = file->pictureList();
 
@@ -212,10 +212,10 @@ SDL_Texture* AudioTrack::getFLACAlbumArt(SDL_Renderer* ren, TagLib::FLAC::File* 
 	if (!pictureList.isEmpty())
 		return dataToAlbumArt(ren, pictureList[0]->data());
 
-	return nullptr;
+	return ImageRWops{ nullptr, nullptr };
 }
 
-SDL_Texture* AudioTrack::getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag) const
+ImageRWops AudioTrack::getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag) const
 {
 	const TagLib::ASF::AttributeListMap& attributeListMap = tag->attributeListMap();
 
@@ -233,10 +233,10 @@ SDL_Texture* AudioTrack::getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag
 		}
 	}
 
-	return nullptr;
+	return ImageRWops{ nullptr, nullptr };
 }
 
-SDL_Texture* AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
+ImageRWops AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
 {
 	std::tr2::sys::wpath path(filePath);
 
@@ -253,11 +253,8 @@ SDL_Texture* AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
 
 			if ((filename == L"cover" || filename == L"folder") && PUtils::pathIsImage(file.filename()))
 			{
-				SDL_Texture* albumArt = IMG_LoadTexture(ren, PUtils::wstr2str(file.string()).c_str());
-				SDL_SetTextureBlendMode(albumArt, SDL_BLENDMODE_BLEND);
-
-				if (albumArt)
-					return albumArt;
+				if (SDL_RWops* albumArt = SDL_RWFromFile(PUtils::wstr2str(file.string()).c_str(), "rb"))
+					return ImageRWops{ albumArt, nullptr };
 				
 				// Stop searching if "cover" or "folder" are invalid images.
 				break;
@@ -270,29 +267,24 @@ SDL_Texture* AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
 			const auto& file = it->path();
 
 			if (PUtils::pathIsImage(file.filename()))
-			{
-				SDL_Texture* albumArt = IMG_LoadTexture(ren, PUtils::wstr2str(file.string()).c_str());
-				SDL_SetTextureBlendMode(albumArt, SDL_BLENDMODE_BLEND);
-
-				if (albumArt)
-					return albumArt;
-			}
+				if (SDL_RWops* albumArt = SDL_RWFromFile(PUtils::wstr2str(file.string()).c_str(), "rb"))
+					return ImageRWops{ albumArt, nullptr };
 		}
 	}
 
-	return nullptr;
+	return ImageRWops{ nullptr, nullptr };
 }
 
 
-SDL_Texture* AudioTrack::dataToAlbumArt(SDL_Renderer* ren, TagLib::ByteVector& data) const
+ImageRWops AudioTrack::dataToAlbumArt(SDL_Renderer* ren, TagLib::ByteVector& data) const
 {
-	if (SDL_RWops* albumArtBuffer = SDL_RWFromMem(data.data(), data.size()))
-	{
-		SDL_Texture* albumArt = IMG_LoadTexture_RW(ren, albumArtBuffer, 0);
-		SDL_SetTextureBlendMode(albumArt, SDL_BLENDMODE_BLEND);
+	uint8_t* buffer = new uint8_t[data.size()];
+	memcpy(buffer, data.data(), sizeof(uint8_t) * data.size());
 
-		return albumArt;
-	}
+	if (SDL_RWops* albumArt = SDL_RWFromMem(buffer, data.size()))
+		return ImageRWops{ albumArt, buffer };
+	else
+		delete[] buffer;
 
-	return nullptr;
+	return ImageRWops();
 }
