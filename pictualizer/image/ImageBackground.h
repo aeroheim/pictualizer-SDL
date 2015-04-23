@@ -59,7 +59,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 
 		void checkSlideshowTimer();
 
-		void OnWindowResized(WindowResizeEvent* e);
+		void OnWindowResized(WindowResizedEvent* e);
 		void OnImageReady();
-		void OnImageLoaded();
+		void OnImageLoaded(ImageLoadedEvent* e);
 };

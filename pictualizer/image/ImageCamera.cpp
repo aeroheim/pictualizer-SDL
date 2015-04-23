@@ -185,11 +185,8 @@ void ImageCamera::handleEvent(Event* e)
 				SDL_SetRelativeMouseMode(SDL_FALSE);
 			}
 		}
-		else if (WindowResizeEvent* windowResizeEvent = dynamic_cast<WindowResizeEvent*>(e))
-		{
-			OnWindowResize(windowResizeEvent);
-			e->handled = true;
-		}
+		else if (WindowResizedEvent* windowResizedEvent = dynamic_cast<WindowResizedEvent*>(e))
+			OnWindowResized(windowResizedEvent);
 	}
 }
 
@@ -446,12 +443,12 @@ void ImageCamera::OnMouseMotion(MouseMotionEvent* e)
 		view.y = 0;
 }
 
-void ImageCamera::OnWindowResize(WindowResizeEvent* e)
+void ImageCamera::OnWindowResized(WindowResizedEvent* e)
 {
-	ww = e->ww;
-	wh = e->wh;
-	view.w = ww;
-	view.h = wh;
+	w = e->ww;
+	h = e->wh;
+	view.w = w;
+	view.h = h;
 
 	float prevMaxScale = maxScale;
 
@@ -463,8 +460,8 @@ void ImageCamera::OnWindowResize(WindowResizeEvent* e)
 	view.w = (int) std::floor(view.w * scale);
 	view.h = (int) std::floor(view.h * scale);
 
-	float xMaxPos = (float) (iw - ww * scale);
-	float yMaxPos = (float) (ih - wh * scale);
+	float xMaxPos = (float) (iw - w * scale);
+	float yMaxPos = (float) (ih - h * scale);
 
 	if (view.x > xMaxPos)
 	{

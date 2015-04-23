@@ -163,8 +163,8 @@ void ImageBackground::handleEvent(Event* e)
 
 	if (!e->handled)
 	{
-		if (WindowResizeEvent* windowResizeEvent = dynamic_cast<WindowResizeEvent*>(e))
-			OnWindowResized(windowResizeEvent);
+		if (WindowResizedEvent* windowResizedEvent = dynamic_cast<WindowResizedEvent*>(e))
+			OnWindowResized(windowResizedEvent);
 		else if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
 		{
 			if (PUtils::pathIsImage(fileDropEvent->path))
@@ -267,7 +267,7 @@ void ImageBackground::checkSlideshowTimer()
 	}
 }
 
-void ImageBackground::OnWindowResized(WindowResizeEvent* e)
+void ImageBackground::OnWindowResized(WindowResizedEvent* e)
 {
 	if (background)
 	{
@@ -276,6 +276,11 @@ void ImageBackground::OnWindowResized(WindowResizeEvent* e)
 		background = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, e->ww, e->wh);
 		SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
 	}
+
+	image.setWidth((float) e->ww);
+	image.setHeight((float) e->wh);
+	tempImage.setWidth((float)e->ww);
+	tempImage.setHeight((float)e->wh);
 }
 
 void ImageBackground::OnImageReady()

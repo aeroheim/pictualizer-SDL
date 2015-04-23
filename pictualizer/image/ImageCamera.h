@@ -55,5 +55,5 @@ class ImageCamera : public EventSubscriber, public InputListener
 		
 		void OnMouseWheel(MouseWheelEvent* e);
 		void OnMouseMotion(MouseMotionEvent* e);
-		void OnWindowResize(WindowResizeEvent* e);
+		void OnWindowResized(WindowResizedEvent* e);
 };
