@@ -258,7 +258,7 @@ void Label::draw(SDL_Renderer* ren)
 		}
 	}
 
-	PControl::draw(nullptr);
+	PControl::draw(ren);
 }
 
 void Label::panView()

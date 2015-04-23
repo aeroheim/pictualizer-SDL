@@ -3,8 +3,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "ImageCamera.h"
-#include "ImageTexture.h"
 #include "ImageBackgroundStates.h"
+#include "../controls/Image.h"
 #include "../io/EventSubscriber.h"
 #include "../util/PUtils.h"
 
@@ -28,11 +28,13 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		SDL_Texture* background;
 		ImageCamera imageCamera;
 		ImageCamera tempCamera;
-		ImageTexture image;
-		ImageTexture tempImage;
+		Image image;
+		Image tempImage;
 
 		std::vector<std::string> images;
 		int imageIndex;
+		int iw;
+		int ih;
 
 		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
 		SDL_Keycode PREV_IMG_KEY = SDLK_LEFT;
@@ -53,7 +55,7 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		int fadeDist;
 
 		void calculateFadeDist(float panSpeed);
-		bool viewInFadeZone(ImageCamera& camera, ImageTexture& img);
+		bool viewInFadeZone(ImageCamera& camera, Image& img);
 
 		void checkSlideshowTimer();
 

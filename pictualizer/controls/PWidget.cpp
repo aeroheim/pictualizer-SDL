@@ -15,7 +15,7 @@ PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	
 	SDL_Texture* bgTexture = SDL_CreateTextureFromSurface(ren, bgSurface);
 	SDL_SetTextureBlendMode(bgTexture, SDL_BLENDMODE_BLEND);
-	background.setImage(bgTexture);
+	background.setImage(Image::makeImageTexture(bgTexture));
 
 	SDL_FreeSurface(bgSurface);
 }

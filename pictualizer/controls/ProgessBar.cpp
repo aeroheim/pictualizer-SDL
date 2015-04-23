@@ -19,8 +19,8 @@ ProgressBar::ProgressBar(SDL_Renderer* ren, float x, float y, float w, float h) 
 	SDL_Texture* progressBarTexture = SDL_CreateTextureFromSurface(ren, progressBarSurface);
 	SDL_SetTextureBlendMode(progressBarTexture, SDL_BLENDMODE_BLEND);
 
-	baseBar.setImage(baseBarTexture);
-	progressBar.setImage(progressBarTexture);
+	baseBar.setImage(Image::makeImageTexture(baseBarTexture));
+	progressBar.setImage(Image::makeImageTexture(progressBarTexture));
 
 	SDL_FreeSurface(baseBarSurface);
 	SDL_FreeSurface(progressBarSurface);

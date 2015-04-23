@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ImageCameraStates.h"
-#include "ImageTexture.h"
 #include "../io/EventSubscriber.h"
 #include "../io/InputListener.h"
 
@@ -16,13 +15,12 @@ class ImageCamera : public EventSubscriber, public InputListener
 		SDL_Rect* getView();
 		void updateView();
 
-		ImageCameraState getState();
-		void setState(ImageCameraState s);
+		void resetCamera();
+		void setView(int iw, int ih);
 
 		CameraPanningState getPanningState();
-
-		void resetCamera();
-		void setView(ImageTexture* image);
+		ImageCameraState getState();
+		void setState(ImageCameraState s);
 
 		float getPanSpeed();
 		void setPanSpeed(float speed);
@@ -39,8 +37,8 @@ class ImageCamera : public EventSubscriber, public InputListener
 		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
 		float maxScale;
 		float scale;
-		int ww;
-		int wh;
+		int w;
+		int h;
 		int iw;
 		int ih;
 

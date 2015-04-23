@@ -1,21 +1,21 @@
 #include "ImageCamera.h"
 
-ImageCamera::ImageCamera(int w, int h)
+ImageCamera::ImageCamera(int w, int h) :
+	w(w),
+	h(h),
+	iw(0),
+	ih(0),
+	panX(0.0f),
+	panY(0.0f),
+	panSpeed(0.0f),
+	scale(1.0f),
+	maxScale(1.0f),
+	state(ImageCameraState::MANUAL)
 {
-	ww = w;
-	wh = h;
-	iw = 0;
-	ih = 0;
-	view.w = ww;
-	view.h = wh;
+	view.w = w;
+	view.h = h;
 	view.x = 0;
 	view.y = 0;
-	panX = 0.0f;
-	panY = 0.0f;
-	panSpeed = 0.0f;
-	scale = 1.0f;
-	maxScale = 1.0f;
-	state = ImageCameraState::MANUAL;
 
 	registerKey(ACCESS_KEY);
 }
@@ -105,20 +105,20 @@ void ImageCamera::resetCamera()
 	view.y = 0;
 	calculateMaxScale();
 	scale = maxScale;
-	view.w = (int) std::floor(ww * scale);
-	view.h = (int) std::floor(wh * scale);
+	view.w = (int) std::floor(w * scale);
+	view.h = (int) std::floor(w * scale);
 }
 
-void ImageCamera::setView(ImageTexture* image)
+void ImageCamera::setView(int iw, int ih)
 {
-	iw = image->getRoundedWidth();
-	ih = image->getRoundedHeight();
+	this->iw = iw;
+	this->ih = ih;
 	resetCamera();
 
-	int aImage = iw * ih;
-	int aWin = ww * wh;
+	int imageArea = iw * ih;
+	int area = w * h;
 
-	maxPanRange = (int) std::round(aImage / ((float) aWin / MAX_PAN_CONSTANT));
+	maxPanRange = (int) std::round(imageArea / ((float) area / MAX_PAN_CONSTANT));
 
 	if (state == ImageCameraState::ROAMING)
 		resetPanning();
@@ -195,8 +195,8 @@ void ImageCamera::handleEvent(Event* e)
 
 void ImageCamera::calculateMaxScale()
 {
-	float wRatio = (float) iw / (float) ww;
-	float hRatio = (float) ih / (float) wh;
+	float wRatio = (float) iw / (float) w;
+	float hRatio = (float) ih / (float) h;
 
 	maxScale = wRatio < hRatio ? wRatio : hRatio;
 }
@@ -206,9 +206,9 @@ void ImageCamera::resetPanning()
 	// Randomize a new panning direction.
 	generateNewPanningStyle();
 
-	float whratio = (float) ww / (float) wh;
-	int maxScaleW = (int) std::floor(ww * maxScale);
-	int maxScaleH = (int) std::floor(wh * maxScale);
+	float whratio = (float) w / (float) h;
+	int maxScaleW = (int) std::floor(w * maxScale);
+	int maxScaleH = (int) std::floor(h * maxScale);
 
 	int minPanDist = (int) std::floor(MIN_PAN_DURATION * panSpeed * 60);
 	int maxPanRangeDist = (int) std::floor(maxPanRange * panSpeed * 60);
@@ -336,7 +336,7 @@ void ImageCamera::resetPanning()
 			break;
 	}
 
-	scale = (float) view.w / ww;
+	scale = (float) view.w / w;
 
 	panX = (float) view.x;
 	panY = (float) view.y;
@@ -383,8 +383,8 @@ void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
 	{
 		scale = newScale;
 
-		float xMaxPos = (float) (iw - ww * scale);
-		float yMaxPos = (float) (ih - wh * scale);
+		float xMaxPos = (float) (iw - w * scale);
+		float yMaxPos = (float) (ih - h * scale);
 
 		// Valid bounds checking on current camera position.
 		if (view.x > xMaxPos)
@@ -398,23 +398,23 @@ void ImageCamera::OnMouseWheel(MouseWheelEvent* e)
 			view.y = 0;
 
 		// Zoom-in to mouse.
-		float dX = ww * (1 - scale);
-		float dY = wh * (1 - scale);
-		float pX = (float)(e->mx) / (float)ww;
-		float pY = (float)(e->my) / (float)wh;
+		float dX = w * (1 - scale);
+		float dY = h * (1 - scale);
+		float pX = (float)(e->mx) / (float) w;
+		float pY = (float)(e->my) / (float) h;
 
-		view.w = ww - (int)std::round(dX);
-		view.h = wh - (int)std::round(dY);
+		view.w = w - (int)std::round(dX);
+		view.h = h - (int)std::round(dY);
 
 		if ((float) (SCROLL_SPEED * e->y) > 0)
 		{
-			view.x += (int)(std::round((float)ww * SCROLL_SPEED) * pX);
-			view.y += (int)(std::round((float)wh * SCROLL_SPEED) * pY);
+			view.x += (int)(std::round((float) w * SCROLL_SPEED) * pX);
+			view.y += (int)(std::round((float) h * SCROLL_SPEED) * pY);
 		}
 		else
 		{
-			view.x -= (int)(std::round((float)ww * SCROLL_SPEED) * pX);
-			view.y -= (int)(std::round((float)wh * SCROLL_SPEED) * pY);
+			view.x -= (int)(std::round((float) w * SCROLL_SPEED) * pX);
+			view.y -= (int)(std::round((float) h * SCROLL_SPEED) * pY);
 		}
 
 		if (view.x < 0)
@@ -432,8 +432,8 @@ void ImageCamera::OnMouseMotion(MouseMotionEvent* e)
 	int newPosX = view.x - e->xrel;
 	int newPosY = view.y - e->yrel;
 
-	float xMaxPos = (float) (iw - ww * scale);
-	float yMaxPos = (float) (ih - wh * scale);
+	float xMaxPos = (float) (iw - w * scale);
+	float yMaxPos = (float) (ih - h * scale);
 
 	if (newPosX >= 0 && newPosX <= xMaxPos)
 		view.x = newPosX;
