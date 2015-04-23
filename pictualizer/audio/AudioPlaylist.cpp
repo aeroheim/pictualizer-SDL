@@ -26,7 +26,7 @@ void AudioPlaylist::setName(std::wstring n)
 
 void AudioPlaylist::enqueueTrack(AudioTrack track)
 {
-	duration += track.getDuration();
+	// duration += track.getDuration();
 	playlist.push_back(track);
 
 	TrackEnqueuedEvent trackEnqueuedEvent(playlist.size() - 1);
