@@ -22,8 +22,6 @@ struct PIntColor
 class PControl
 {
 	public:
-		PControl& operator=(const PControl& other);
-
 		virtual void setX(float x);
 		virtual void setY(float y);
 		virtual void setWidth(float w);

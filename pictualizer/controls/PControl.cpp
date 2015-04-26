@@ -10,35 +10,6 @@ PControl::PControl(float x, float y, float w, float h) :
 
 PControl::~PControl() {};
 
-PControl& PControl::operator=(const PControl& other)
-{
-	setX(other.getX());
-	setY(other.getY());
-	setWidth(other.getWidth());
-	setHeight(other.getHeight());
-	setMinWidth(other.getMinWidth());
-	setMinHeight(other.getMinHeight());
-	setMaxWidth(other.getMaxWidth());
-	setMaxHeight(other.getMaxHeight());
-
-	PFloatColor color = other.getColor();
-	setColor(color.r, color.g, color.b);
-
-	setTint(other.getTint());
-	setBaseTint(other.getBaseTint());
-	setFocusTint(other.getFocusTint());
-	setTintState(other.getTintState());
-	setTintDelta(other.getTintDelta());
-
-	setAlpha(other.getAlpha());
-	setMinAlpha(other.getMinAlpha());
-	setMaxAlpha(other.getMaxAlpha());
-	setFadeState(other.getFadeState());
-	setFadeDelta(other.getFadeDelta());
-
-	return *this;
-}
-
 void PControl::setX(float x)
 {
 	this->x = x;
