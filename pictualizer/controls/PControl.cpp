@@ -84,7 +84,7 @@ void PControl::setMaxWidth(float maxWidth)
 	maxW = maxWidth;
 
 	if (w > maxW)
-		w = maxW;
+		setWidth(maxW);
 }
 
 void PControl::setMaxHeight(float maxHeight)
@@ -94,7 +94,7 @@ void PControl::setMaxHeight(float maxHeight)
 	maxH = maxHeight;
 
 	if (h > maxH)
-		h = maxH;
+		setHeight(maxH);
 }
 
 float PControl::getX() const
