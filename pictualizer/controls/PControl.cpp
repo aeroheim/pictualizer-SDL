@@ -16,6 +16,10 @@ PControl& PControl::operator=(const PControl& other)
 	setY(other.getY());
 	setWidth(other.getWidth());
 	setHeight(other.getHeight());
+	setMinWidth(other.getMinWidth());
+	setMinHeight(other.getMinHeight());
+	setMaxWidth(other.getMaxWidth());
+	setMaxHeight(other.getMaxHeight());
 
 	PFloatColor color = other.getColor();
 	setColor(color.r, color.g, color.b);
