@@ -20,11 +20,6 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		float getInnerWidth();
 		float getInnerHeight();
 
-		void setMinWidth(float minWidth);
-		void setMinHeight(float minHeight);
-		float getMinWidth();
-		float getMinHeight();
-
 		void setBackgroundAlpha(float a);
 		void setBackgroundMinAlpha(float a);
 		void setBackgroundMaxAlpha(float a);

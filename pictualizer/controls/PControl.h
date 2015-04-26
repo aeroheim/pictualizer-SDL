@@ -28,11 +28,19 @@ class PControl
 		virtual void setY(float y);
 		virtual void setWidth(float w);
 		virtual void setHeight(float h);
+		void setMinWidth(float minWidth);
+		void setMinHeight(float minHeight);
+		void setMaxWidth(float maxWidth);
+		void setMaxHeight(float maxHeight);
 
 		float getX() const;
 		float getY() const;
 		float getWidth() const;
 		float getHeight() const;
+		float getMinWidth() const;
+		float getMinHeight() const;
+		float getMaxWidth() const;
+		float getMaxHeight() const;
 
 		int getRoundedX() const;
 		int getRoundedY() const;
@@ -109,6 +117,10 @@ class PControl
 		float y;
 		float w;
 		float h;
+		float minW;
+		float minH;
+		float maxW;
+		float maxH;
 
 		float r;
 		float g;

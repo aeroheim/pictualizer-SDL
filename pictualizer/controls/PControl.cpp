@@ -2,17 +2,11 @@
 
 PControl::PControl(float x, float y, float w, float h) : 
 	x(x), y(y), w(w), h(h), 
+	minW(0), minH(0), maxW(9999), maxH(9999),
 	r(255), g(255), b(255),
-	tintState(PControlTintState::NONE),
-	baseTint(255),
-	focusTint(255),
-	tintDelta(0),
-	tint(255),
-	fadeState(PControlFadeState::NONE),
-	minAlpha(0),
-	maxAlpha(255),
-	alphaDelta(0),
-	alpha(255) {}
+	tintState(PControlTintState::NONE), baseTint(255), focusTint(255), tintDelta(0), tint(255),
+	fadeState(PControlFadeState::NONE), minAlpha(0), maxAlpha(255), alphaDelta(0), alpha(255) 
+{}
 
 PControl::~PControl() {};
 
@@ -53,12 +47,54 @@ void PControl::setY(float y)
 
 void PControl::setWidth(float w)
 {
-	this->w = w;
+	if (w >= minW && w <= maxW)
+		this->w = w;
 }
 
 void PControl::setHeight(float h)
 {
-	this->h = h;
+	if (h >= minH && h <= maxH)
+		this->h = h;
+}
+
+void PControl::setMinWidth(float minWidth)
+{
+	assert(minWidth >= 0 && minWidth <= maxW);
+
+	minW = minWidth;
+
+	if (w < minW)
+		setWidth(minW);
+}
+
+void PControl::setMinHeight(float minHeight)
+{
+	assert(minHeight >= 0 && minHeight <= maxH);
+
+	minH = minHeight;
+
+	if (h < minH)
+		setHeight(minH);
+}
+
+void PControl::setMaxWidth(float maxWidth)
+{
+	assert(maxWidth >= minW);
+
+	maxW = maxWidth;
+
+	if (w > maxW)
+		w = maxW;
+}
+
+void PControl::setMaxHeight(float maxHeight)
+{
+	assert(maxHeight >= maxH);
+
+	maxH = maxHeight;
+
+	if (h > maxH)
+		h = maxH;
 }
 
 float PControl::getX() const
@@ -79,6 +115,26 @@ float PControl::getWidth() const
 float PControl::getHeight() const
 {
 	return h;
+}
+
+float PControl::getMinWidth() const
+{
+	return minW;
+}
+
+float PControl::getMinHeight() const
+{
+	return minH;
+}
+
+float PControl::getMaxWidth() const
+{
+	return maxW;
+}
+
+float PControl::getMaxHeight() const
+{
+	return maxH;
 }
 
 int PControl::getRoundedX() const

@@ -66,30 +66,6 @@ float PWidget::getInnerHeight()
 	return getHeight() - (DRAG_ZONE_DIST * 2);
 }
 
-void PWidget::setMinWidth(float minWidth)
-{
-	assert(minWidth >= 0);
-
-	this->minWidth = minWidth;
-}
-
-void PWidget::setMinHeight(float minHeight)
-{
-	assert(minHeight >= 0);
-
-	this->minHeight = minHeight;
-}
-
-float PWidget::getMinWidth()
-{
-	return minWidth;
-}
-
-float PWidget::getMinHeight()
-{
-	return minHeight;
-}
-
 void PWidget::setBackgroundAlpha(float a)
 {
 	background.setAlpha(a);
