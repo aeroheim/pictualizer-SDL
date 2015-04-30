@@ -14,14 +14,14 @@ enum class PControlFadeStyle
 	LOG
 };
 
-enum class PControlTintState
+enum class PControlColorState
 {
 	BASE,
 	FOCUS,
 	NONE
 };
 
-enum class PControlTintStyle
+enum class PControlColorStyle
 {
 	LINEAR,
 	EXPONENTIAL,

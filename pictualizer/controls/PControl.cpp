@@ -1,11 +1,17 @@
 #include "PControl.h"
 
+using namespace PGlobals;
+
 PControl::PControl(float x, float y, float w, float h) : 
 	x(x), y(y), w(w), h(h), 
-	minW(0), minH(0), maxW(9999), maxH(9999),
-	r(255), g(255), b(255),
-	tintState(PControlTintState::NONE), baseTint(255), focusTint(255), tintDelta(0), tint(255),
-	fadeState(PControlFadeState::NONE), minAlpha(0), maxAlpha(255), alphaDelta(0), alpha(255) 
+	minW(0), minH(0), maxW(PConstants::PCONTROL_DEFAULT_MAXDIM), maxH(PConstants::PCONTROL_DEFAULT_MAXDIM),
+	colorState(PControlColorState::NONE), colorStyle(PControlColorStyle::LINEAR),
+	color({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }), 
+	baseColor({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }),
+	focusColor({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }),
+	colorSpeed(0), rDelta(0), gDelta(0), bDelta(0),
+	fadeState(PControlFadeState::NONE), fadeStyle(PControlFadeStyle::LINEAR),
+	alpha(PConstants::PCONTROL_MAX_ALPHA), minAlpha(PConstants::PCONTROL_MIN_ALPHA), maxAlpha(PConstants::PCONTROL_MAX_ALPHA), fadeSpeed(0), fadeDelta(0)
 {}
 
 PControl::~PControl() {};
@@ -151,109 +157,153 @@ void PControl::resize(float w, float h)
 
 void PControl::setColor(float r, float g, float b)
 {
-	this->r = r;
-	this->g = g;
-	this->b = b;
+	color.r = r;
+	color.g = g;
+	color.b = b;
+
+	switch (colorState)
+	{
+		case PControlColorState::BASE:
+			if (color.r == baseColor.r && color.g == baseColor.g && color.b == baseColor.b)
+				colorState = PControlColorState::NONE;
+			break;
+		case PControlColorState::FOCUS:
+			if (color.r == focusColor.r && color.g == focusColor.g && color.b == focusColor.b)
+				colorState = PControlColorState::NONE;
+			break;
+		case PControlColorState::NONE:
+			break;
+	}
 }
 
-PFloatColor PControl::getColor() const
+void PControl::setColor(const PFloatColor& c)
 {
-	PFloatColor color{ r, g, b };
+	setColor(c.r, c.g, c.b);
+}
+
+void PControl::setColor(const PIntColor& c)
+{
+	setColor(c.r, c.g, c.b);
+}
+
+const PFloatColor& PControl::getColor() const
+{
 	return color;
 }
 
 PIntColor PControl::getRoundedColor() const
 {
-	PIntColor color{ (Uint8) std::round(r), (Uint8) std::round(g), (Uint8) std::round(b) };
-	return color;
+	PIntColor roundedColor{ (Uint8) std::round(color.r), (Uint8) std::round(color.g), (Uint8) std::round(color.b) };
+	return roundedColor;
 }
 
-void PControl::setTint(float t)
+void PControl::setBaseColor(float r, float g, float b)
 {
-	assert(t >= 0 && t <= 255);
+	assert(r >= PConstants::PCONTROL_MIN_RGB && r <= PConstants::PCONTROL_MAX_RGB);
+	assert(g >= PConstants::PCONTROL_MIN_RGB && g <= PConstants::PCONTROL_MAX_RGB);
+	assert(b >= PConstants::PCONTROL_MIN_RGB && b <= PConstants::PCONTROL_MAX_RGB);
 
-	tint = t;
+	baseColor.r = r;
+	baseColor.g = g;
+	baseColor.b = b;
 
-	if (r != t && g != t && b != t)
-		setColor(t, t, t);
-
-	switch (tintState)
-	{
-		case PControlTintState::BASE:
-			if (tint <= baseTint)
-				tintState = PControlTintState::NONE;
-			break;
-		case PControlTintState::FOCUS:
-			if (tint >= focusTint)
-				tintState = PControlTintState::NONE;
-			break;
-		case PControlTintState::NONE:
-			break;
-	}
+	setColorDelta();
 }
 
-float PControl::getTint() const
+void PControl::setBaseColor(const PFloatColor& c)
 {
-	return tint;
+	setBaseColor(c.r, c.g, c.b);
 }
 
-Uint8 PControl::getRoundedTint() const
+void PControl::setBaseColor(const PIntColor& c)
 {
-	return (Uint8) std::round(tint);
+	setBaseColor(c.r, c.g, c.b);
 }
 
-void PControl::setBaseTint(float t)
+const PFloatColor& PControl::getBaseColor() const
 {
-	assert(t <= focusTint);
-
-	baseTint = t;
+	return baseColor;
 }
 
-float PControl::getBaseTint() const
+PIntColor PControl::getRoundedBaseColor() const
 {
-	return baseTint;
+	PIntColor roundedBaseColor{ (Uint8)std::round(baseColor.r), (Uint8)std::round(baseColor.g), (Uint8)std::round(baseColor.b) };
+	return roundedBaseColor;
 }
 
-void PControl::setFocusTint(float t)
+void PControl::setFocusColor(float r, float g, float b)
 {
-	assert(t >= baseTint);
+	assert(r >= PConstants::PCONTROL_MIN_RGB && r <= PConstants::PCONTROL_MAX_RGB);
+	assert(g >= PConstants::PCONTROL_MIN_RGB && g <= PConstants::PCONTROL_MAX_RGB);
+	assert(b >= PConstants::PCONTROL_MIN_RGB && b <= PConstants::PCONTROL_MAX_RGB);
 
-	focusTint = t;
+	focusColor.r = r;
+	focusColor.g = g;
+	focusColor.b = b;
+
+	setColorDelta();
 }
 
-float PControl::getFocusTint() const
+void PControl::setFocusColor(const PFloatColor& c)
 {
-	return focusTint;
+	setFocusColor(c.r, c.g, c.b);
 }
 
-void PControl::setTintState(PControlTintState s)
+void PControl::setFocusColor(const PIntColor& c)
 {
-	tintState = s;
-
-	if (tintState == PControlTintState::NONE)
-		setTint(baseTint);
+	setFocusColor(c.r, c.g, c.b);
 }
 
-PControlTintState PControl::getTintState() const
+const PFloatColor& PControl::getFocusColor() const
 {
-	return tintState;
+	return focusColor;
 }
 
-void PControl::setTintDelta(float delta)
+PIntColor PControl::getRoundedFocusColor() const
 {
-	assert(delta >= 0);
-
-	tintDelta = delta;
+	PIntColor roundedFocusColor{ (Uint8)std::round(focusColor.r), (Uint8)std::round(focusColor.g), (Uint8)std::round(focusColor.b) };
+	return roundedFocusColor;
 }
 
-float PControl::getTintDelta() const
+void PControl::setColorState(PControlColorState s)
 {
-	return tintDelta;
+	colorState = s;
+
+	if (colorState == PControlColorState::NONE)
+		setColor(baseColor);
+}
+
+void PControl::setColorStyle(PControlColorStyle s)
+{
+	colorStyle = s;
+}
+
+PControlColorState PControl::getColorState() const
+{
+	return colorState;
+}
+
+PControlColorStyle PControl::getColorStyle() const
+{
+	return colorStyle;
+}
+
+void PControl::setColorSpeed(float seconds)
+{
+	assert(seconds >= 0);
+
+	colorSpeed = seconds;
+	setColorDelta();
+}
+
+float PControl::getColorSpeed() const
+{
+	return colorSpeed;
 }
 
 void PControl::setAlpha(float a)
 {
-	assert(a >= 0 && a <= 255);
+	assert(a >= PConstants::PCONTROL_MIN_ALPHA && a <= PConstants::PCONTROL_MAX_ALPHA);
 
 	alpha = a;
 
@@ -284,9 +334,10 @@ Uint8 PControl::getRoundedAlpha() const
 
 void PControl::setMinAlpha(float a)
 {
-	assert(a <= maxAlpha);
+	assert(a >= PConstants::PCONTROL_MIN_ALPHA && a <= maxAlpha);
 
 	minAlpha = a;
+	setFadeDelta();
 }
 
 float PControl::getMinAlpha() const
@@ -296,9 +347,10 @@ float PControl::getMinAlpha() const
 
 void PControl::setMaxAlpha(float a)
 {
-	assert(a >= minAlpha);
+	assert(a <= PConstants::PCONTROL_MAX_ALPHA && a >= minAlpha);
 
 	maxAlpha = a;
+	setFadeDelta();
 }
 
 float PControl::getMaxAlpha() const
@@ -311,21 +363,46 @@ void PControl::setFadeState(PControlFadeState s)
 	fadeState = s;
 }
 
+void PControl::setFadeStyle(PControlFadeStyle s)
+{
+	fadeStyle = s;
+}
+
 PControlFadeState PControl::getFadeState() const
 {
 	return fadeState;
 }
 
-void PControl::setFadeDelta(float delta)
+PControlFadeStyle PControl::getFadeStyle() const
 {
-	assert(delta >= 0);
-
-	alphaDelta = delta;
+	return fadeStyle;
 }
 
-float PControl::getFadeDelta() const
+void PControl::setFadeSpeed(float seconds)
 {
-	return alphaDelta;
+	assert(seconds >= 0);
+
+	fadeSpeed = seconds;
+	setFadeDelta();
+}
+
+float PControl::getFadeSpeed() const
+{
+	return fadeSpeed;
+}
+
+void PControl::setFadeDelta()
+{
+	fadeDelta = (maxAlpha - minAlpha) / (PConstants::P_FRAMERATE * fadeSpeed);
+}
+
+void PControl::setColorDelta()
+{
+	float framesToFade = PConstants::P_FRAMERATE * colorSpeed;
+
+	rDelta = (focusColor.r - baseColor.r) / framesToFade;
+	gDelta = (focusColor.g - baseColor.g) / framesToFade;
+	bDelta = (focusColor.b - baseColor.b) / framesToFade;
 }
 
 void PControl::draw(SDL_Renderer* ren = nullptr)
@@ -333,24 +410,28 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	switch (fadeState)
 	{
 		case PControlFadeState::FADEIN:
-			setAlpha(alpha + alphaDelta < maxAlpha ? alpha + alphaDelta : maxAlpha); 
+			setAlpha(alpha + fadeDelta < maxAlpha ? alpha + fadeDelta : maxAlpha); 
 			break;
 		case PControlFadeState::FADEOUT:
-			setAlpha(alpha - alphaDelta > minAlpha ? alpha - alphaDelta : minAlpha);
+			setAlpha(alpha - fadeDelta > minAlpha ? alpha - fadeDelta : minAlpha);
 			break;
 		case PControlFadeState::NONE:
 			break;
 	}
 
-	switch (tintState)
+	switch (colorState)
 	{
-		case PControlTintState::BASE:
-			setTint(tint - tintDelta > baseTint ? tint - tintDelta : baseTint);
+		case PControlColorState::BASE:
+			setColor(focusColor.r > baseColor.r ? (color.r - rDelta > baseColor.r ? color.r - rDelta : baseColor.r) : (color.r - rDelta < baseColor.r ? color.r - rDelta : baseColor.r),
+						focusColor.g > baseColor.g ? (color.g - gDelta > baseColor.g ? color.g - gDelta : baseColor.g) : (color.g - gDelta < baseColor.g ? color.g - gDelta : baseColor.g),
+						focusColor.b > baseColor.b ? (color.b - bDelta > baseColor.b ? color.b - bDelta : baseColor.b) : (color.b - bDelta < baseColor.b ? color.b - bDelta : baseColor.b));
 			break;
-		case PControlTintState::FOCUS:
-			setTint(tint + tintDelta < focusTint ? tint + tintDelta : focusTint);
+		case PControlColorState::FOCUS:
+			setColor(focusColor.r > baseColor.r ? (color.r + rDelta < focusColor.r ? color.r + rDelta : focusColor.r) : (color.r + rDelta > focusColor.r ? color.r + rDelta : focusColor.r),
+						focusColor.g > baseColor.g ? (color.g + gDelta < focusColor.g ? color.g + gDelta : focusColor.g) : (color.g + gDelta > focusColor.g ? color.g + gDelta : focusColor.g),
+						focusColor.b > baseColor.b ? (color.b + bDelta < focusColor.b ? color.b + bDelta : focusColor.b) : (color.b + bDelta > focusColor.b ? color.b + bDelta : focusColor.b));
 			break;
-		case PControlTintState::NONE:
+		case PControlColorState::NONE:
 			break;
 	}
 

@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <algorithm>
 #include "PControlStates.h"
+#include "../config/PGlobals.h"
 
 struct PFloatColor
 {
@@ -50,38 +51,41 @@ class PControl
 		void moveTo(float x, float y);
 		void resize(float w, float h);
 
+		/*
+		 *  PControl objects provide support for modifying its own COLOR value in the between
+		 *	BASE COLOR and FOCUS COLOR. Derived classes should override if necessary, and should
+		 *	always call original PControl provided implementation in theirs.
+		 */
 		virtual void setColor(float r, float g, float b);
-		PFloatColor getColor() const;
+		void setColor(const PFloatColor& c);
+		void setColor(const PIntColor& c);
+		const PFloatColor& getColor() const;
 		PIntColor getRoundedColor() const;
 
-		/*
-		 *  PControl objects provide support for modifying its own TINT value in the
-		 *  range set between BASE TINT and FOCUS TINT. Derived classes should override
-		 *  the provided mutators if they contain other PControls, and should always call
-		 *  the original PControl provided implementation in theirs.
-		 */
-		virtual void setTint(float t);
-		float getTint() const;
-		Uint8 getRoundedTint() const;
+		virtual void setBaseColor(float r, float g, float b);
+		void setBaseColor(const PFloatColor& c);
+		void setBaseColor(const PIntColor& c);
+		const PFloatColor& getBaseColor() const;
+		PIntColor getRoundedBaseColor() const;
 
-		virtual void setBaseTint(float t);
-		float getBaseTint() const;
+		virtual void setFocusColor(float r, float g, float b);
+		void setFocusColor(const PFloatColor& c);
+		void setFocusColor(const PIntColor& c);
+		const PFloatColor& getFocusColor() const;
+		PIntColor getRoundedFocusColor() const;
 
-		virtual void setFocusTint(float t);
-		float getFocusTint() const;
+		virtual void setColorState(PControlColorState s);
+		virtual void setColorStyle(PControlColorStyle s);
+		PControlColorState getColorState() const;
+		PControlColorStyle getColorStyle() const;
 
-		virtual void setTintState(PControlTintState s);
-		// virtual void setTintStyle(PControlTintStyle s);
-		PControlTintState getTintState() const;
-
-		virtual void setTintDelta(float delta);
-		float getTintDelta() const;
+		virtual void setColorSpeed(float seconds);
+		float getColorSpeed() const;
 
 		/*
-		 *  PControl objects provide support for modifying its own ALPHA value in the
-		 *  range set between MIN ALPHA and MAX ALPHA. Derived classes should override
-		 *  the provided mutators if they contain other PControls, and should always call
-		 *  the original PControl provided implementation in theirs.
+		 *  PControl objects provide support for modifying its own ALPHA value in the between
+		 *	MIN ALPHA and MAX ALPHA. Derived classes should override if necessary, and should
+		 *	always call original PControl provided implementation in theirs.
 		 */
 		virtual void setAlpha(float a);
 		float getAlpha() const;
@@ -94,15 +98,16 @@ class PControl
 		float getMaxAlpha() const;
 
 		virtual void setFadeState(PControlFadeState s);
-		// virtual void setFadeStyle(PControlFadeStyle s);
+		virtual void setFadeStyle(PControlFadeStyle s);
 		PControlFadeState getFadeState() const;
+		PControlFadeStyle getFadeStyle() const;
 
-		virtual void setFadeDelta(float delta);
-		float getFadeDelta() const;
+		virtual void setFadeSpeed(float seconds);
+		float getFadeSpeed() const;
 
 		/*
 		 *  Derived classes must call PControl's provided implementation
-		 *  when implementing draw() to enable tint and alpha effects.
+		 *  when implementing draw() to enable color and alpha effects.
 		 */
 		virtual void draw(SDL_Renderer* ren) = 0;
 
@@ -120,19 +125,24 @@ class PControl
 		float maxW;
 		float maxH;
 
-		float r;
-		float g;
-		float b;
-
-		PControlTintState tintState;
-		float baseTint;
-		float focusTint;
-		float tintDelta;
-		float tint;
+		PControlColorState colorState;
+		PControlColorStyle colorStyle;
+		PFloatColor baseColor;
+		PFloatColor focusColor;
+		PFloatColor color;
+		float colorSpeed;
+		float rDelta;
+		float gDelta;
+		float bDelta;
 
 		PControlFadeState fadeState;
+		PControlFadeStyle fadeStyle;
 		float minAlpha;
 		float maxAlpha;
-		float alphaDelta;
 		float alpha;
+		float fadeSpeed;
+		float fadeDelta;
+
+		void setFadeDelta();
+		void setColorDelta();
 };
