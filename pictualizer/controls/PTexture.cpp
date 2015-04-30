@@ -2,15 +2,11 @@
 
 PTexture::PTexture(PTextureType textureType, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
+	dest({ getRoundedX(), getRoundedY(), getRoundedWidth(), getRoundedHeight() }),
 	textureType(textureType),
 	texture(nullptr)
 {
 	PTextures::requestTexture(textureType, (int) std::round(getWidth() * getHeight()), &texture);
-
-	dest.x = getRoundedX();
-	dest.y = getRoundedY();
-	dest.w = getRoundedWidth();
-	dest.h = getRoundedHeight();
 }
 
 PTexture::PTexture(float x, float y, float w, float h) : PTexture(PTextureType::NONE, x, y, w, h) {}

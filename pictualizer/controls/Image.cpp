@@ -2,14 +2,10 @@
 
 Image::Image(ImageTexture image, float x, float y, float w, float h) : 
 	PControl(x, y, w, h),
+	dest({ getRoundedX(), getRoundedY(), getRoundedWidth(), getRoundedHeight() }),
 	image(image),
 	loadQueueCount(0)
 {
-	dest.x = getRoundedX();
-	dest.y = getRoundedY();
-	dest.w = getRoundedWidth();
-	dest.h = getRoundedHeight();
-
 	mutex = SDL_CreateMutex();
 }
 
@@ -37,8 +33,7 @@ void Image::setImage(ImageTexture image)
 {
 	this->image = image;
 
-	PFloatColor color = getColor();
-	setColor(color.r, color.g, color.b);
+	setColor(getColor());
 	setAlpha(getAlpha());
 }
 

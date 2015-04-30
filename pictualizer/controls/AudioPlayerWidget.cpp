@@ -39,29 +39,29 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	seeking(false)
 {
 	// AudioPlayer control buttons - PLAY, PAUSE, STOP, PREV, NEXT.
-	playPause.setBaseTint(180);
-	playPause.setTintDelta(7);
+	playPause.setBaseColor(180, 180, 180);
+	playPause.setColorSpeed(0.225f);
 
-	stop.setBaseTint(180);
-	stop.setTintDelta(7);
+	stop.setBaseColor(180, 180, 180);
+	stop.setColorSpeed(0.225f);
 
-	prevTrack.setBaseTint(180);
-	prevTrack.setTintDelta(7);
+	prevTrack.setBaseColor(180, 180, 180);
+	prevTrack.setColorSpeed(0.225f);
 
-	nextTrack.setBaseTint(180);
-	nextTrack.setTintDelta(7);
+	nextTrack.setBaseColor(180, 180, 180);
+	nextTrack.setColorSpeed(0.225f);
 
 	// IndexWidget - supports track numbers from 0 to 999,999,999.
 	indexWidget.setIndex(0);
 	indexWidget.setMinAlpha(0);
 	indexWidget.setMaxAlpha(255);
-	indexWidget.setFadeDelta(15);
+	indexWidget.setFadeSpeed(0.225f);
 
 	// Album Art - displays album art from current track.
 	albumArt.setAlpha(0);
 	albumArt.setMinAlpha(0);
 	albumArt.setMaxAlpha(255);
-	albumArt.setFadeDelta(15);
+	albumArt.setFadeSpeed(0.225f);
 	albumArt.setX(bodyGrid[0][0].getX());
 	albumArt.setY(bodyGrid[0][0].getY());
 	albumArt.setWidth(bodyGrid[0][0].getWidth());
@@ -79,30 +79,30 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 
 	// Playlist buttons - PLAYLIST, INFO, REPEAT, SHUFFLE.
 	repeat.setButtonStyle(ButtonStyle::TOGGLE);
-	repeat.setBaseTint(160);
-	repeat.setTintDelta(7);
+	repeat.setBaseColor(180, 180, 180);
+	repeat.setColorSpeed(0.25f);
 
 	shuffle.setButtonStyle(ButtonStyle::TOGGLE);
-	shuffle.setBaseTint(160);
-	shuffle.setTintDelta(7);
+	shuffle.setBaseColor(180, 180, 180);
+	shuffle.setColorSpeed(0.25f);
 
-	playlist.setBaseTint(160);
-	playlist.setTintDelta(7);
+	playlist.setBaseColor(180, 180, 180);
+	playlist.setColorSpeed(0.25);
 
-	info.setBaseTint(160);
-	info.setTintDelta(7);
+	info.setBaseColor(180, 180, 180);
+	info.setColorSpeed(0.25f);
 	
 	// SeekBar - linked to AudioPlayer.
-	seekBar.setBaseColor(100, 100, 100);
+	seekBar.setBarColor(100, 100, 100);
 	seekBar.setTime(0);
 	seekBar.setDuration(0);
 
 	// Misc. controls - VOL buttons & labels.
-	volUp.setBaseTint(160);
-	volUp.setTintDelta(7);
+	volUp.setBaseColor(180, 180, 180);
+	volUp.setColorSpeed(0.25f);
 
-	volDown.setBaseTint(160);
-	volDown.setTintDelta(7);
+	volDown.setBaseColor(180, 180, 180);
+	volDown.setColorSpeed(0.25f);
 
 	std::stringstream ss;
 	ss << std::fixed << std::setprecision(2) << audioPlayer->getVolume();
@@ -111,11 +111,12 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	volDb.setText(ss.str() + "dB");
 
 	// Visualizations - WAVEFORM & SPECTRUM visualizers.
-	waveformVisualizer.setMsOffset(150);
+	// waveformVisualizer.setMsOffset(150);
+	waveformVisualizer.setMsOffset(330);
 	waveformVisualizer.setAlpha(0);
 	waveformVisualizer.setMinAlpha(0);
 	waveformVisualizer.setMaxAlpha(230);
-	waveformVisualizer.setFadeDelta(30);
+	waveformVisualizer.setFadeSpeed(0.25f);
 
 	spectrumVisualizer.addBin(0, 300, 0.5);
 	spectrumVisualizer.addBin(300, 900, 1.5);
@@ -124,7 +125,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	spectrumVisualizer.setDividerWidth(15);
 	spectrumVisualizer.setMinAlpha(0);
 	spectrumVisualizer.setMaxAlpha(230);
-	spectrumVisualizer.setFadeDelta(30);
+	spectrumVisualizer.setFadeSpeed(0.25f);
 
 	// Containers.
 	visualizationContainer.addElement(&spectrumVisualizer);
@@ -149,7 +150,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	playerControlGrid.setAlpha(0);
 	playerControlGrid.setMinAlpha(0);
 	playerControlGrid.setMaxAlpha(255);
-	playerControlGrid.setFadeDelta(15);
+	playerControlGrid.setFadeSpeed(0.225f);
 
 	bodyGrid[0][0].setElement(&leftControlsContainer);
 	leftControlsContainer.addElement(&playerControlGrid);
@@ -186,7 +187,7 @@ AudioPlayerWidget::AudioPlayerWidget(SDL_Renderer* ren, AudioPlayer* audioPlayer
 	setBackgroundMinAlpha(150);
 	setBackgroundAlpha(0);
 	setBackgroundMaxAlpha(200);
-	setBackgroundFadeDelta(4.5);
+	setBackgroundFadeSpeed(0.225f);
 	setBackgroundColor(0, 0, 0);
 
 	// CUHRAYZEE COLORS!!!

@@ -45,34 +45,34 @@ void PTextureButton::setColor(float r, float g, float b)
 	texture.setColor(r, g, b);
 }
 
-void PTextureButton::setTint(float t)
+void PTextureButton::setBaseColor(float r, float g, float b)
 {
-	PControl::setTint(t);
-	texture.setTint(t);
+	PControl::setBaseColor(r, g, b);
+	texture.setBaseColor(r, g, b);
 }
 
-void PTextureButton::setBaseTint(float t)
+void PTextureButton::setFocusColor(float r, float g, float b)
 {
-	PControl::setBaseTint(t);
-	texture.setBaseTint(t);
+	PControl::setFocusColor(r, g, b);
+	texture.setFocusColor(r, g, b);
 }
 
-void PTextureButton::setFocusTint(float t)
+void PTextureButton::setColorState(PControlColorState s)
 {
-	PControl::setFocusTint(t);
-	texture.setFocusTint(t);
+	PControl::setColorState(s);
+	texture.setColorState(s);
 }
 
-void PTextureButton::setTintState(PControlTintState s)
+void PTextureButton::setColorStyle(PControlColorStyle s)
 {
-	PControl::setTintState(s);
-	texture.setTintState(s);
+	PControl::setColorStyle(s);
+	texture.setColorStyle(s);
 }
 
-void PTextureButton::setTintDelta(float delta)
+void PTextureButton::setColorSpeed(float seconds)
 {
-	PControl::setTintDelta(delta);
-	texture.setTintDelta(delta);
+	PControl::setColorSpeed(seconds);
+	texture.setColorSpeed(seconds);
 }
 
 void PTextureButton::setAlpha(float a)
@@ -99,10 +99,16 @@ void PTextureButton::setFadeState(PControlFadeState s)
 	texture.setFadeState(s);
 }
 
-void PTextureButton::setFadeDelta(float delta)
+void PTextureButton::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
-	texture.setFadeDelta(delta);
+	PControl::setFadeStyle(s);
+	texture.setFadeStyle(s);
+}
+
+void PTextureButton::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+	texture.setFadeSpeed(seconds);
 }
 
 void PTextureButton::draw(SDL_Renderer* ren)
@@ -128,32 +134,32 @@ void PTextureButton::OnMouseDown(MouseDownEvent* e)
 	bool mouseOverButton = mouseInside(e->x, e->y);
 
 	if (mouseOverButton)
-		setTintState(PControlTintState::FOCUS);
+		setColorState(PControlColorState::FOCUS);
 }
 
 void PTextureButton::OnMouseUp(MouseUpEvent* e)
 {
 	if (!isToggled())
-		setTintState(PControlTintState::BASE);
+		setColorState(PControlColorState::BASE);
 }
 
 void PTextureButton::OnMouseMotion(MouseMotionEvent* e)
 {
 	bool mouseOverButton = mouseInside(e->x, e->y);
 
-	if (lMouseHeld && getTintState() != PControlTintState::FOCUS)
-		setTintState(PControlTintState::FOCUS);
+	if (lMouseHeld && getColorState() != PControlColorState::FOCUS)
+		setColorState(PControlColorState::FOCUS);
 	else if (!isToggled())
 	{
 		if (!mouseOver && mouseOverButton)
 		{
 			mouseOver = true;
-			setTintState(PControlTintState::FOCUS);
+			setColorState(PControlColorState::FOCUS);
 		}
 		else if (!mouseOverButton)
 		{
 			mouseOver = false;
-			setTintState(PControlTintState::BASE);
+			setColorState(PControlColorState::BASE);
 		}
 	}
 }

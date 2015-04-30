@@ -1,5 +1,7 @@
 #include "PWidget.h"
 
+using namespace PGlobals;
+
 PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	PControl(x, y, w, h),
 	background(x, y, w, h),
@@ -7,11 +9,11 @@ PWidget::PWidget(SDL_Renderer* ren, float x, float y, float w, float h) :
 	dragResizing(false),
 	mouseOver(false),
 	resizeState(PWidgetResizeState::SCALED),
-	minWidth(20),
-	minHeight(20)
+	minWidth(0),
+	minHeight(0)
 {
 	SDL_Surface* bgSurface = SDL_CreateRGBSurface(0, (int) std::round(w), (int) std::round(h), 32, 0, 0, 0, 0);
-	SDL_FillRect(bgSurface, NULL, SDL_MapRGBA(bgSurface->format, 255, 255, 255, 255));
+	SDL_FillRect(bgSurface, NULL, SDL_MapRGBA(bgSurface->format, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_ALPHA));
 	
 	SDL_Texture* bgTexture = SDL_CreateTextureFromSurface(ren, bgSurface);
 	SDL_SetTextureBlendMode(bgTexture, SDL_BLENDMODE_BLEND);
@@ -46,24 +48,24 @@ void PWidget::setHeight(float h)
 	background.setHeight(h);
 }
 
-float PWidget::getInnerX()
+float PWidget::getInnerX() const
 {
-	return getX() + DRAG_ZONE_DIST;
+	return getX() + PConstants::PWIDGET_DRAG_ZONE_DIST;
 }
 
-float PWidget::getInnerY()
+float PWidget::getInnerY() const
 {
-	return getY() + DRAG_ZONE_DIST;
+	return getY() + PConstants::PWIDGET_DRAG_ZONE_DIST;
 }
 
-float PWidget::getInnerWidth()
+float PWidget::getInnerWidth() const
 {
-	return getWidth() - (DRAG_ZONE_DIST * 2);
+	return getWidth() - (PConstants::PWIDGET_DRAG_ZONE_DIST * 2);
 }
 
-float PWidget::getInnerHeight()
+float PWidget::getInnerHeight() const
 {
-	return getHeight() - (DRAG_ZONE_DIST * 2);
+	return getHeight() - (PConstants::PWIDGET_DRAG_ZONE_DIST * 2);
 }
 
 void PWidget::setBackgroundAlpha(float a)
@@ -86,9 +88,44 @@ void PWidget::setBackgroundFadeState(PControlFadeState s)
 	background.setFadeState(s);
 }
 
-void PWidget::setBackgroundFadeDelta(float delta)
+void PWidget::setBackgroundFadeStyle(PControlFadeStyle s)
 {
-	background.setFadeDelta(delta);
+	background.setFadeStyle(s);
+}
+
+void PWidget::setBackgroundFadeSpeed(float seconds)
+{
+	background.setFadeSpeed(seconds);
+}
+
+float PWidget::getBackgroundAlpha() const
+{
+	return background.getAlpha();
+}
+
+float PWidget::getBackgroundMinAlpha() const
+{
+	return background.getMinAlpha();
+}
+
+float PWidget::getBackgroundMaxAlpha() const
+{
+	return background.getMaxAlpha();
+}
+
+PControlFadeState PWidget::getBackgroundFadeState() const
+{
+	return background.getFadeState();
+}
+
+PControlFadeStyle PWidget::getBackgroundFadeStyle() const
+{
+	return background.getFadeStyle();
+}
+
+float PWidget::getBackgroundFadeSpeed() const
+{
+	return background.getFadeSpeed();
 }
 
 void PWidget::setBackgroundColor(float r, float g, float b)
@@ -96,9 +133,24 @@ void PWidget::setBackgroundColor(float r, float g, float b)
 	background.setColor(r, g, b);
 }
 
-PFloatColor PWidget::getBackgroundColor()
+void PWidget::setBackgroundColor(const PFloatColor& c)
+{
+	background.setColor(c);
+}
+
+void PWidget::setBackgroundColor(const PIntColor& c)
+{
+	background.setColor(c);
+}
+
+const PFloatColor& PWidget::getBackgroundColor() const
 {
 	return background.getColor();
+}
+
+PIntColor PWidget::getRoundedBackgroundColor() const
+{
+	return background.getRoundedColor();
 }
 
 void PWidget::setResizeState(PWidgetResizeState s)
@@ -186,21 +238,21 @@ bool PWidget::widgetIntersects(float x, float y, float w, float h)
 
 void PWidget::setDragCursor(int x, int y)
 {
-	if ((x < getRoundedX() + DRAG_ZONE_DIST && x >= getRoundedX()) && (y < getRoundedY() + DRAG_ZONE_DIST && y >= getRoundedY()))
+	if ((x < getRoundedX() + PConstants::PWIDGET_DRAG_ZONE_DIST && x >= getRoundedX()) && (y < getRoundedY() + PConstants::PWIDGET_DRAG_ZONE_DIST && y >= getRoundedY()))
 		SDL_SetCursor(PCursors::SIZENW);
-	else if ((x > getRoundedX() + getRoundedWidth() - DRAG_ZONE_DIST && x <= getRoundedX() + getRoundedWidth()) && (y < getRoundedY() + DRAG_ZONE_DIST && y >= getRoundedY()))
+	else if ((x > getRoundedX() + getRoundedWidth() - PConstants::PWIDGET_DRAG_ZONE_DIST && x <= getRoundedX() + getRoundedWidth()) && (y < getRoundedY() + PConstants::PWIDGET_DRAG_ZONE_DIST && y >= getRoundedY()))
 		SDL_SetCursor(PCursors::SIZENE);
-	else if ((x < getRoundedX() + DRAG_ZONE_DIST && y >= getRoundedY()) && (y > getRoundedY() + getRoundedHeight() - DRAG_ZONE_DIST && y <= getRoundedY() + getRoundedHeight()))
+	else if ((x < getRoundedX() + PConstants::PWIDGET_DRAG_ZONE_DIST && y >= getRoundedY()) && (y > getRoundedY() + getRoundedHeight() - PConstants::PWIDGET_DRAG_ZONE_DIST && y <= getRoundedY() + getRoundedHeight()))
 		SDL_SetCursor(PCursors::SIZESW);
-	else if ((x > getRoundedX() + getRoundedWidth() - DRAG_ZONE_DIST && x <= getRoundedX() + getRoundedWidth()) && (y > getRoundedY() + getRoundedHeight() - DRAG_ZONE_DIST && y <= getRoundedY() + getRoundedHeight()))
+	else if ((x > getRoundedX() + getRoundedWidth() - PConstants::PWIDGET_DRAG_ZONE_DIST && x <= getRoundedX() + getRoundedWidth()) && (y > getRoundedY() + getRoundedHeight() - PConstants::PWIDGET_DRAG_ZONE_DIST && y <= getRoundedY() + getRoundedHeight()))
 		SDL_SetCursor(PCursors::SIZESE);
-	else if (y < getRoundedY() + DRAG_ZONE_DIST && y >= getRoundedY())
+	else if (y < getRoundedY() + PConstants::PWIDGET_DRAG_ZONE_DIST && y >= getRoundedY())
 		SDL_SetCursor(PCursors::SIZEN);
-	else if (y > getRoundedY() + getRoundedHeight() - DRAG_ZONE_DIST && y <= getRoundedY() + getRoundedHeight())
+	else if (y > getRoundedY() + getRoundedHeight() - PConstants::PWIDGET_DRAG_ZONE_DIST && y <= getRoundedY() + getRoundedHeight())
 		SDL_SetCursor(PCursors::SIZES);
-	else if (x < getRoundedX() + DRAG_ZONE_DIST && x >= getRoundedX())
+	else if (x < getRoundedX() + PConstants::PWIDGET_DRAG_ZONE_DIST && x >= getRoundedX())
 		SDL_SetCursor(PCursors::SIZEW);
-	else if (x > getRoundedX() + getRoundedWidth() - DRAG_ZONE_DIST && x <= getRoundedX() + getRoundedWidth())
+	else if (x > getRoundedX() + getRoundedWidth() - PConstants::PWIDGET_DRAG_ZONE_DIST && x <= getRoundedX() + getRoundedWidth())
 		SDL_SetCursor(PCursors::SIZEE);
 	else
 		SDL_SetCursor(PCursors::ARROW);
@@ -215,8 +267,8 @@ void PWidget::getDragValues(MouseMotionEvent* e, float* newX, float* newY, float
 		if (resizeState == PWidgetResizeState::SCALED)
 		{
 			float whratio = getWidth() / getHeight();
-			float xrel = e->xrel * SMOOTH_RESIZE_SCALE;
-			float yrel = e->yrel * SMOOTH_RESIZE_SCALE;
+			float xrel = e->xrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
+			float yrel = e->yrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
 
 			// Apply x movement
 			*newX = getX() + xrel;
@@ -243,8 +295,8 @@ void PWidget::getDragValues(MouseMotionEvent* e, float* newX, float* newY, float
 		if (resizeState == PWidgetResizeState::SCALED)
 		{
 			float whratio = getWidth() / getHeight();
-			float xrel = e->xrel * SMOOTH_RESIZE_SCALE;
-			float yrel = e->yrel * SMOOTH_RESIZE_SCALE;
+			float xrel = e->xrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
+			float yrel = e->yrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
 
 			*newX = getX();
 
@@ -271,8 +323,8 @@ void PWidget::getDragValues(MouseMotionEvent* e, float* newX, float* newY, float
 		if (resizeState == PWidgetResizeState::SCALED)
 		{
 			float whratio = getWidth() / getHeight();
-			float xrel = e->xrel * SMOOTH_RESIZE_SCALE;
-			float yrel = e->yrel * SMOOTH_RESIZE_SCALE;
+			float xrel = e->xrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
+			float yrel = e->yrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
 
 			*newY = getY();
 
@@ -299,8 +351,8 @@ void PWidget::getDragValues(MouseMotionEvent* e, float* newX, float* newY, float
 		if (resizeState == PWidgetResizeState::SCALED)
 		{
 			float whratio = getWidth() / getHeight();
-			float xrel = e->xrel * SMOOTH_RESIZE_SCALE;
-			float yrel = e->yrel * SMOOTH_RESIZE_SCALE;
+			float xrel = e->xrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
+			float yrel = e->yrel * PConstants::PWIDGET_SMOOTH_RESIZE_SCALE;
 
 			*newX = getX();
 			*newY = getY();

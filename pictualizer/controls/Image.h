@@ -66,6 +66,7 @@ class Image : public PControl, public EventObserver
 		void setWidth(float w);
 		void setHeight(float h);
 
+		using PControl::setColor;
 		void setColor(float r, float g, float b);
 		void setAlpha(float a);
 

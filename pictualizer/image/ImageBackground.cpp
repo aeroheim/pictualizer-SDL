@@ -1,5 +1,7 @@
 #include "ImageBackground.h"
 
+using namespace PGlobals;
+
 ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : 
 	ren(ren), 
 	imageCamera(ww, wh), 
@@ -17,23 +19,24 @@ ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) :
 	background = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, ww, wh);
 	SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
 
-	image.setMaxAlpha(MAX_ALPHA);
-	image.setMinAlpha(MIN_ALPHA);
-	image.setAlpha(MAX_ALPHA);
-	image.setFadeDelta(ROAMING_FADE_DELTA);
-	tempImage.setMaxAlpha(MAX_ALPHA);
-	tempImage.setMinAlpha(MIN_ALPHA);
-	tempImage.setAlpha(MAX_ALPHA);
-	tempImage.setFadeDelta(ROAMING_FADE_DELTA);
+	image.setMaxAlpha(PConstants::IMGBG_MAX_ALPHA);
+	image.setMinAlpha(PConstants::IMGBG_MIN_ALPHA);
+	image.setAlpha(image.getMaxAlpha());
+	image.setFadeSpeed(PConstants::IMGBG_ROAM_FADE_SPEED);
+
+	tempImage.setMaxAlpha(PConstants::IMGBG_MAX_ALPHA);
+	tempImage.setMinAlpha(PConstants::IMGBG_MIN_ALPHA);
+	tempImage.setAlpha(PConstants::IMGBG_MAX_ALPHA);
+	tempImage.setFadeSpeed(PConstants::IMGBG_ROAM_FADE_SPEED);
 	tempAlpha = 0;
 
 	fadeStyle = ImageFadeStyle::ALPHA;
 
 	subscribeTo(&image);
 	addSubscriber(&imageCamera);
-	registerKey(ACCESS_KEY);
+	registerKey(PVariables::IMGBG_ACCESS_KEY);
 
-	imageCamera.setPanSpeed(PAN_SPEED);
+	imageCamera.setPanSpeed(PConstants::IMGBG_PAN_SPEED);
 	imageCamera.setState(ImageCameraState::ROAMING);
 
 	calculateFadeDist(imageCamera.getPanSpeed());
@@ -190,11 +193,11 @@ void ImageBackground::handleEvent(Event* e)
 		{
 			setKeyReleased(keyUpEvent->key);
 
-			if (keyHeld(ACCESS_KEY))
+			if (keyHeld(PVariables::IMGBG_ACCESS_KEY))
 			{
-				if (keyUpEvent->key == PREV_IMG_KEY)
+				if (keyUpEvent->key == PVariables::IMGBG_PREV_IMG_KEY)
 					prevImage();
-				else if (keyUpEvent->key == NEXT_IMG_KEY)
+				else if (keyUpEvent->key == PVariables::IMGBG_NEXT_IMG_KEY)
 					nextImage();
 			}
 		}
@@ -203,7 +206,7 @@ void ImageBackground::handleEvent(Event* e)
 
 void ImageBackground::calculateFadeDist(float panSpeed)
 {
-	int framesToFade = (int) std::round(image.getMaxAlpha() / image.getFadeDelta());
+	int framesToFade = (int) std::round(PConstants::P_FRAMERATE * image.getFadeSpeed());
 	fadeDist = (int) std::round(framesToFade * panSpeed);
 }
 

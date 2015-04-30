@@ -159,84 +159,92 @@ void GridPanel::setColor(float r, float g, float b)
 		row.setColor(r, g, b);
 }
 
-void GridPanel::setTint(float t)
+void GridPanel::setBaseColor(float r, float g, float b)
 {
-	PControl::setTint(t);
+	PControl::setBaseColor(r, g, b);
 
 	for (GridPanelRow& row : rows)
-		row.setTint(t);
+		row.setBaseColor(r, g, b);
 }
 
-void GridPanel::setBaseTint(float t)
+void GridPanel::setFocusColor(float r, float g, float b)
 {
-	PControl::setBaseTint(t);
+	PControl::setFocusColor(r, g, b);
 
 	for (GridPanelRow& row : rows)
-		row.setBaseTint(t);
+		row.setFocusColor(r, g, b);
 }
 
-void GridPanel::setFocusTint(float t)
+void GridPanel::setColorState(PControlColorState s)
 {
-	PControl::setFocusTint(t);
+	PControl::setColorState(s);
 
-	for (GridPanelRow& row : rows)
-		row.setFocusTint(t);
+	for (GridPanelRow& r : rows)
+		r.setColorState(s);
 }
 
-void GridPanel::setTintState(PControlTintState s)
+void GridPanel::setColorStyle(PControlColorStyle s)
 {
-	PControl::setTintState(s);
+	PControl::setColorStyle(s);
 
-	for (GridPanelRow& row : rows)
-		row.setTintState(s);
+	for (GridPanelRow& r : rows)
+		r.setColorStyle(s);
 }
 
-void GridPanel::setTintDelta(float delta)
+void GridPanel::setColorSpeed(float seconds)
 {
-	PControl::setTintDelta(delta);
+	PControl::setColorSpeed(seconds);
 
-	for (GridPanelRow& row : rows)
-		row.setTintDelta(delta);
+	for (GridPanelRow& r : rows)
+		r.setColorSpeed(seconds);
 }
 
 void GridPanel::setAlpha(float a)
 {
 	PControl::setAlpha(a);
 
-	for (GridPanelRow& row : rows)
-		row.setAlpha(a);
+	for (GridPanelRow& r : rows)
+		r.setAlpha(a);
 }
 
 void GridPanel::setMinAlpha(float a)
 {
 	PControl::setMinAlpha(a);
 
-	for (GridPanelRow& row : rows)
-		row.setMinAlpha(a);
+	for (GridPanelRow& r : rows)
+		r.setMinAlpha(a);
 }
 
 void GridPanel::setMaxAlpha(float a)
 {
 	PControl::setMaxAlpha(a);
 
-	for (GridPanelRow& row : rows)
-		row.setMaxAlpha(a);
+	for (GridPanelRow& r : rows)
+		r.setMaxAlpha(a);
 }
 
 void GridPanel::setFadeState(PControlFadeState s)
 {
 	PControl::setFadeState(s);
 
-	for (GridPanelRow& row : rows)
-		row.setFadeState(s);
+	for (GridPanelRow& r : rows)
+		r.setFadeState(s);
 }
 
-void GridPanel::setFadeDelta(float delta)
+void GridPanel::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
+	PControl::setFadeStyle(s);
 
-	for (GridPanelRow& row : rows)
-		row.setFadeDelta(delta);
+	for (GridPanelRow& r : rows)
+		r.setFadeStyle(s);
+}
+
+void GridPanel::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+
+	for (GridPanelRow& r : rows)
+		r.setFadeSpeed(seconds);
 }
 
 void GridPanel::draw(SDL_Renderer* ren)

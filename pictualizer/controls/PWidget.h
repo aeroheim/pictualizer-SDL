@@ -15,18 +15,29 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 		virtual void setWidth(float w);
 		virtual void setHeight(float h);
 
-		float getInnerX();
-		float getInnerY();
-		float getInnerWidth();
-		float getInnerHeight();
+		float getInnerX() const;
+		float getInnerY() const;
+		float getInnerWidth() const;
+		float getInnerHeight() const;
 
 		void setBackgroundAlpha(float a);
 		void setBackgroundMinAlpha(float a);
 		void setBackgroundMaxAlpha(float a);
 		void setBackgroundFadeState(PControlFadeState s);
-		void setBackgroundFadeDelta(float delta);
+		void setBackgroundFadeStyle(PControlFadeStyle s);
+		void setBackgroundFadeSpeed(float seconds);
+		float getBackgroundAlpha() const;
+		float getBackgroundMinAlpha() const;
+		float getBackgroundMaxAlpha() const;
+		PControlFadeState getBackgroundFadeState() const;
+		PControlFadeStyle getBackgroundFadeStyle() const;
+		float getBackgroundFadeSpeed() const;
+
 		void setBackgroundColor(float r, float g, float b);
-		PFloatColor getBackgroundColor();
+		void setBackgroundColor(const PFloatColor& c);
+		void setBackgroundColor(const PIntColor& c);
+		const PFloatColor& getBackgroundColor() const;
+		PIntColor getRoundedBackgroundColor() const;
 
 		void setResizeState(PWidgetResizeState s);
 		PWidgetResizeState getResizeState();
@@ -42,9 +53,7 @@ class PWidget : public PControl, public EventSubscriber, public EventObserver, p
 	private:
 		Image background;
 
-		const int DRAG_ZONE_DIST = 12;
 		PWidgetResizeState resizeState;
-		const float SMOOTH_RESIZE_SCALE = 0.50f;
 		bool mouseOver;
 		bool dragResizing;
 		bool dragging;

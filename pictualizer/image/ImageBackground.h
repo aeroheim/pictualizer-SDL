@@ -8,7 +8,7 @@
 #include "../io/EventSubscriber.h"
 #include "../util/PUtils.h"
 
-class ImageBackground : public EventSubscriber, public EventObserver, public InputListener
+class ImageBackground : public EventSubscriber, public EventObserver, public InputListener 
 {
 	public:
 		ImageBackground(SDL_Renderer* ren, int ww, int wh);
@@ -35,21 +35,11 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		int imageIndex;
 		int iw;
 		int ih;
-
-		SDL_Keycode ACCESS_KEY = SDLK_LCTRL;
-		SDL_Keycode PREV_IMG_KEY = SDLK_LEFT;
-		SDL_Keycode NEXT_IMG_KEY = SDLK_RIGHT;
 		
 		ImageBackgroundState state;
 		int slideshowTimer;
 		int frameCount;
 
-		const float PAN_SPEED = 0.2f;
-
-		const float MAX_ALPHA = 50;
-		const float MIN_ALPHA = 0;
-		const float ROAMING_FADE_DELTA = 3;
-		const float MANUAL_FADE_DELTA = 12;
 		ImageFadeStyle fadeStyle;
 		float tempAlpha;
 		int fadeDist;

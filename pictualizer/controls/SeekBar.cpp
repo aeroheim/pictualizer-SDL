@@ -79,20 +79,21 @@ void SeekBar::setHeight(float h)
 	bodyGrid.setHeight(h);
 }
 
+void SeekBar::setColor(float r, float g, float b)
+{
+	PControl::setColor(r, g, b);
+	setLabelColor(r, g, b);
+	setBarColor(r, g, b);
+}
+
 void SeekBar::setLabelColor(float r, float g, float b)
 {
 	timeLabel.setColor(r, g, b);
 }
 
-PFloatColor SeekBar::getLabelColor()
+void SeekBar::setBarColor(float r, float g, float b)
 {
-	return timeLabel.getColor();
-}
-
-void SeekBar::setBaseColor(float r, float g, float b)
-{
-	PControl::setColor(r, g, b);
-	bar.setBaseColor(r, g, b);
+	bar.setBarColor(r, g, b);
 }
 
 void SeekBar::setProgressColor(float r, float g, float b)
@@ -100,44 +101,34 @@ void SeekBar::setProgressColor(float r, float g, float b)
 	bar.setProgressColor(r, g, b);
 }
 
-PFloatColor SeekBar::getProgressColor()
+const PFloatColor& SeekBar::getLabelColor()
+{
+	return timeLabel.getColor();
+}
+
+PIntColor SeekBar::getRoundedLabelColor()
+{
+	return timeLabel.getRoundedColor();
+}
+
+const PFloatColor& SeekBar::getBarColor()
+{
+	return bar.getBarColor();
+}
+
+PIntColor SeekBar::getRoundedBarColor()
+{
+	return bar.getRoundedBarColor();
+}
+
+const PFloatColor& SeekBar::getProgressColor()
 {
 	return bar.getProgressColor();
 }
 
-void SeekBar::setColor(float r, float g, float b)
+PIntColor SeekBar::getRoundedProgressColor()
 {
-	setBaseColor(r, g, b);
-}
-
-void SeekBar::setTint(float t)
-{
-	PControl::setTint(t);
-	bodyGrid.setTint(t);
-}
-
-void SeekBar::setBaseTint(float t)
-{
-	PControl::setBaseTint(t);
-	bodyGrid.setBaseTint(t);
-}
-
-void SeekBar::setFocusTint(float t)
-{
-	PControl::setFocusTint(t);
-	bodyGrid.setFocusTint(t);
-}
-
-void SeekBar::setTintState(PControlTintState s)
-{
-	PControl::setTintState(s);
-	bodyGrid.setTintState(s);
-}
-
-void SeekBar::setTintDelta(float delta)
-{
-	PControl::setTintDelta(delta);
-	bodyGrid.setTintDelta(delta);
+	return bar.getRoundedProgressColor();
 }
 
 void SeekBar::setAlpha(float a)
@@ -164,10 +155,16 @@ void SeekBar::setFadeState(PControlFadeState s)
 	bodyGrid.setFadeState(s);
 }
 
-void SeekBar::setFadeDelta(float delta)
+void SeekBar::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
-	bodyGrid.setFadeDelta(delta);
+	PControl::setFadeStyle(s);
+	bodyGrid.setFadeStyle(s);
+}
+
+void SeekBar::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+	bodyGrid.setFadeSpeed(seconds);
 }
 
 void SeekBar::draw(SDL_Renderer* ren)

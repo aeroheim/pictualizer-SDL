@@ -137,44 +137,44 @@ void IndexWidget::setColor(float r, float g, float b)
 		digitLabel.setColor(r, g, b);
 }
 
-void IndexWidget::setTint(float t)
+void IndexWidget::setBaseColor(float r, float g, float b)
 {
-	PControl::setTint(t);
+	PControl::setBaseColor(r, g, b);
 
 	for (Label& digitLabel : digitLabels)
-		digitLabel.setTint(t);
+		digitLabel.setBaseColor(r, g, b);
 }
 
-void IndexWidget::setBaseTint(float t)
+void IndexWidget::setFocusColor(float r, float g, float b)
 {
-	PControl::setBaseTint(t);
+	PControl::setFocusColor(r, g, b);
 
 	for (Label& digitLabel : digitLabels)
-		digitLabel.setBaseTint(t);
+		digitLabel.setFocusColor(r, g, b);
 }
 
-void IndexWidget::setFocusTint(float t)
+void IndexWidget::setColorState(PControlColorState s)
 {
-	PControl::setBaseTint(t);
+	PControl::setColorState(s);
 
 	for (Label& digitLabel : digitLabels)
-		digitLabel.setFocusTint(t);
+		digitLabel.setColorState(s);
 }
 
-void IndexWidget::setTintState(PControlTintState s)
+void IndexWidget::setColorStyle(PControlColorStyle s)
 {
-	PControl::setTintState(s);
+	PControl::setColorStyle(s);
 
 	for (Label& digitLabel : digitLabels)
-		digitLabel.setTintState(s);
+		digitLabel.setColorStyle(s);
 }
 
-void IndexWidget::setTintDelta(float delta)
+void IndexWidget::setColorSpeed(float seconds)
 {
-	PControl::setTintDelta(delta);
+	PControl::setColorSpeed(seconds);
 
 	for (Label& digitLabel : digitLabels)
-		digitLabel.setTintDelta(delta);
+		digitLabel.setColorSpeed(seconds);
 }
 
 void IndexWidget::setAlpha(float a)
@@ -209,12 +209,20 @@ void IndexWidget::setFadeState(PControlFadeState s)
 		digitLabel.setFadeState(s);
 }
 
-void IndexWidget::setFadeDelta(float delta)
+void IndexWidget::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
+	PControl::setFadeStyle(s);
 
 	for (Label& digitLabel : digitLabels)
-		digitLabel.setFadeDelta(delta);
+		digitLabel.setFadeStyle(s);
+}
+
+void IndexWidget::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+
+	for (Label& digitLabel : digitLabels)
+		digitLabel.setFadeSpeed(seconds);
 }
 
 void IndexWidget::draw(SDL_Renderer* ren)

@@ -1,9 +1,9 @@
 #include "GridPanelCell.h"
 
-GridPanelCell::GridPanelCell(float x, float y, float w, float h) : PControl(x, y, w, h)
+GridPanelCell::GridPanelCell(float x, float y, float w, float h) : 
+	PControl(x, y, w, h),
+	element(nullptr)
 {
-	element = nullptr;
-
 	for (int i = 0; i < 4; i++)
 		padding[i] = 0;
 }
@@ -108,44 +108,44 @@ void GridPanelCell::setColor(float r, float g, float b)
 		element->setColor(r, g, b);
 }
 
-void GridPanelCell::setTint(float t)
+void GridPanelCell::setBaseColor(float r, float g, float b)
 {
-	PControl::setTint(t);
+	PControl::setBaseColor(r, g, b);
 
 	if (element)
-		element->setTint(t);
+		element->setBaseColor(r, g, b);
 }
 
-void GridPanelCell::setBaseTint(float t)
+void GridPanelCell::setFocusColor(float r, float g, float b)
 {
-	PControl::setBaseTint(t);
+	PControl::setFocusColor(r, g, b);
 
 	if (element)
-		element->setBaseTint(t);
+		element->setFocusColor(r, g, b);
 }
 
-void GridPanelCell::setFocusTint(float t)
+void GridPanelCell::setColorState(PControlColorState s)
 {
-	PControl::setFocusTint(t);
+	PControl::setColorState(s);
 
 	if (element)
-		element->setFocusTint(t);
+		element->setColorState(s);
 }
 
-void GridPanelCell::setTintState(PControlTintState s)
+void GridPanelCell::setColorStyle(PControlColorStyle s)
 {
-	PControl::setTintState(s);
+	PControl::setColorStyle(s);
 
 	if (element)
-		element->setTintState(s);
+		element->setColorStyle(s);
 }
 
-void GridPanelCell::setTintDelta(float delta)
+void GridPanelCell::setColorSpeed(float seconds)
 {
-	PControl::setTintDelta(delta);
+	PControl::setColorSpeed(seconds);
 
 	if (element)
-		element->setTintDelta(delta);
+		element->setColorSpeed(seconds);
 }
 
 void GridPanelCell::setAlpha(float a)
@@ -180,12 +180,20 @@ void GridPanelCell::setFadeState(PControlFadeState s)
 		element->setFadeState(s);
 }
 
-void GridPanelCell::setFadeDelta(float delta)
+void GridPanelCell::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
+	PControl::setFadeStyle(s);
 
 	if (element)
-		element->setFadeDelta(delta);
+		element->setFadeStyle(s);
+}
+
+void GridPanelCell::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+
+	if (element)
+		element->setFadeSpeed(seconds);
 }
 
 void GridPanelCell::draw(SDL_Renderer* ren)
@@ -195,7 +203,3 @@ void GridPanelCell::draw(SDL_Renderer* ren)
 
 	PControl::draw(ren);
 }
-
-
-
-

@@ -111,44 +111,44 @@ void GridPanelRow::setColor(float r, float g, float b)
 		c.setColor(r, g, b);
 }
 
-void GridPanelRow::setTint(float t)
+void GridPanelRow::setBaseColor(float r, float g, float b)
 {
-	PControl::setTint(t);
+	PControl::setBaseColor(r, g, b);
 
 	for (GridPanelCell& c : cells)
-		c.setTint(t);
+		c.setBaseColor(r, g, b);
 }
 
-void GridPanelRow::setBaseTint(float t)
+void GridPanelRow::setFocusColor(float r, float g, float b)
 {
-	PControl::setBaseTint(t);
+	PControl::setFocusColor(r, g, b);
 
 	for (GridPanelCell& c : cells)
-		c.setBaseTint(t);
+		c.setFocusColor(r, g, b);
 }
 
-void GridPanelRow::setFocusTint(float t)
+void GridPanelRow::setColorState(PControlColorState s)
 {
-	PControl::setFocusTint(t);
+	PControl::setColorState(s);
 
 	for (GridPanelCell& c : cells)
-		c.setFocusTint(t);
+		c.setColorState(s);
 }
 
-void GridPanelRow::setTintState(PControlTintState s)
+void GridPanelRow::setColorStyle(PControlColorStyle s)
 {
-	PControl::setTintState(s);
+	PControl::setColorStyle(s);
 
 	for (GridPanelCell& c : cells)
-		c.setTintState(s);
+		c.setColorStyle(s);
 }
 
-void GridPanelRow::setTintDelta(float delta)
+void GridPanelRow::setColorSpeed(float seconds)
 {
-	PControl::setTintDelta(delta);
+	PControl::setColorSpeed(seconds);
 
 	for (GridPanelCell& c : cells)
-		c.setTintDelta(delta);
+		c.setColorSpeed(seconds);
 }
 
 void GridPanelRow::setAlpha(float a)
@@ -183,12 +183,20 @@ void GridPanelRow::setFadeState(PControlFadeState s)
 		c.setFadeState(s);
 }
 
-void GridPanelRow::setFadeDelta(float delta)
+void GridPanelRow::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
+	PControl::setFadeStyle(s);
 
 	for (GridPanelCell& c : cells)
-		c.setFadeDelta(delta);
+		c.setFadeStyle(s);
+}
+
+void GridPanelRow::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+
+	for (GridPanelCell& c : cells)
+		c.setFadeSpeed(seconds);
 }
 
 void GridPanelRow::draw(SDL_Renderer* ren)

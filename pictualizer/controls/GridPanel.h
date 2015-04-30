@@ -27,18 +27,18 @@ class GridPanel : public PControl, public EventSubscriber
 		int getNumRows();
 
 		void setColor(float r, float g, float b);
-
-		void setTint(float t);
-		void setBaseTint(float t);
-		void setFocusTint(float t);
-		void setTintState(PControlTintState s);
-		void setTintDelta(float delta);
+		void setBaseColor(float r, float g, float b);
+		void setFocusColor(float r, float g, float b);
+		void setColorState(PControlColorState s);
+		void setColorStyle(PControlColorStyle s);
+		void setColorSpeed(float seconds);
 
 		void setAlpha(float a);
 		void setMinAlpha(float a);
 		void setMaxAlpha(float a);
 		void setFadeState(PControlFadeState s);
-		void setFadeDelta(float delta);
+		void setFadeStyle(PControlFadeStyle s);
+		void setFadeSpeed(float speed);
 
 		void draw(SDL_Renderer* ren);
 

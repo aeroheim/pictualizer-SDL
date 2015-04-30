@@ -1,8 +1,12 @@
 #include "Label.h"
 
+using namespace PGlobals;
+
 Label::Label(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) : 
-	ren(ren),
 	PControl(x, y, w, h),
+	ren(ren),
+	dest({ getRoundedX(), getRoundedY(), getRoundedWidth(), getRoundedHeight() }),
+	view({ getRoundedX(), getRoundedY(), getRoundedWidth(), getRoundedHeight() }),
 	fontType(fontType),
 	font(nullptr),
 	clipState(LabelClipState::CLIP),
@@ -13,21 +17,6 @@ Label::Label(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, f
 {
 	PFonts::requestFont(fontType, &font, getRoundedHeight(), fontType);
 	resetPanning();
-
-	color.r = 255;
-	color.g = 255;
-	color.b = 255;
-	color.a = SDL_ALPHA_OPAQUE;
-
-	dest.x = getRoundedX();
-	dest.y = getRoundedY();
-	dest.w = getRoundedWidth();
-	dest.h = getRoundedHeight();
-
-	view.x = 0;
-	view.y = 0;
-	view.w = 0;
-	view.h = 0;
 }
 
 Label::~Label()
@@ -44,7 +33,6 @@ Label::Label(const Label& other) :
 	fontType(other.fontType),
 	font(other.font),
 	texture(nullptr),
-	color(other.color),
 	view(other.view),
 	dest(other.dest),
 	text(other.text),
@@ -57,8 +45,6 @@ Label::Label(const Label& other) :
 	textIsPannable(other.textIsPannable),
 	panStopped(other.panStopped)
 {
-	// TODO: refactor to use PControl copy constructor
-
 	// The reference count to the font must be incremented everytime a label is copied.
 	PFonts::incRefCount(fontType, font);
 
@@ -70,14 +56,13 @@ Label::Label(const Label& other) :
 
 Label& Label::operator=(const Label& other)
 {
-	// TODO: refactor to use PControl assignment operator
+	// Call our overridden functions.
 	setX(((PControl&) other).getX());
 	setY(((PControl&) other).getY());
 	setWidth(((PControl&) other).getWidth());
 	setHeight(((PControl&) other).getHeight());
 
 	ren = other.ren;
-	color = other.color;
 	view = other.view;
 	dest = other.dest;
 	text = other.text;
@@ -355,8 +340,10 @@ void Label::resetView()
 
 void Label::getTextTexture(SDL_Renderer* ren)
 {
+	SDL_Color textColor { PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_ALPHA };
+
 	// Use UTF8 for unicode support and blended rendering for optimal text quality.
-	SDL_Surface* surface = TTF_RenderUNICODE_Blended(font, reinterpret_cast<const Uint16*>(text.c_str()), color);
+	SDL_Surface* surface = TTF_RenderUNICODE_Blended(font, reinterpret_cast<const Uint16*>(text.c_str()), textColor);
 
 	if (!surface)
 		throw "Label::getTextTexture() failed to load font surface.\n";
@@ -378,9 +365,7 @@ void Label::getTextTexture(SDL_Renderer* ren)
 
 	SDL_FreeSurface(surface);
 
-	// Restore previous color & alpha values
-	PFloatColor color = getColor();
-
-	setColor(color.r, color.g, color.b);
+	// Set stored color & alpha values to the new texture.
+	setColor(getColor());
 	setAlpha(getAlpha());
 }

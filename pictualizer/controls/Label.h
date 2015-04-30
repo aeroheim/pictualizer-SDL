@@ -36,6 +36,7 @@ class Label : public PControl
 		void setAlignState(LabelAlignState s);
 		LabelAlignState getAlignState();
 
+		using PControl::setColor;
 		void setColor(float r, float g, float b);
 		void setAlpha(float a);
 
@@ -46,7 +47,6 @@ class Label : public PControl
 		PFontType fontType;
 		TTF_Font* font;
 		SDL_Texture* texture;
-		SDL_Color color;
 		SDL_Rect view;
 		SDL_Rect dest;
 

@@ -87,7 +87,12 @@ void ProgressBar::setHeight(float h)
 	progressBar.setHeight(h);
 }
 
-void ProgressBar::setBaseColor(float r, float g, float b)
+void ProgressBar::setColor(float r, float g, float b)
+{
+	setBarColor(r, g, b);
+}
+
+void ProgressBar::setBarColor(float r, float g, float b)
 {
 	PControl::setColor(r, g, b);
 	baseBar.setColor(r, g, b);
@@ -98,50 +103,26 @@ void ProgressBar::setProgressColor(float r, float g, float b)
 	progressBar.setColor(r, g, b);
 }
 
-PFloatColor ProgressBar::getProgressColor()
+const PFloatColor& ProgressBar::getBarColor() const
+{
+	return baseBar.getColor();
+}
+
+PIntColor ProgressBar::getRoundedBarColor() const
+{
+	return baseBar.getRoundedColor();
+}
+
+const PFloatColor& ProgressBar::getProgressColor() const
 {
 	return progressBar.getColor();
 }
 
-void ProgressBar::setColor(float r, float g, float b)
+PIntColor ProgressBar::getRoundedProgressColor() const
 {
-	setBaseColor(r, g, b);
+	return progressBar.getRoundedColor();
 }
 
-void ProgressBar::setTint(float t)
-{
-	PControl::setTint(t);
-	baseBar.setTint(t);
-	progressBar.setTint(t);
-}
-
-void ProgressBar::setBaseTint(float t)
-{
-	PControl::setBaseTint(t);
-	baseBar.setBaseTint(t);
-	progressBar.setBaseTint(t);
-}
-
-void ProgressBar::setFocusTint(float t)
-{
-	PControl::setFocusTint(t);
-	baseBar.setFocusTint(t);
-	progressBar.setFocusTint(t);
-}
-
-void ProgressBar::setTintState(PControlTintState s)
-{
-	PControl::setTintState(s);
-	baseBar.setTintState(s);
-	progressBar.setTintState(s);
-}
-
-void ProgressBar::setTintDelta(float delta)
-{
-	PControl::setTintDelta(delta);
-	baseBar.setTintDelta(delta);
-	progressBar.setTintDelta(delta);
-}
 
 void ProgressBar::setAlpha(float a)
 {
@@ -171,11 +152,18 @@ void ProgressBar::setFadeState(PControlFadeState s)
 	progressBar.setFadeState(s);
 }
 
-void ProgressBar::setFadeDelta(float delta)
+void ProgressBar::setFadeStyle(PControlFadeStyle s)
 {
-	PControl::setFadeDelta(delta);
-	baseBar.setFadeDelta(delta);
-	progressBar.setFadeDelta(delta);
+	PControl::setFadeStyle(s);
+	baseBar.setFadeStyle(s);
+	progressBar.setFadeStyle(s);
+}
+
+void ProgressBar::setFadeSpeed(float seconds)
+{
+	PControl::setFadeSpeed(seconds);
+	baseBar.setFadeSpeed(seconds);
+	progressBar.setFadeSpeed(seconds);
 }
 
 void ProgressBar::draw(SDL_Renderer* ren)

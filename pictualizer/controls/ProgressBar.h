@@ -20,22 +20,20 @@ class ProgressBar : public PControl
 		void setWidth(float w);
 		void setHeight(float h);
 		
-		void setBaseColor(float r, float g, float b);
-		void setProgressColor(float r, float g, float b);
-		PFloatColor getProgressColor();
 		void setColor(float r, float g, float b);
-
-		void setTint(float t);
-		void setBaseTint(float t);
-		void setFocusTint(float t);
-		void setTintState(PControlTintState s);
-		void setTintDelta(float delta);
+		void setBarColor(float r, float g, float b);
+		void setProgressColor(float r, float g, float b);
+		const PFloatColor& getBarColor() const;
+		PIntColor getRoundedBarColor() const;
+		const PFloatColor& getProgressColor() const;
+		PIntColor getRoundedProgressColor() const;
 
 		void setAlpha(float a);
 		void setMinAlpha(float a);
 		void setMaxAlpha(float a);
 		void setFadeState(PControlFadeState s);
-		void setFadeDelta(float delta);
+		void setFadeStyle(PControlFadeStyle s);
+		void setFadeSpeed(float speed);
 		
 		void draw(SDL_Renderer* ren);
 
