@@ -1,19 +1,24 @@
 #pragma once
 
 #include <SDL.h>
+#include <vector>
 #include <cassert>
 #include "PControl.h"
+#include "GridPanelCellView.h"
 
 class GridPanelCell : public PControl
 {
 	public:
 		GridPanelCell(float x, float y, float w, float h);
-		GridPanelCell(PControl* e, float x, float y, float w, float h);
+		GridPanelCell(const GridPanelCell& other);
+
+		GridPanelCellView& getView();
 
 		void setElement(PControl* e);
-		PControl* getElement();
+		PControl* getElement() const;
 
 		void setPadding(float l, float u, float r, float d);
+		std::vector<float> getPadding() const;
 
 		void setX(float x);
 		void setY(float y);
@@ -37,6 +42,7 @@ class GridPanelCell : public PControl
 		void draw(SDL_Renderer* ren);
 
 	private:
+		GridPanelCellView view;
 		PControl* element;
 		float padding[4];
 };

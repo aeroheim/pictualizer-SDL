@@ -1,6 +1,8 @@
 #include "GridPanelRow.h"
 
-GridPanelRow::GridPanelRow(float x, float y, float w, float h, int c) : PControl(x, y, w, h)
+GridPanelRow::GridPanelRow(float x, float y, float w, float h, int c) : 
+	PControl(x, y, w, h),
+	view(*this)
 {
 	assert(c > 0);
 
@@ -13,7 +15,9 @@ GridPanelRow::GridPanelRow(float x, float y, float w, float h, int c) : PControl
 	}
 }
 
-GridPanelRow::GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h) : PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0.0f), h)
+GridPanelRow::GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h) : 
+	PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0.0f), h),
+	view(*this)
 {
 	assert(colWidths.size() > 0);
 
@@ -26,6 +30,18 @@ GridPanelRow::GridPanelRow(float x, float y, const std::vector<float>& colWidths
 		GridPanelCell c(cellX, y, colWidths[i], h);
 		cells.push_back(c);
 	}
+}
+
+GridPanelRow::GridPanelRow(const GridPanelRow& other) : 
+	PControl(other), 
+	view(*this),
+	cells(other.cells)
+{}
+
+
+GridPanelRowView& GridPanelRow::getView()
+{
+	return view;
 }
 
 void GridPanelRow::setX(float x)
@@ -68,7 +84,17 @@ void GridPanelRow::setWidth(float w)
 	PControl::setWidth(w);
 }
 
-void GridPanelRow::setCellWidths(const std::vector<float>& cellWidths)
+void GridPanelRow::setHeight(float h)
+{
+	assert(h >= 0);
+
+	PControl::setHeight(h);
+
+	for (GridPanelCell& c : cells)
+		c.setHeight(h);
+}
+
+void GridPanelRow::setColWidths(const std::vector<float>& cellWidths)
 {
 	assert(cellWidths.size() == cells.size());
 
@@ -88,17 +114,17 @@ void GridPanelRow::setCellWidths(const std::vector<float>& cellWidths)
 	PControl::setWidth(w);
 }
 
-void GridPanelRow::setHeight(float h)
+std::vector<float> GridPanelRow::getColWidths() const
 {
-	assert(h >= 0);
+	std::vector<float> colWidths;
 
-	PControl::setHeight(h);
+	for (const GridPanelCell& c : cells)
+		colWidths.push_back(c.getWidth());
 
-	for (GridPanelCell& c : cells)
-		c.setHeight(h);
+	return colWidths;
 }
 
-int GridPanelRow::getNumCols()
+int GridPanelRow::getNumCols() const
 {
 	return cells.size();
 }
@@ -209,8 +235,7 @@ void GridPanelRow::draw(SDL_Renderer* ren)
 
 GridPanelCell& GridPanelRow::operator[](const int index)
 {
-	assert(index >= 0);
-	assert((size_t) index < cells.size());
+	assert(index >= 0 && (size_t) index < cells.size());
 
 	return cells[index];
 }

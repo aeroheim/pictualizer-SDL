@@ -5,6 +5,7 @@
 #include <cassert>
 #include "GridPanelRow.h"
 #include "../io/EventSubscriber.h"
+#include "../config/PGlobals.h"
 
 class GridPanel : public PControl, public EventSubscriber
 {
@@ -15,16 +16,21 @@ class GridPanel : public PControl, public EventSubscriber
 		void setX(float x);
 		void setY(float y);
 		void setWidth(float w);
-		void setColWidths(const std::vector<float>& colWidths);
 		void setHeight(float h);
+
+		void setRowMinHeight(int r, float mh);
+		void setRowMaxHeight(int r, float mh);
 		void setRowHeights(const std::vector<float>& rowHeights);
-
-		float getColWidth(int c);
-		const std::vector<float> getColWidths();
 		float getRowHeight(int r);
-		const std::vector<float> getRowHeights();
+		std::vector<float> getRowHeights() const;
+		int getNumRows() const;
 
-		int getNumRows();
+		void setColMinWidth(int c, float mw);
+		void setColMaxWidth(int c, float mw);
+		void setColWidths(const std::vector<float>& colWidths);
+		float getColWidth(int c);
+		std::vector<float> getColWidths() const;
+		int getNumCols() const;
 
 		void setColor(float r, float g, float b);
 		void setBaseColor(float r, float g, float b);
@@ -42,7 +48,7 @@ class GridPanel : public PControl, public EventSubscriber
 
 		void draw(SDL_Renderer* ren);
 
-		GridPanelRow& operator[] (const int index);
+		GridPanelRowView& operator[] (const int index);
 
 		void handleEvent(Event* e);
 

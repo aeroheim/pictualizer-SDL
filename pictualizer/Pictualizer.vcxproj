@@ -27,7 +27,9 @@
     <ClInclude Include="controls\ButtonStates.h" />
     <ClInclude Include="controls\GridPanelCell.h" />
     <ClInclude Include="controls\GridPanel.h" />
+    <ClInclude Include="controls\GridPanelCellView.h" />
     <ClInclude Include="controls\GridPanelRow.h" />
+    <ClInclude Include="controls\GridPanelRowView.h" />
     <ClInclude Include="controls\Image.h" />
     <ClInclude Include="controls\ImageButton.h" />
     <ClInclude Include="controls\Label.h" />
@@ -69,7 +71,9 @@
     <ClCompile Include="controls\Button.cpp" />
     <ClCompile Include="controls\GridPanel.cpp" />
     <ClCompile Include="controls\GridPanelCell.cpp" />
+    <ClCompile Include="controls\GridPanelCellView.cpp" />
     <ClCompile Include="controls\GridPanelRow.cpp" />
+    <ClCompile Include="controls\GridPanelRowView.cpp" />
     <ClCompile Include="controls\Image.cpp" />
     <ClCompile Include="controls\ImageButton.cpp" />
     <ClCompile Include="controls\IndexWidget.cpp" />

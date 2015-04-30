@@ -1,5 +1,7 @@
 #include "GridPanel.h"
 
+using namespace PGlobals;
+
 GridPanel::GridPanel(float x, float y, float w, float h, int r, int c) : PControl(x, y, w, h)
 {
 	assert(r > 0);
@@ -13,9 +15,8 @@ GridPanel::GridPanel(float x, float y, float w, float h, int r, int c) : PContro
 	}
 }
 
-GridPanel::GridPanel(float x, float y, const std::vector<float>& rowHeights, const std::vector<float>& colWidths) : PControl(x, y, 
-																															std::accumulate(colWidths.begin(), colWidths.end(), 0.0f),
-																															std::accumulate(rowHeights.begin(), rowHeights.end(), 0.0f))
+GridPanel::GridPanel(float x, float y, const std::vector<float>& rowHeights, const std::vector<float>& colWidths) : 
+	PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0.0f), std::accumulate(rowHeights.begin(), rowHeights.end(), 0.0f))
 {
 	assert(rowHeights.size() > 0);
 
@@ -61,16 +62,6 @@ void GridPanel::setWidth(float w)
 		r.setWidth(w);
 }
 
-void GridPanel::setColWidths(const std::vector<float>& colWidths)
-{
-	assert(colWidths.size() == rows[0].getNumCols());
-
-	PControl::setWidth(std::accumulate(colWidths.begin(), colWidths.end(), 0.0f));
-
-	for (GridPanelRow& r : rows)
-		r.setCellWidths(colWidths);
-}
-
 void GridPanel::setHeight(float h)
 {
 	assert(h >= 0);
@@ -88,6 +79,22 @@ void GridPanel::setHeight(float h)
 	}
 
 	PControl::setHeight(h);
+}
+
+void GridPanel::setRowMinHeight(int r, float mh)
+{
+	assert(r >= 0 && (size_t)r < rows.size());
+
+	for (GridPanelRow& r : rows)
+		r.setMinHeight(mh);
+}
+
+void GridPanel::setRowMaxHeight(int r, float mh)
+{
+	assert(r >= 0 && (size_t)r < rows.size());
+
+	for (GridPanelRow& r : rows)
+		r.setMaxHeight(mh);
 }
 
 void GridPanel::setRowHeights(const std::vector<float>& rowHeights)
@@ -110,45 +117,69 @@ void GridPanel::setRowHeights(const std::vector<float>& rowHeights)
 	PControl::setHeight(h);
 }
 
-float GridPanel::getColWidth(int c)
-{
-	assert(c >= 0);
-	assert(c < rows[0].getNumCols());
-
-	return rows[0][c].getWidth();
-}
-
-const std::vector<float> GridPanel::getColWidths()
-{
-	std::vector<float> colWidths;
-
-	for (int i = 0; i < rows[0].getNumCols(); i++)
-		colWidths.push_back(rows[0][i].getWidth());
-
-	return colWidths;
-}
-
 float GridPanel::getRowHeight(int r)
 {
-	assert(r >= 0);
-	assert((size_t) r < rows.size());
+	assert(r >= 0 && (size_t)r < rows.size());
 
 	return rows[r].getHeight();
 }
 
-const std::vector<float> GridPanel::getRowHeights()
+std::vector<float> GridPanel::getRowHeights() const
 {
 	std::vector<float> rowHeights;
 
-	for (GridPanelRow& r : rows)
+	for (const GridPanelRow& r : rows)
 		rowHeights.push_back(r.getHeight());
 
 	return rowHeights;
 }
 
-int GridPanel::getNumRows()
+int GridPanel::getNumRows() const
 {
 	return rows.size();
+}
+
+void GridPanel::setColMinWidth(int c, float mw)
+{
+	assert(c >= 0 && c < rows[0].getNumCols());
+
+	for (GridPanelRow& r : rows)
+		r[c].setMinWidth(mw);
+}
+
+void GridPanel::setColMaxWidth(int c, float mw)
+{
+	assert(c >= 0 && c < rows[0].getNumCols());
+
+	for (GridPanelRow& r : rows)
+		r[c].setMaxWidth(mw);
+}
+
+void GridPanel::setColWidths(const std::vector<float>& colWidths)
+{
+	assert(colWidths.size() == rows[0].getNumCols());
+
+	PControl::setWidth(std::accumulate(colWidths.begin(), colWidths.end(), 0.0f));
+
+	for (GridPanelRow& r : rows)
+		r.setColWidths(colWidths);
+}
+
+float GridPanel::getColWidth(int c)
+{
+	assert(c >= 0 && c < rows[0].getNumCols());
+
+	return rows[0][c].getWidth();
+}
+
+std::vector<float> GridPanel::getColWidths() const
+{
+	return rows[0].getColWidths();
+}
+
+int GridPanel::getNumCols() const
+{
+	return rows[0].getNumCols();
 }
 
 void GridPanel::setColor(float r, float g, float b)
@@ -255,12 +286,11 @@ void GridPanel::draw(SDL_Renderer* ren)
 	PControl::draw(ren);
 }
 
-GridPanelRow& GridPanel::operator[](const int index)
+GridPanelRowView& GridPanel::operator[](const int index)
 {
-	assert(index >= 0);
-	assert((size_t) index < rows.size());
+	assert(index >= 0 && (size_t) index < rows.size());
 
-	return rows[index];
+	return rows[index].getView();
 }
 
 void GridPanel::handleEvent(Event* e)

@@ -4,6 +4,7 @@
 #include <numeric>
 #include <cassert>
 #include "GridPanelCell.h"
+#include "GridPanelRowView.h"
 
 class GridPanelRow : public PControl
 {
@@ -11,14 +12,18 @@ class GridPanelRow : public PControl
 		GridPanelRow(float x, float y, float w, float h, int c);
 		GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h);
 
+		GridPanelRow(const GridPanelRow& other);
+
+		GridPanelRowView& getView();
+
 		void setX(float x);
 		void setY(float y);
 		void setWidth(float w);
 		void setHeight(float h);
 
-		void setCellWidths(const std::vector<float>& cellWidths);
-
-		int getNumCols();
+		void setColWidths(const std::vector<float>& cellWidths);
+		std::vector<float> getColWidths() const;
+		int getNumCols() const;
 
 		void setColor(float r, float g, float b);
 		void setBaseColor(float r, float g, float b);
@@ -39,5 +44,6 @@ class GridPanelRow : public PControl
 		GridPanelCell& operator[] (const int index);
 
 	private:
+		GridPanelRowView view;
 		std::vector<GridPanelCell> cells;
 };

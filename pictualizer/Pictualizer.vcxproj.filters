@@ -153,6 +153,12 @@
     <ClInclude Include="config\PGlobals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\GridPanelRowView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls\GridPanelCellView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -258,6 +264,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="config\PGlobals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\GridPanelRowView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\GridPanelCellView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

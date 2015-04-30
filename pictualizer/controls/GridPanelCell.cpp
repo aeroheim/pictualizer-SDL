@@ -2,27 +2,25 @@
 
 GridPanelCell::GridPanelCell(float x, float y, float w, float h) : 
 	PControl(x, y, w, h),
+	view(*this),
 	element(nullptr)
 {
 	for (int i = 0; i < 4; i++)
 		padding[i] = 0;
 }
 
-GridPanelCell::GridPanelCell(PControl* e, float x, float y, float w, float h) : PControl(x, y, w, h)
+GridPanelCell::GridPanelCell(const GridPanelCell& other) :
+	PControl(other),
+	view(*this),
+	element(other.element)
 {
-	if (element)
-	{
-		element = e;
-		e->setX(x);
-		e->setY(y);
-		e->setWidth(w);
-		e->setHeight(h);
-	}
-	else
-		element = nullptr;
-
 	for (int i = 0; i < 4; i++)
-		padding[i] = 0;
+		padding[i] = other.padding[i];
+}
+
+GridPanelCellView& GridPanelCell::getView()
+{
+	return view;
 }
 
 void GridPanelCell::setElement(PControl* e)
@@ -38,7 +36,7 @@ void GridPanelCell::setElement(PControl* e)
 	}
 }
 
-PControl* GridPanelCell::getElement()
+PControl* GridPanelCell::getElement() const
 {
 	return element;
 }
@@ -62,6 +60,16 @@ void GridPanelCell::setPadding(float l, float u, float r, float d)
 	setY(getY());
 	setWidth(getWidth());
 	setHeight(getHeight());
+}
+
+std::vector<float> GridPanelCell::getPadding() const
+{
+	std::vector<float> p;
+
+	for (int i = 0; i < 4; i++)
+		p.push_back(padding[i]);
+
+	return p;
 }
 
 void GridPanelCell::setX(float x)
