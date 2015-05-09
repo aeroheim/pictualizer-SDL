@@ -1,6 +1,7 @@
 # What is Pictualizer?
 
-Pictualizer is a desktop music player & visualizer with a heavy focus on aesthetics. See the video below:
+Pictualizer is a desktop music player & visualizer with a heavy focus on aesthetics. It is currently NOT cross-platform
+and supports Windows systems only.
 
 [![pictualizer-pre-alpha-1-preview](http://i.imgur.com/bQjwcje.png?1)](https://www.youtube.com/watch?v=gLzC5bHHBgw "pictualizer-pre-alpha-1-preview")
 
