@@ -117,7 +117,7 @@ void GridPanel::setWidth(float w)
 			wScaledRows.push_back(&r);
 
 	// If we have scale-to-width rows and free rows from which height may be added/removed, check if we can actually resize.
-	if (wScaledRows.size() > (size_t) 0 && freeRows.size() > (size_t) 0)
+	if (wScaledRows.size() > (size_t) 0 && freeRows.size() > (size_t) 0 && wdiff != 0)
 	{
 		float availableHeight = 0;
 		float requiredHeight = 0;
@@ -128,7 +128,57 @@ void GridPanel::setWidth(float w)
 			else
 				availableHeight += r->getHeight() - r->getMinHeight();
 
-		if ()
+		for (GridPanelRow* r : wScaledRows)
+		{
+			float hwratio = r->getHeight() / getWidth();
+
+			requiredHeight += std::abs(w * hwratio - r->getHeight());
+		}
+
+		// We can resize the rows.
+		if (availableHeight >= requiredHeight)
+		{
+			// Increase row height from top to bottom.
+			if (wdiff > 0)
+				for (GridPanelRow& r : rows)
+				{
+					if (r.getStyle() == GridPanelRowStyle::SCALEDTOW)
+					{
+
+					}
+					else if (r.getStyle() == GridPanelRowStyle::FREE)
+					{
+						if (requiredHeight > 0)
+						{
+							// Calculate height placed into current new row.
+							float usedHeight = r->getHeight() + requiredHeight >= r->getMaxHeight() ? r->getMaxHeight() - r->getHeight() : requiredHeight;
+
+							r->setHeight(r->getHeight() + usedHeight);
+							requiredHeight -= usedHeight;
+						}
+						else
+							break;
+					}
+				}
+			// Decrease row height from bottom to top.
+			else
+				for (int i = (int) freeRows.size() - 1; i >= 0; i--)
+				{
+					if (requiredHeight > 0)
+					{
+						GridPanelRow* r = freeRows[i];
+						float usedHeight = r->getHeight() - requiredHeight <= r->getMinHeight() ? r->getHeight() - r->getMinHeight() : requiredHeight;
+
+						r->setHeight(r->getHeight() - usedHeight);
+						requiredHeight -= usedHeight;
+					}
+					else
+						break;
+				}
+
+			assert(requiredHeight == 0);
+		}
+
 	}
 
 	// each row may have a different amount of H required from the scale, so loop through rows somehow.
@@ -187,6 +237,24 @@ void GridPanel::setHeight(float h)
 	PControl::setHeight(h);
 }
 
+void GridPanel::setRowHeight(int r, int h)
+{
+	assert(r >= 0 && r < (int) rows.size());
+
+	if (h >= rows[r].getMinHeight() && h <= rows[r].getMaxHeight())
+	{
+		PControl::setHeight(getHeight() + (h - rows[r].getHeight()));
+
+		for (size_t i = r; i < rows.size(); i++)
+		{
+			if (i == r)
+				rows[r].setHeight(h);
+			else
+				rows[r].setY(rows[i - 1].getY() + rows[i - 1].getHeight());
+		}
+	}
+}
+
 GridPanelRowView& GridPanel::getRow(int r)
 {
 	// TODO: figure out a way to make this method const.
@@ -197,6 +265,24 @@ GridPanelRowView& GridPanel::getRow(int r)
 int GridPanel::getNumRows() const
 {
 	return rows.size();
+}
+
+void GridPanel::setColWidth(int c, int w)
+{
+	assert(c >= 0 && c < (int) cols.size());
+
+	if (w >= cols[c].getMinWidth() && c <= cols[c].getMaxWidth())
+	{
+		PControl::setWidth(getWidth() + (w - cols[c].getWidth()));
+
+		for (size_t i = c; i < cols.size(); i++)
+		{
+			if (i == c)
+				cols[c].setWidth(w);
+			else
+				cols[c].setX(cols[i - 1].getX() + cols[i - 1].getWidth());
+		}
+	}
 }
 
 GridPanelColumnView& GridPanel::getColumn(int c)

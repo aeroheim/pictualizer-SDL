@@ -19,10 +19,12 @@ class GridPanel : public PControl, public EventSubscriber
 		void setWidth(float w);
 		void setHeight(float h);
 
-		GridPanelRow& getRow(int r) const;
+		void setRowHeight(int r, int h);
+		GridPanelRowView& getRow(int r);
 		int getNumRows() const;
 
-		GridPanelColumn& getColumn(int c) const;
+		void setColWidth(int c, int w);
+		GridPanelColumnView& getColumn(int c);
 		int getNumCols() const;
 
 		void setColor(float r, float g, float b);
