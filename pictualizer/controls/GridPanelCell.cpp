@@ -108,6 +108,16 @@ void GridPanelCell::setHeight(float h)
 	PControl::setHeight(h);
 }
 
+bool GridPanelCell::canResize(float w, float h) const
+{
+	bool canElementResize = false;
+
+	if (element)
+		canElementResize = element->canResize(w, h);
+
+	return PControl::canResize(w, h) && canElementResize;
+}
+
 void GridPanelCell::setColor(float r, float g, float b)
 {
 	PControl::setColor(r, g, b);

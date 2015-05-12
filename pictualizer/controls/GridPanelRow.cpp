@@ -1,241 +1,109 @@
 #include "GridPanelRow.h"
 
-GridPanelRow::GridPanelRow(float x, float y, float w, float h, int c) : 
-	PControl(x, y, w, h),
-	view(*this)
+GridPanelRow::GridPanelRow(std::vector<GridPanelCell>& row) : 
+	view(*this),
+	style(GridPanelRowStyle::FREE)
 {
-	assert(c > 0);
-
-	float cellWidth = getWidth() / c;
-
-	for (int i = 0; i < c; i++)
-	{
-		GridPanelCell c(x + i * cellWidth, y, cellWidth, h);
-		cells.push_back(c);
-	}
-}
-
-GridPanelRow::GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h) : 
-	PControl(x, y, std::accumulate(colWidths.begin(), colWidths.end(), 0.0f), h),
-	view(*this)
-{
-	assert(colWidths.size() > 0);
-
-	float cellX;
-
-	for (size_t i = 0; i < colWidths.size(); i++)
-	{
-		cellX = i == 0 ? getX() : cellX + colWidths[i - 1];
-
-		GridPanelCell c(cellX, y, colWidths[i], h);
-		cells.push_back(c);
-	}
+	for (GridPanelCell& c : row)
+		cells.push_back(&c);
 }
 
 GridPanelRow::GridPanelRow(const GridPanelRow& other) : 
-	PControl(other), 
 	view(*this),
+	style(other.style),
 	cells(other.cells)
 {}
-
 
 GridPanelRowView& GridPanelRow::getView()
 {
 	return view;
 }
 
-void GridPanelRow::setX(float x)
+void GridPanelRow::setStyle(GridPanelRowStyle s)
 {
-	PControl::setX(x);
+	style = s;
+}
 
-	for (size_t i = 0; i < cells.size(); i++)
-	{
-		if (i == 0)
-			cells[i].setX(x);
-		else
-			cells[i].setX(cells[i - 1].getX() + cells[i - 1].getWidth());
-	}
+GridPanelRowStyle GridPanelRow::getStyle() const
+{
+	return style;
 }
 
 void GridPanelRow::setY(float y)
 {
-	PControl::setY(y);
-
-	for (GridPanelCell& c : cells)
-		c.setY(y);
-}
-
-void GridPanelRow::setWidth(float w)
-{
-	assert(w >= 0);
-
-	float cellX;
-
-	for (size_t i = 0; i < cells.size(); i++)
-	{
-		cellX = i == 0 ? getX() : cellX + cells[i - 1].getWidth();
-
-		cells[i].setX(cellX);
-
-		// Maintain cell proportions when we resize their widths;
-		cells[i].setWidth((cells[i].getWidth() / getWidth()) * w);
-	}
-
-	PControl::setWidth(w);
+	for (GridPanelCell* c : cells)
+		c->setY(y);
 }
 
 void GridPanelRow::setHeight(float h)
 {
 	assert(h >= 0);
 
-	PControl::setHeight(h);
-
-	for (GridPanelCell& c : cells)
-		c.setHeight(h);
+	for (GridPanelCell* c : cells)
+		c->setHeight(h);
 }
 
-void GridPanelRow::setColWidths(const std::vector<float>& cellWidths)
+void GridPanelRow::setMinHeight(float mh)
 {
-	assert(cellWidths.size() == cells.size());
+	assert(mh >= 0);
 
-	float w = 0;
-	float cellX;
-
-	for (size_t i = 0; i < cellWidths.size(); i++)
-	{
-		cellX = i == 0 ? getX() : cellX + cellWidths[i - 1];
-
-		cells[i].setX(cellX);
-		cells[i].setWidth(cellWidths[i]);
-
-		w += cellWidths[i];
-	}
-
-	PControl::setWidth(w);
+	for (GridPanelCell* c : cells)
+		c->setMinHeight(mh);
 }
 
-std::vector<float> GridPanelRow::getColWidths() const
+void GridPanelRow::setMaxHeight(float mh)
 {
-	std::vector<float> colWidths;
+	assert(mh >= 0);
 
-	for (const GridPanelCell& c : cells)
-		colWidths.push_back(c.getWidth());
-
-	return colWidths;
+	for (GridPanelCell* c : cells)
+		c->setMaxHeight(mh);
 }
 
-int GridPanelRow::getNumCols() const
+float GridPanelRow::getX() const
 {
-	return cells.size();
+	assert(cells.size() > 0);
+	return cells[0]->getX();
 }
 
-void GridPanelRow::setColor(float r, float g, float b)
+float GridPanelRow::getY() const
 {
-	PControl::setColor(r, g, b);
-
-	for (GridPanelCell& c : cells)
-		c.setColor(r, g, b);
+	assert(cells.size() > 0);
+	return cells[0]->getY();
 }
 
-void GridPanelRow::setBaseColor(float r, float g, float b)
+float GridPanelRow::getWidth() const
 {
-	PControl::setBaseColor(r, g, b);
+	assert(cells.size() > 0);
 
-	for (GridPanelCell& c : cells)
-		c.setBaseColor(r, g, b);
+	float width = 0;
+
+	for (GridPanelCell* c : cells)
+		width += c->getWidth();
+
+	return width;
 }
 
-void GridPanelRow::setFocusColor(float r, float g, float b)
+float GridPanelRow::getHeight() const
 {
-	PControl::setFocusColor(r, g, b);
-
-	for (GridPanelCell& c : cells)
-		c.setFocusColor(r, g, b);
+	assert(cells.size() > 0);
+	return cells[0]->getHeight();
 }
 
-void GridPanelRow::setColorState(PControlColorState s)
+float GridPanelRow::getMinHeight() const
 {
-	PControl::setColorState(s);
-
-	for (GridPanelCell& c : cells)
-		c.setColorState(s);
+	assert(cells.size() > 0);
+	return cells[0]->getMinHeight();
 }
 
-void GridPanelRow::setColorStyle(PControlColorStyle s)
+float GridPanelRow::getMaxHeight() const
 {
-	PControl::setColorStyle(s);
-
-	for (GridPanelCell& c : cells)
-		c.setColorStyle(s);
+	assert(cells.size() > 0);
+	return cells[0]->getMaxHeight();
 }
 
-void GridPanelRow::setColorSpeed(float seconds)
-{
-	PControl::setColorSpeed(seconds);
-
-	for (GridPanelCell& c : cells)
-		c.setColorSpeed(seconds);
-}
-
-void GridPanelRow::setAlpha(float a)
-{
-	PControl::setAlpha(a);
-
-	for (GridPanelCell& c : cells)
-		c.setAlpha(a);
-}
-
-void GridPanelRow::setMinAlpha(float a)
-{
-	PControl::setMinAlpha(a);
-
-	for (GridPanelCell& c : cells)
-		c.setMinAlpha(a);
-}
-
-void GridPanelRow::setMaxAlpha(float a)
-{
-	PControl::setMaxAlpha(a);
-
-	for (GridPanelCell& c : cells)
-		c.setMaxAlpha(a);
-}
-
-void GridPanelRow::setFadeState(PControlFadeState s)
-{
-	PControl::setFadeState(s);
-
-	for (GridPanelCell& c : cells)
-		c.setFadeState(s);
-}
-
-void GridPanelRow::setFadeStyle(PControlFadeStyle s)
-{
-	PControl::setFadeStyle(s);
-
-	for (GridPanelCell& c : cells)
-		c.setFadeStyle(s);
-}
-
-void GridPanelRow::setFadeSpeed(float seconds)
-{
-	PControl::setFadeSpeed(seconds);
-
-	for (GridPanelCell& c : cells)
-		c.setFadeSpeed(seconds);
-}
-
-void GridPanelRow::draw(SDL_Renderer* ren)
-{
-	for (GridPanelCell& c : cells)
-		c.draw(ren);
-
-	PControl::draw(ren);
-}
-
-GridPanelCell& GridPanelRow::operator[](const int index)
+GridPanelCellView& GridPanelRow::operator[](const int index)
 {
 	assert(index >= 0 && (size_t) index < cells.size());
 
-	return cells[index];
+	return cells[index]->getView();
 }

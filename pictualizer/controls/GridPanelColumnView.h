@@ -3,41 +3,41 @@
 #include <vector>
 #include "GridPanelCellView.h"
 
-class GridPanelRow;
+class GridPanelColumn;
 
 /*
  *	Simple wrapper class for GridPanelRow that allows for read-only access.
  */
-class GridPanelRowView
+class GridPanelColumnView
 {
 	public:
-		GridPanelRowView(GridPanelRow& row);
-		~GridPanelRowView();
+		GridPanelColumnView(GridPanelColumn& col);
+		~GridPanelColumnView();
 
-		void setStyle(GridPanelRowStyle s);
-		GridPanelRowStyle getStyle() const;
+		void setStyle(GridPanelColumnStyle s);
+		GridPanelColumnStyle getStyle() const;
 
-		void setMinHeight(float mh);
-		void setMaxHeight(float mh);
+		void setMinWidth(float mw);
+		void setMaxWidth(float mw);
 
 		float getX() const;
 		float getY() const;
 		float getWidth() const;
 		float getHeight() const;
 
-		float getMinHeight() const;
-		float getMaxHeight() const;
-		
+		float getMinWidth() const;
+		float getMaxWidth() const;
+
 		int getRoundedX() const;
 		int getRoundedY() const;
 		int getRoundedWidth() const;
 		int getRoundedHeight() const;
 
-		int getRoundedMinHeight() const;
-		int getRoundedMaxHeight() const;
+		int getRoundedMinWidth() const;
+		int getRoundedMaxWidth() const;
 
 		GridPanelCellView& operator[] (const int index);
 
 	private:
-		GridPanelRow& row;
+		GridPanelColumn& col;
 };

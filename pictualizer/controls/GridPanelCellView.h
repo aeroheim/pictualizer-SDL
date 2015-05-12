@@ -4,6 +4,7 @@
 #include "PControl.h"
 
 class GridPanelCell;
+enum class GridPanelCellResizeState;
 
 /*
  *	Simple wrapper class for GridPanelCell that allows for read-only access and setting of elements.
@@ -23,6 +24,9 @@ class GridPanelCellView
 		int getRoundedY() const;
 		int getRoundedWidth() const;
 		int getRoundedHeight() const;
+
+		void setResizeState(GridPanelCellResizeState s);
+		GridPanelCellResizeState getResizeState() const;
 
 		void setElement(PControl* element);
 		PControl* getElement() const;

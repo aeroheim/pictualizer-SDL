@@ -159,6 +159,9 @@
     <ClInclude Include="controls\GridPanelCellView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\GridPanelStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">

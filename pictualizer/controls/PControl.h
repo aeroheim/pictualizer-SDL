@@ -27,6 +27,7 @@ class PControl
 		virtual void setY(float y);
 		virtual void setWidth(float w);
 		virtual void setHeight(float h);
+
 		void setMinWidth(float minWidth);
 		void setMinHeight(float minHeight);
 		void setMaxWidth(float maxWidth);
@@ -36,6 +37,7 @@ class PControl
 		float getY() const;
 		float getWidth() const;
 		float getHeight() const;
+
 		float getMinWidth() const;
 		float getMinHeight() const;
 		float getMaxWidth() const;
@@ -47,6 +49,7 @@ class PControl
 		int getRoundedHeight() const;
 
 		bool mouseInside(int x, int y) const;
+		virtual bool canResize(float w, float h) const;
 
 		void moveTo(float x, float y);
 		void resize(float w, float h);

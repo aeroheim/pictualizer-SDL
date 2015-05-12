@@ -45,6 +45,16 @@ int GridPanelCellView::getRoundedHeight() const
 	return cell.getRoundedHeight();
 }
 
+void GridPanelCellView::setResizeState(GridPanelCellResizeState s)
+{
+	cell.setResizeState(s);
+}
+
+GridPanelCellResizeState GridPanelCellView::getResizeState() const
+{
+	return cell.getResizeState();
+}
+
 void GridPanelCellView::setElement(PControl* element)
 {
 	cell.setElement(element);

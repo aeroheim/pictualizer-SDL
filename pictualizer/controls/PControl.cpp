@@ -143,6 +143,11 @@ bool PControl::mouseInside(int x, int y) const
 	return ((x >= getRoundedX() && x <= getRoundedX() + getRoundedWidth()) && (y >= getRoundedY() && y <= getRoundedY() + getRoundedHeight()));
 }
 
+bool PControl::canResize(float w, float h) const
+{
+	return (w >= minW && w <= maxW && h >= minH && h <= maxH);
+}
+
 void PControl::moveTo(float x, float y)
 {
 	setX(x);
@@ -445,6 +450,3 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
 	*/
 }
-
-
-

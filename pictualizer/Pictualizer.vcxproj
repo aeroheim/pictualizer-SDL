@@ -30,6 +30,7 @@
     <ClInclude Include="controls\GridPanelCellView.h" />
     <ClInclude Include="controls\GridPanelRow.h" />
     <ClInclude Include="controls\GridPanelRowView.h" />
+    <ClInclude Include="controls\GridPanelStates.h" />
     <ClInclude Include="controls\Image.h" />
     <ClInclude Include="controls\ImageButton.h" />
     <ClInclude Include="controls\Label.h" />
