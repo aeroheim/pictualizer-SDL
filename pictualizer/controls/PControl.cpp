@@ -143,9 +143,14 @@ bool PControl::mouseInside(int x, int y) const
 	return ((x >= getRoundedX() && x <= getRoundedX() + getRoundedWidth()) && (y >= getRoundedY() && y <= getRoundedY() + getRoundedHeight()));
 }
 
-bool PControl::canResize(float w, float h) const
+bool PControl::canResizeWidth(float w) const
 {
-	return (w >= minW && w <= maxW && h >= minH && h <= maxH);
+	return (w >= minW && w <= maxW);
+}
+
+bool PControl::canResizeHeight(float h) const
+{
+	return (h >= minH && h <= maxH);
 }
 
 void PControl::moveTo(float x, float y)

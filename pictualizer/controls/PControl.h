@@ -49,7 +49,8 @@ class PControl
 		int getRoundedHeight() const;
 
 		bool mouseInside(int x, int y) const;
-		virtual bool canResize(float w, float h) const;
+		virtual bool canResizeWidth(float w) const;
+		virtual bool canResizeHeight(float h) const;
 
 		void moveTo(float x, float y);
 		void resize(float w, float h);

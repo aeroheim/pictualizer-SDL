@@ -26,7 +26,8 @@ class GridPanelCell : public PControl
 		void setWidth(float w);
 		void setHeight(float h);
 
-		bool canResize(float w, float h) const;
+		bool canResizeWidth(float w) const;
+		bool canResizeHeight(float h) const;
 
 		void setColor(float r, float g, float b);
 		void setBaseColor(float r, float g, float b);
