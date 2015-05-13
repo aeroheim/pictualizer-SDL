@@ -162,6 +162,12 @@
     <ClInclude Include="controls\GridPanelStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="controls\GridPanelColumn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controls\GridPanelColumnView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="io\EventObserver.cpp">
@@ -273,6 +279,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="controls\GridPanelCellView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\GridPanelColumn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controls\GridPanelColumnView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
