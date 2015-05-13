@@ -105,82 +105,6 @@ void GridPanel::setWidth(float w)
 {
 	assert(w >= 0);
 
-	float wdiff = w - getWidth();
-	
-	std::vector<GridPanelRow*> freeRows;
-	std::vector<GridPanelRow*> wScaledRows;
-
-	for (GridPanelRow& r : rows)
-		if (r.getStyle() == GridPanelRowStyle::FREE)
-			freeRows.push_back(&r);
-		else if (r.getStyle() == GridPanelRowStyle::SCALEDTOW)
-			wScaledRows.push_back(&r);
-
-	// If we have scale-to-width rows and free rows from which height may be added/removed, check if we can actually resize.
-	if (wScaledRows.size() > (size_t) 0 && freeRows.size() > (size_t) 0 && wdiff != 0)
-	{
-		float availableHeight = 0;
-		float requiredHeight = 0;
-
-		for (GridPanelRow* r : freeRows)
-			if (wdiff > 0)
-				availableHeight += r->getMaxHeight() - r->getHeight();
-			else
-				availableHeight += r->getHeight() - r->getMinHeight();
-
-		for (GridPanelRow* r : wScaledRows)
-		{
-			float hwratio = r->getHeight() / getWidth();
-
-			requiredHeight += std::abs(w * hwratio - r->getHeight());
-		}
-
-		// We can resize the rows.
-		if (availableHeight >= requiredHeight)
-		{
-			// Increase row height from top to bottom.
-			if (wdiff > 0)
-				for (GridPanelRow& r : rows)
-				{
-					if (r.getStyle() == GridPanelRowStyle::SCALEDTOW)
-					{
-
-					}
-					else if (r.getStyle() == GridPanelRowStyle::FREE)
-					{
-						if (requiredHeight > 0)
-						{
-							// Calculate height placed into current new row.
-							float usedHeight = r->getHeight() + requiredHeight >= r->getMaxHeight() ? r->getMaxHeight() - r->getHeight() : requiredHeight;
-
-							r->setHeight(r->getHeight() + usedHeight);
-							requiredHeight -= usedHeight;
-						}
-						else
-							break;
-					}
-				}
-			// Decrease row height from bottom to top.
-			else
-				for (int i = (int) freeRows.size() - 1; i >= 0; i--)
-				{
-					if (requiredHeight > 0)
-					{
-						GridPanelRow* r = freeRows[i];
-						float usedHeight = r->getHeight() - requiredHeight <= r->getMinHeight() ? r->getHeight() - r->getMinHeight() : requiredHeight;
-
-						r->setHeight(r->getHeight() - usedHeight);
-						requiredHeight -= usedHeight;
-					}
-					else
-						break;
-				}
-
-			assert(requiredHeight == 0);
-		}
-
-	}
-
 	// each row may have a different amount of H required from the scale, so loop through rows somehow.
 
 	/*
@@ -283,6 +207,16 @@ void GridPanel::setColWidth(int c, int w)
 				cols[c].setX(cols[i - 1].getX() + cols[i - 1].getWidth());
 		}
 	}
+}
+
+bool GridPanel::canResizeWidth(float w) const
+{
+	return false;
+}
+
+bool GridPanel::canResizeHeight(float h) const
+{
+	return false;
 }
 
 GridPanelColumnView& GridPanel::getColumn(int c)
@@ -425,4 +359,102 @@ void GridPanel::handleEvent(Event* e)
 	{
 
 	}
+}
+
+bool GridPanel::canRowsScaleToWidth(float w) const
+{
+	float wdiff = w - getWidth();
+
+	std::vector<const GridPanelRow*> freeRows;
+	std::vector<const GridPanelRow*> wScaledRows;
+
+	for (const GridPanelRow& r : rows)
+		if (r.getStyle() == GridPanelRowStyle::FREE)
+			freeRows.push_back(&r);
+		else if (r.getStyle() == GridPanelRowStyle::SCALEDTOW)
+			wScaledRows.push_back(&r);
+
+	if (wScaledRows.size() == 0)
+		return true;
+	// If we have scale-to-width rows and free rows from which height may be added/removed, check if we can actually resize.
+	else if (wScaledRows.size() > (size_t)0 && freeRows.size() > (size_t)0 && wdiff != 0)
+	{
+		float availableHeight = 0;
+		float requiredHeight = 0;
+
+		// Query available height we can add to/remove from rows with free heights.
+		for (GridPanelRow* r : freeRows)
+			if (wdiff > 0)
+				availableHeight += r->getMaxHeight() - r->getHeight();
+			else
+				availableHeight += r->getHeight() - r->getMinHeight();
+
+		// Query amount of height required by rows scaled to width.
+		for (GridPanelRow* r : wScaledRows)
+		{
+			float hwratio = r->getHeight() / getWidth();
+
+			requiredHeight += std::abs(w * hwratio - r->getHeight());
+		}
+
+		// Check if resizing row heights is possible.
+		if (availableHeight >= requiredHeight)
+		{
+			// Increase row height from top to bottom.
+			if (wdiff > 0)
+				for (size_t i = 0; i < rows.size(); i++)
+				{
+					GridPanelRow& r = rows[i];
+
+					if (r.getStyle() == GridPanelRowStyle::SCALEDTOW)
+					{
+						float hwratio = r.getHeight() / getWidth();
+						setRowHeight(i, w * hwratio);
+					}
+					else if (r.getStyle() == GridPanelRowStyle::FREE)
+					{
+						if (requiredHeight > 0)
+						{
+							float heightUsed = r.getHeight() + requiredHeight >= r.getMaxHeight() ? r.getMaxHeight() - r.getHeight() : requiredHeight;
+							setRowHeight(i, r.getHeight() + heightUsed);
+							requiredHeight -= heightUsed;
+						}
+						else
+							break;
+					}
+				}
+			// Decrease row height from bottom to top.
+			else
+				for (int i = (int)rows.size() - 1; i >= 0; i--)
+				{
+					GridPanelRow& r = rows[i];
+
+					if (r.getStyle() == GridPanelRowStyle::SCALEDTOW)
+					{
+						float hwratio = r.getHeight() / getWidth();
+						setRowHeight(i, w * hwratio);
+					}
+					else if (r.getStyle() == GridPanelRowStyle::FREE)
+					{
+						if (requiredHeight > 0)
+						{
+							float heightUsed = r.getHeight() - requiredHeight <= r.getMinHeight() ? r.getHeight() - r.getMinHeight() : requiredHeight;
+							setRowHeight(i, r.getHeight() - heightUsed);
+							requiredHeight -= heightUsed;
+						}
+						else
+							break;
+					}
+				}
+
+			assert(requiredHeight == 0);
+		}
+	}
+
+	return false;
+}
+
+bool GridPanel::canColsScaleToHeight(float h) const
+{
+	return false;
 }

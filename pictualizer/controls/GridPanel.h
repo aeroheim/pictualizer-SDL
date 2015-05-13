@@ -27,6 +27,9 @@ class GridPanel : public PControl, public EventSubscriber
 		GridPanelColumnView& getColumn(int c);
 		int getNumCols() const;
 
+		bool canResizeWidth(float w) const;
+		bool canResizeHeight(float h) const;
+
 		void setColor(float r, float g, float b);
 		void setBaseColor(float r, float g, float b);
 		void setFocusColor(float r, float g, float b);
@@ -51,4 +54,7 @@ class GridPanel : public PControl, public EventSubscriber
 		std::vector<std::vector<GridPanelCell>> cells;
 		std::vector<GridPanelRow> rows;
 		std::vector<GridPanelColumn> cols;
+
+		bool canRowsScaleToWidth(float w) const;
+		bool canColsScaleToHeight(float h) const;
 };
