@@ -37,10 +37,9 @@ void GridPanelRow::setY(float y)
 
 void GridPanelRow::setHeight(float h)
 {
-	assert(h >= 0);
-
-	for (GridPanelCell* c : cells)
-		c->setHeight(h);
+	if (canResizeHeight(h))
+		for (GridPanelCell* c : cells)
+			c->setHeight(h);
 }
 
 void GridPanelRow::setMinHeight(float mh)
@@ -57,6 +56,15 @@ void GridPanelRow::setMaxHeight(float mh)
 
 	for (GridPanelCell* c : cells)
 		c->setMaxHeight(mh);
+}
+
+bool GridPanelRow::canResizeHeight(float h) const
+{
+	for (GridPanelCell* c : cells)
+		if (!c->canResizeHeight(h))
+			return false;
+
+	return true;
 }
 
 float GridPanelRow::getX() const

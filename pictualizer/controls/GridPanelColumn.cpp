@@ -37,10 +37,9 @@ void GridPanelColumn::setX(float x)
 
 void GridPanelColumn::setWidth(float w)
 {
-	assert(w >= 0);
-
-	for (GridPanelCell* c : cells)
-		c->setWidth(w);
+	if (canResizeWidth(w))
+		for (GridPanelCell* c : cells)
+			c->setWidth(w);
 }
 
 void GridPanelColumn::setMinWidth(float mw)
@@ -57,6 +56,15 @@ void GridPanelColumn::setMaxWidth(float mw)
 
 	for (GridPanelCell* c : cells)
 		c->setMaxWidth(mw);
+}
+
+bool GridPanelColumn::canResizeWidth(float w) const
+{
+	for (GridPanelCell* c : cells)
+		if (!c->canResizeWidth(w))
+			return false;
+
+	return true;
 }
 
 float GridPanelColumn::getX() const

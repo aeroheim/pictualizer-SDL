@@ -24,6 +24,8 @@ class GridPanelColumn
 		void setMinWidth(float mw);
 		void setMaxWidth(float mw);
 
+		bool canResizeWidth(float w) const;
+
 		float getX() const;
 		float getY() const;
 		float getWidth() const;

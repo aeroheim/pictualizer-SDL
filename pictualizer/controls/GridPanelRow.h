@@ -26,6 +26,8 @@ class GridPanelRow
 		void setMinHeight(float mh);
 		void setMaxHeight(float mh);
 
+		bool canResizeHeight(float h) const;
+
 		float getX() const;
 		float getY() const;
 		float getWidth() const;
