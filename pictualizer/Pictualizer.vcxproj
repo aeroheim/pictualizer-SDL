@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -109,14 +109,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -143,14 +143,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/bassflac24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/bassflac24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include;../Dependencies/boost-1.60.0</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/bassflac24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/bassflac24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/;../Dependencies/boost-1.60.0/stage/lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;bassflac.lib;tag.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

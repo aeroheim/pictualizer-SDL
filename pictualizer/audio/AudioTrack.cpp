@@ -111,8 +111,7 @@ bool operator==(AudioTrack& lhs, AudioTrack& rhs)
 
 void AudioTrack::setTrackFormat()
 {
-	std::wstring ext = std::tr2::sys::wpath(filePath).extension();
-
+   std::wstring ext = boost::filesystem::path(filePath).extension().wstring();
 	if (ext == L".mp3")
 		format = AudioTrackFormat::MP3;
 	else if (ext == L".mp2")
@@ -140,8 +139,8 @@ void AudioTrack::populateMetadata() const
 
 	if (title.empty())
 	{
-		std::tr2::sys::wpath wpath(filePath);
-		title.assign(wpath.filename().substr(0, wpath.filename().size() - wpath.extension().size()));
+		boost::filesystem::path path(filePath);
+		title.assign(path.filename().wstring().substr(0, path.filename().size() - path.extension().size()));
 	}
 
 	artist = track.tag()->artist().toCWString();
@@ -238,22 +237,22 @@ ImageRWops AudioTrack::getASFAlbumArt(SDL_Renderer* ren, TagLib::ASF::Tag* tag) 
 
 ImageRWops AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
 {
-	std::tr2::sys::wpath path(filePath);
+	boost::filesystem::path path(filePath);
 
 	if (path.has_parent_path())
 	{
 		// Get directory file path.
-		std::tr2::sys::wpath directoryPath(path.parent_path());
+		boost::filesystem::path directoryPath(path.parent_path());
 
 		// Search for "cover" or "folder".
-		for (auto it = std::tr2::sys::wdirectory_iterator(directoryPath); it != std::tr2::sys::wdirectory_iterator(); it++)
+		for (auto it = boost::filesystem::directory_iterator(directoryPath); it != boost::filesystem::directory_iterator(); it++)
 		{
 			const auto& file = it->path();
-			std::wstring filename = file.filename().substr(0, file.filename().size() - file.extension().size());
+			std::wstring filename = file.filename().wstring().substr(0, file.filename().size() - file.extension().size());
 
-			if ((filename == L"cover" || filename == L"folder") && PUtils::pathIsImage(file.filename()))
+			if ((filename == L"cover" || filename == L"folder") && PUtils::pathIsImage(file))
 			{
-				if (SDL_RWops* albumArt = SDL_RWFromFile(PUtils::wstr2str(file.string()).c_str(), "rb"))
+				if (SDL_RWops* albumArt = SDL_RWFromFile(file.string().c_str(), "rb"))
 					return ImageRWops{ albumArt, nullptr };
 				
 				// Stop searching if "cover" or "folder" are invalid images.
@@ -262,12 +261,12 @@ ImageRWops AudioTrack::searchDirForAlbumArt(SDL_Renderer* ren) const
 		}
 
 		// Search for any other image in the directory.
-		for (auto it = std::tr2::sys::wdirectory_iterator(directoryPath); it != std::tr2::sys::wdirectory_iterator(); it++)
+		for (auto it = boost::filesystem::directory_iterator(directoryPath); it != boost::filesystem::directory_iterator(); it++)
 		{
 			const auto& file = it->path();
 
-			if (PUtils::pathIsImage(file.filename()))
-				if (SDL_RWops* albumArt = SDL_RWFromFile(PUtils::wstr2str(file.string()).c_str(), "rb"))
+			if (PUtils::pathIsImage(file))
+				if (SDL_RWops* albumArt = SDL_RWFromFile(file.string().c_str(), "rb"))
 					return ImageRWops{ albumArt, nullptr };
 		}
 	}

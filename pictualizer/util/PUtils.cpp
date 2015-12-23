@@ -14,39 +14,19 @@ namespace PUtils
 		return converter.to_bytes(wstr);
 	}
 
-	bool pathIsImage(const std::string& path)
+	bool pathIsImage(const boost::filesystem::path& path)
 	{
-		std::string ext = std::tr2::sys::path(path).extension();
+		std::wstring ext = path.extension().wstring();
 
-		if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
+		if (ext == L".jpg" || ext == L".jpeg" || ext == L".png")
 			return true;
 		
 		return false;
 	}
 
-	bool pathIsImage(const std::wstring& wpath)
+	bool pathIsMusic(const boost::filesystem::path& path)
 	{
-		std::wstring ext = std::tr2::sys::wpath(wpath).extension();
-
-		if (ext == L".jpg" || ext == L".jpeg" || ext == L".png")
-			return true;
-
-		return false;
-	}
-
-	bool pathIsMusic(const std::string& path)
-	{
-		std::string ext = std::tr2::sys::path(path).extension();
-
-		if (ext == ".mp3" || ext == ".mp2" || ext == ".mp1" || ext == ".wav" || ext == ".ogg" || ext == ".aiff" || ext == ".flac")
-			return true;
-
-		return false;
-	}
-
-	bool pathIsMusic(const std::wstring& wpath)
-	{
-		std::wstring ext = std::tr2::sys::wpath(wpath).extension();
+		std::wstring ext = path.extension().wstring();
 
 		if (ext == L".mp3" || ext == L".mp2" || ext == L".mp1" || ext == L".wav" || ext == L".ogg" || ext == L".aiff" || ext == L".flac")
 			return true;
@@ -54,13 +34,8 @@ namespace PUtils
 		return false;
 	}
 
-	bool pathIsDirectory(const std::string& path)
+	bool pathIsDirectory(const boost::filesystem::path& path)
 	{
-		return std::tr2::sys::is_directory(std::tr2::sys::status(std::tr2::sys::path(path)));
-	}
-
-	bool pathIsDirectory(const std::wstring& wpath)
-	{
-		return std::tr2::sys::is_directory(std::tr2::sys::status(std::tr2::sys::wpath(wpath)));
+		return boost::filesystem::is_directory(path);
 	}
 }

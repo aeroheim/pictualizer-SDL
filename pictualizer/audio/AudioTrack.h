@@ -15,7 +15,7 @@
 #include <apetag.h>
 #include <assert.h>
 #include <string>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include "AudioTrackStates.h"
 #include "../controls/Image.h"
 #include "../io/EventObserver.h"

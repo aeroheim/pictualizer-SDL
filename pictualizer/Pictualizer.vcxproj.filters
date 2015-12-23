@@ -1,294 +1,92 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
+    <ClCompile Include="assets\fonts\PFonts.cpp" />
+    <ClCompile Include="assets\textures\PTextures.cpp" />
+    <ClCompile Include="audio\AudioPlayer.cpp" />
+    <ClCompile Include="audio\AudioPlaylist.cpp" />
+    <ClCompile Include="audio\AudioTrack.cpp" />
+    <ClCompile Include="config\PGlobals.cpp" />
+    <ClCompile Include="controls\AudioPlayerWidget.cpp" />
+    <ClCompile Include="controls\Button.cpp" />
+    <ClCompile Include="controls\GridPanel.cpp" />
+    <ClCompile Include="controls\GridPanelCell.cpp" />
+    <ClCompile Include="controls\GridPanelCellView.cpp" />
+    <ClCompile Include="controls\GridPanelRow.cpp" />
+    <ClCompile Include="controls\GridPanelRowView.cpp" />
+    <ClCompile Include="controls\Image.cpp" />
+    <ClCompile Include="controls\ImageButton.cpp" />
+    <ClCompile Include="controls\IndexWidget.cpp" />
+    <ClCompile Include="controls\Label.cpp" />
+    <ClCompile Include="controls\PControl.cpp" />
+    <ClCompile Include="controls\PControlContainer.cpp" />
+    <ClCompile Include="controls\ProgessBar.cpp" />
+    <ClCompile Include="controls\PTexture.cpp" />
+    <ClCompile Include="controls\PTextureButton.cpp" />
+    <ClCompile Include="controls\PWidget.cpp" />
+    <ClCompile Include="controls\SeekBar.cpp" />
+    <ClCompile Include="controls\SpectrumVisualizer.cpp" />
+    <ClCompile Include="controls\WaveformVisualizer.cpp" />
+    <ClCompile Include="image\ImageBackground.cpp" />
+    <ClCompile Include="image\ImageCamera.cpp" />
+    <ClCompile Include="assets\cursors\PCursors.cpp" />
+    <ClCompile Include="io\Event.cpp" />
+    <ClCompile Include="io\EventObserver.cpp" />
+    <ClCompile Include="io\EventSubscriber.cpp" />
+    <ClCompile Include="io\InputListener.cpp" />
+    <ClCompile Include="io\WindowIOController.cpp" />
+    <ClCompile Include="main\main.cpp" />
+    <ClCompile Include="ui\PUI.cpp" />
+    <ClCompile Include="util\PUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="io\Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="io\EventObserver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="io\EventSubscriber.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="io\WindowIOController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="audio\AudioPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="audio\AudioPlayerStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="audio\AudioPlaylist.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="audio\AudioTrack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="image\ImageBackground.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="image\ImageCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="image\ImageCameraStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="io\InputListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="image\ImageBackgroundStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PControl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanelRow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanelCell.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\PUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\Label.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\LabelStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\IndexWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="util\PUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PWidgetStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\AudioPlayerWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\ImageButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PControlStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\SeekBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\ProgressBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\cursors\PCursors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\fonts\PFonts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\fonts\PFontTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\textures\PTextures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\textures\PTextureTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PTextureButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\ButtonStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\WaveformVisualizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\AudioPlayerWidgetStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\SpectrumVisualizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PControlContainer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\PControlContainerStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="audio\AudioTrackStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="config\PGlobals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanelRowView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanelCellView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="controls\GridPanelStates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanelColumn.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controls\GridPanelColumnView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-=======
->>>>>>> parent of 0cc8fbb... GridPanel fixed/scaled support WIP1
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="io\EventObserver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="io\EventSubscriber.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="io\WindowIOController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="audio\AudioPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="audio\AudioTrack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="audio\AudioPlaylist.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="image\ImageCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="image\ImageBackground.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="io\Event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="io\InputListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\PControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanelCell.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanelRow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\PUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\Label.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\IndexWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\PWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="util\PUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\AudioPlayerWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\Image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\ImageButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\SeekBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\ProgessBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="assets\cursors\PCursors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="assets\fonts\PFonts.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="assets\textures\PTextures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\PTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\PTextureButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\WaveformVisualizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\SpectrumVisualizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\PControlContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="config\PGlobals.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanelRowView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanelCellView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanelColumn.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controls\GridPanelColumnView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="assets\fonts\PFonts.h" />
+    <ClInclude Include="assets\fonts\PFontTypes.h" />
+    <ClInclude Include="assets\textures\PTextures.h" />
+    <ClInclude Include="assets\textures\PTextureTypes.h" />
+    <ClInclude Include="audio\AudioPlayer.h" />
+    <ClInclude Include="audio\AudioPlayerStates.h" />
+    <ClInclude Include="audio\AudioPlaylist.h" />
+    <ClInclude Include="audio\AudioTrack.h" />
+    <ClInclude Include="audio\AudioTrackStates.h" />
+    <ClInclude Include="config\PGlobals.h" />
+    <ClInclude Include="controls\AudioPlayerWidget.h" />
+    <ClInclude Include="controls\AudioPlayerWidgetStates.h" />
+    <ClInclude Include="controls\Button.h" />
+    <ClInclude Include="controls\ButtonStates.h" />
+    <ClInclude Include="controls\GridPanelCell.h" />
+    <ClInclude Include="controls\GridPanel.h" />
+    <ClInclude Include="controls\GridPanelCellView.h" />
+    <ClInclude Include="controls\GridPanelRow.h" />
+    <ClInclude Include="controls\GridPanelRowView.h" />
+    <ClInclude Include="controls\Image.h" />
+    <ClInclude Include="controls\ImageButton.h" />
+    <ClInclude Include="controls\Label.h" />
+    <ClInclude Include="controls\LabelStates.h" />
+    <ClInclude Include="controls\PControl.h" />
+    <ClInclude Include="controls\IndexWidget.h" />
+    <ClInclude Include="controls\PControlContainer.h" />
+    <ClInclude Include="controls\PControlContainerStates.h" />
+    <ClInclude Include="controls\PControlStates.h" />
+    <ClInclude Include="controls\ProgressBar.h" />
+    <ClInclude Include="controls\PTexture.h" />
+    <ClInclude Include="controls\PTextureButton.h" />
+    <ClInclude Include="controls\PWidget.h" />
+    <ClInclude Include="controls\PWidgetStates.h" />
+    <ClInclude Include="controls\SeekBar.h" />
+    <ClInclude Include="controls\SpectrumVisualizer.h" />
+    <ClInclude Include="controls\WaveformVisualizer.h" />
+    <ClInclude Include="image\ImageBackground.h" />
+    <ClInclude Include="image\ImageBackgroundStates.h" />
+    <ClInclude Include="image\ImageCameraStates.h" />
+    <ClInclude Include="image\ImageCamera.h" />
+    <ClInclude Include="assets\cursors\PCursors.h" />
+    <ClInclude Include="io\Event.h" />
+    <ClInclude Include="io\EventObserver.h" />
+    <ClInclude Include="io\EventSubscriber.h" />
+    <ClInclude Include="io\InputListener.h" />
+    <ClInclude Include="io\WindowIOController.h" />
+    <ClInclude Include="ui\PUI.h" />
+    <ClInclude Include="util\PUtils.h" />
   </ItemGroup>
 </Project>

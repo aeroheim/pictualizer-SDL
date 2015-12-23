@@ -395,12 +395,12 @@ void AudioPlayerWidget::OnFileDrop(FileDropEvent* e)
 
 void AudioPlayerWidget::OnDirectoryDrop(FileDropEvent* e)
 {
-	for (auto it = std::tr2::sys::wrecursive_directory_iterator(PUtils::str2wstr(e->path)); it != std::tr2::sys::wrecursive_directory_iterator(); it++)
+	for (auto it = boost::filesystem::recursive_directory_iterator(PUtils::str2wstr(e->path)); it != boost::filesystem::recursive_directory_iterator(); it++)
 	{
 		const auto& file = it->path();
 
 		if (PUtils::pathIsMusic(file.filename()))
-			enqueueTrack(PUtils::wstr2str(file));
+			enqueueTrack(file.string());
 	}
 }
 
