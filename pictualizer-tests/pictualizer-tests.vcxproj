@@ -18,7 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -44,14 +44,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include;../Dependencies/gtest-1.7.0/include;../Dependencies/gmock-1.7.0/include;../Pictualizer/audio;../Pictualizer/util</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include;../Dependencies/gtest-1.7.0/include;../Pictualizer/audio;../Pictualizer/util</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../Dependencies/gmock-1.7.0;../Dependencies/gtest-1.7.0;../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;tag.lib;gtest.lib;gmock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../Dependencies/gtest-1.7.0/Debug;../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;tag.lib;gtestd.lib;gtest_maind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
