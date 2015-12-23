@@ -84,7 +84,7 @@ void ImageBackground::draw()
 
 				// Restore the shared texture's alpha.
 				tempAlpha = tempImage.getAlpha();
-				image.setAlpha(std::abs(tempAlpha - image.getMaxAlpha()));
+				image.setAlpha(image.getMaxAlpha());
 			}
 		}
 		// Draw temp image when fading in MANUAL mode.
@@ -294,7 +294,6 @@ void ImageBackground::OnImageReady()
 		tempCamera = imageCamera;
 		tempImage = image;
 
-		tempAlpha = tempImage.getMaxAlpha();
 		tempImage.setAlpha(tempImage.getMaxAlpha());
 		tempImage.setFadeState(PControlFadeState::FADEOUT);
 	}

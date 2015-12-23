@@ -1,45 +1,49 @@
 #pragma once
 
-#pragma once
-
 #include <vector>
 #include <numeric>
 #include <cassert>
 #include "GridPanelCell.h"
 #include "GridPanelRowView.h"
-#include "GridPanelStates.h"
 
-class GridPanelRow
+class GridPanelRow : public PControl
 {
 	public:
-		GridPanelRow(std::vector<GridPanelCell>& row);
+		GridPanelRow(float x, float y, float w, float h, int c);
+		GridPanelRow(float x, float y, const std::vector<float>& colWidths, float h);
+
 		GridPanelRow(const GridPanelRow& other);
 
 		GridPanelRowView& getView();
 
-		void setStyle(GridPanelRowStyle s);
-		GridPanelRowStyle getStyle() const;
-
+		void setX(float x);
 		void setY(float y);
+		void setWidth(float w);
 		void setHeight(float h);
 
-		void setMinHeight(float mh);
-		void setMaxHeight(float mh);
+		void setColWidths(const std::vector<float>& cellWidths);
+		std::vector<float> getColWidths() const;
+		int getNumCols() const;
 
-		bool canResizeHeight(float h) const;
+		void setColor(float r, float g, float b);
+		void setBaseColor(float r, float g, float b);
+		void setFocusColor(float r, float g, float b);
+		void setColorState(PControlColorState s);
+		void setColorStyle(PControlColorStyle s);
+		void setColorSpeed(float seconds);
 
-		float getX() const;
-		float getY() const;
-		float getWidth() const;
-		float getHeight() const;
+		void setAlpha(float a);
+		void setMinAlpha(float a);
+		void setMaxAlpha(float a);
+		void setFadeState(PControlFadeState s);
+		void setFadeStyle(PControlFadeStyle s);
+		void setFadeSpeed(float speed);
 
-		float getMinHeight() const;
-		float getMaxHeight() const;
+		void draw(SDL_Renderer* ren);
 
-		GridPanelCellView& operator[] (const int index);
+		GridPanelCell& operator[] (const int index);
 
 	private:
 		GridPanelRowView view;
-		GridPanelRowStyle style;
-		std::vector<GridPanelCell*> cells;
+		std::vector<GridPanelCell> cells;
 };

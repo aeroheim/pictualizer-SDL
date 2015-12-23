@@ -106,7 +106,7 @@ void ImageCamera::resetCamera()
 	calculateMaxScale();
 	scale = maxScale;
 	view.w = (int) std::floor(w * scale);
-	view.h = (int) std::floor(h * scale);
+	view.h = (int) std::floor(w * scale);
 }
 
 void ImageCamera::setView(int iw, int ih)

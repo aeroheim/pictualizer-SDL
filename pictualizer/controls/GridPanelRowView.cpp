@@ -5,26 +5,6 @@ GridPanelRowView::GridPanelRowView(GridPanelRow& row) : row(row) {}
 
 GridPanelRowView::~GridPanelRowView() {}
 
-void GridPanelRowView::setStyle(GridPanelRowStyle s)
-{
-	row.setStyle(s);
-}
-
-GridPanelRowStyle GridPanelRowView::getStyle() const
-{
-	return row.getStyle();
-}
-
-void GridPanelRowView::setMinHeight(float mh)
-{
-	row.setMinHeight(mh);
-}
-
-void GridPanelRowView::setMaxHeight(float mh)
-{
-	row.setMaxHeight(mh);
-}
-
 float GridPanelRowView::getX() const
 {
 	return row.getX();
@@ -45,48 +25,38 @@ float GridPanelRowView::getHeight() const
 	return row.getHeight();
 }
 
-float GridPanelRowView::getMinHeight() const
-{
-	return row.getMinHeight();
-}
-
-float GridPanelRowView::getMaxHeight() const
-{
-	return row.getMaxHeight();
-}
-
 int GridPanelRowView::getRoundedX() const
 {
-	return (int) std::round(row.getX());
+	return row.getRoundedX();
 }
 
 int GridPanelRowView::getRoundedY() const
 {
-	return (int) std::round(row.getY);
+	return row.getRoundedY();
 }
 
 int GridPanelRowView::getRoundedWidth() const
 {
-	return (int) std::round(row.getWidth());
+	return row.getRoundedWidth();
 }
 
 int GridPanelRowView::getRoundedHeight() const
 {
-	return (int) std::round(row.getHeight());
+	return row.getRoundedHeight();
 }
 
-int GridPanelRowView::getRoundedMinHeight() const
+int GridPanelRowView::getNumCols() const
 {
-	return (int) std::round(row.getMinHeight());
+	return row.getNumCols();
 }
 
-int GridPanelRowView::getRoundedMaxHeight() const
+std::vector<float> GridPanelRowView::getColWidths() const
 {
-	return (int) std::round(row.getMaxHeight());
+	return row.getColWidths();
 }
 
 GridPanelCellView& GridPanelRowView::operator[] (const int index)
 {
-	return row[index];
+	return row[index].getView();
 }
 

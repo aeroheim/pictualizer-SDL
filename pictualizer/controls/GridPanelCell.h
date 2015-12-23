@@ -5,7 +5,6 @@
 #include <cassert>
 #include "PControl.h"
 #include "GridPanelCellView.h"
-#include "GridPanelStates.h"
 
 class GridPanelCell : public PControl
 {
@@ -25,9 +24,6 @@ class GridPanelCell : public PControl
 		void setY(float y);
 		void setWidth(float w);
 		void setHeight(float h);
-
-		bool canResizeWidth(float w) const;
-		bool canResizeHeight(float h) const;
 
 		void setColor(float r, float g, float b);
 		void setBaseColor(float r, float g, float b);
