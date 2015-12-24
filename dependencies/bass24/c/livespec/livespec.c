@@ -8,7 +8,7 @@
 #include <math.h>
 #include "bass.h"
 
-#define SPECWIDTH 368	// display width
+#define SPECWIDTH 600 // display width
 #define SPECHEIGHT 127	// height (changing requires palette adjustments too)
 
 HWND win=NULL;
@@ -38,11 +38,14 @@ void CALLBACK UpdateSpectrum(UINT uTimerID, UINT uMsg, DWORD dwUser, DWORD dw1, 
 	int x,y,y1;
 
 	if (specmode==3) { // waveform
-		short buf[SPECWIDTH];
+		short buf[14336];
 		memset(specbuf,0,SPECWIDTH*SPECHEIGHT);
 		BASS_ChannelGetData(chan,buf,sizeof(buf)); // get the sample data
+
+		int sampleUnit = floor(14336.0f / SPECWIDTH);
+
 		for (x=0;x<SPECWIDTH;x++) {
-			int v=(32767-buf[x])*SPECHEIGHT/65536; // invert and scale to fit display
+			int v=(32767-buf[x * sampleUnit])*SPECHEIGHT/65536; // invert and scale to fit display
 			if (!x) y=v;
 			do { // draw line from previous sample...
 				if (y<v) y++;
