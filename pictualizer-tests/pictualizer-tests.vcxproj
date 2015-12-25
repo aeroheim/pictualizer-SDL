@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -22,10 +30,23 @@
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -35,7 +56,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -45,14 +72,29 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Dependencies/taglib-1.10/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL-2.0.4-9901/include;../Dependencies/gtest-1.7.0/include;../Pictualizer/audio;../Pictualizer/util</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.10/include;../Dependencies/bass24/include;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL-2.0.4-9901/include;../Dependencies/gtest-1.7.0/include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../Dependencies/gtest-1.7.0/Debug;../Dependencies/taglib-1.10/lib;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL-2.0.4-9901/lib/x86/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;tag.lib;gtestd.lib;gtest_maind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../Dependencies/bass24/Debug/x86/lib;../Dependencies/bassflac24/Debug/x86/lib;../Dependencies/gtest-1.7.0/Debug;../Dependencies/SDL-2.0.4-9901/Debug/x86/lib;../Dependencies/SDL2_image-2.0.0/Debug/x86/lib;../Dependencies/SDL2_ttf-2.0.12/Debug/x86/lib;../Dependencies/taglib-1.10/Debug/x86/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;bassflac.lib;tag.lib;gtestd.lib;gtest_maind.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.10/include;../Dependencies/bass24/include;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL-2.0.4-9901/include;../Dependencies/gtest-1.7.0/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4251;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../Dependencies/bass24/Debug/x64/lib;../Dependencies/bassflac24/Debug/x64/lib;../Dependencies/gtest-1.7.0/Debug;../Dependencies/SDL-2.0.4-9901/Debug/x64/lib;../Dependencies/SDL2_image-2.0.0/Debug/x64/lib;../Dependencies/SDL2_ttf-2.0.12/Debug/x64/lib;../Dependencies/taglib-1.10/Debug/x64/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;bassflac.lib;tag.lib;gtestd.lib;gtest_maind.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -62,14 +104,35 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Dependencies/taglib-1.9.1/include;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL2-2.0.4/include;../Dependencies/gtest-1.7.0/include;../Dependencies/gmock-1.7.0/include;../Pictualizer/audio</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.10/include;../Dependencies/bassflac24/include;../Dependencies/bass24/include;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL-2.0.4-9901/include;../Dependencies/gtest-1.7.0/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../Dependencies/gmock-1.7.0;../Dependencies/gtest-1.7.0;../Dependencies/taglib-1.9.1;../Dependencies/bass24/c;../Dependencies/SDL2_image-2.0.0/lib/x86/;../Dependencies/SDL2_ttf-2.0.12/lib/x86/;../Dependencies/SDL2-2.0.4/lib/x86/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;tag.lib;gtest.lib;gmock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../Dependencies/bass24/Release/x86/lib;../Dependencies/bassflac24/Release/x86/lib;../Dependencies/gtest-1.7.0/Release;../Dependencies/SDL-2.0.4-9901/Release/x86/lib;../Dependencies/SDL2_image-2.0.0/Release/x86/lib;../Dependencies/SDL2_ttf-2.0.12/Release/x86/lib;../Dependencies/taglib-1.10/Release/x86/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;bassflac.lib;tag.lib;gtest.lib;gtest_main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../Dependencies/taglib-1.10/include;../Dependencies/bassflac24/include;../Dependencies/bass24/include;../Dependencies/SDL2_image-2.0.0/include;../Dependencies/SDL2_ttf-2.0.12/include;../Dependencies/SDL-2.0.4-9901/include;../Dependencies/gtest-1.7.0/include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../Dependencies/bass24/Release/x86/lib;../Dependencies/bassflac24/Release/x86/lib;../Dependencies/gtest-1.7.0/Release;../Dependencies/SDL-2.0.4-9901/Release/x86/lib;../Dependencies/SDL2_image-2.0.0/Release/x86/lib;../Dependencies/SDL2_ttf-2.0.12/Release/x86/lib;../Dependencies/taglib-1.10/Release/x86/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_image.lib;bass.lib;bassflac.lib;tag.lib;gtest.lib;gtest_main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
