@@ -1,12 +1,7 @@
 #pragma once
 
 #include <SDL.h>
-#include <locale>
-#include <codecvt>
 #include "EventObserver.h"
-#include "../assets/cursors/PCursors.h"
-#include "../audio/AudioTrack.h"
-
 
 class WindowIOController : public EventObserver
 {

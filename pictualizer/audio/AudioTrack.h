@@ -1,25 +1,16 @@
 #pragma once
 
 #include <SDL.h>
-#include <SDL_image.h>
-#include <taglib.h>
 #include <fileref.h>
-#include <mpegfile.h>
 #include <flacfile.h>
 #include <mp4file.h>
 #include <asffile.h>
-#include <apefile.h>
-#include <mpcfile.h>
-#include <wavpackfile.h>
 #include <id3v2tag.h>
 #include <apetag.h>
-#include <assert.h>
 #include <string>
-#include <boost/filesystem.hpp>
 #include "AudioTrackStates.h"
 #include "../controls/Image.h"
 #include "../io/EventObserver.h"
-#include "../util/PUtils.h"
 
 /*
  *	The AudioTrack class serves as the default object representation of tracks in pictualizer.

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "AudioPlaylist.h"
 
 AudioPlaylist::AudioPlaylist(std::wstring n) : name(n) {}

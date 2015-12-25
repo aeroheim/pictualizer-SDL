@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include <locale>
-#include <codecvt>
 #include <boost/filesystem.hpp>
 
 namespace PUtils

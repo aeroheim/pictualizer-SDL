@@ -1,4 +1,8 @@
+#pragma once
+
 #include "PUtils.h"
+#include <locale>
+#include <codecvt>
 
 namespace PUtils
 {

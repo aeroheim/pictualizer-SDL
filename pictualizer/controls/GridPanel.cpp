@@ -1,4 +1,9 @@
+#pragma once
+
 #include "GridPanel.h"
+#include <numeric>
+#include <cassert>
+#include "../config/PGlobals.h"
 
 using namespace PGlobals;
 

@@ -1,4 +1,8 @@
+#pragma once
+
 #include "SeekBar.h"
+#include <cassert>
+#include <sstream>
 
 SeekBar::SeekBar(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) :
 	PControl(x, y, w, h),

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "EventSubscriber.h"
-#include <algorithm>
 #include <vector>
 
 class EventSubscriber;

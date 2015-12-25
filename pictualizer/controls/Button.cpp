@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Button.h"
 
 Button::Button(float x, float y, float w, float h) : PControl(x, y, w, h), style(ButtonStyle::CLICK), toggled(false) {}

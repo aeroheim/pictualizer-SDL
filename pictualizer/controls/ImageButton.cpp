@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ImageButton.h"
 
 ImageButton::ImageButton(ImageTexture image, float x, float y, float w, float h) :

@@ -1,10 +1,7 @@
 #pragma once
 
 #include <SDL.h>
-#include <assert.h>
-#include <algorithm>
 #include "PControlStates.h"
-#include "../config/PGlobals.h"
 
 struct PFloatColor
 {

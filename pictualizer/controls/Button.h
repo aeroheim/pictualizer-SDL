@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SDL.h>
 #include "PControl.h"
 #include "ButtonStates.h"
 #include "../io/InputListener.h"

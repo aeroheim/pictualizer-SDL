@@ -1,3 +1,5 @@
+#pragma once
+
 #include "EventSubscriber.h"
 
 void EventSubscriber::subscribeTo(EventObserver* o)

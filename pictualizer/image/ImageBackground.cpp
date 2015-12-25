@@ -1,4 +1,8 @@
+#pragma once
+
 #include "ImageBackground.h"
+#include "../util/PUtils.h"
+#include "../config/PGlobals.h"
 
 using namespace PGlobals;
 

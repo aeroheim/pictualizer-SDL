@@ -1,4 +1,8 @@
+#pragma once
+
 #include "PWidget.h"
+#include "../assets/cursors/PCursors.h"
+#include "../config/PGlobals.h"
 
 using namespace PGlobals;
 

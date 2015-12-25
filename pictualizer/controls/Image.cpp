@@ -1,4 +1,10 @@
+#pragma once
+
 #include "Image.h"
+#include <SDL_image.h>
+#include <SDL_thread.h>
+#include <string>
+#include <cassert>
 
 Image::Image(ImageTexture image, float x, float y, float w, float h) : 
 	PControl(x, y, w, h),

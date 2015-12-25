@@ -1,4 +1,8 @@
+#pragma once
+
 #include "WindowIOController.h"
+#include "../assets/cursors/PCursors.h"
+#include "../util/PUtils.h"
 
 WindowIOController::WindowIOController(SDL_Window* window)
 {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iomanip>
-#include <sstream>
 #include "Image.h"
 #include "Label.h"
 #include "PControl.h"

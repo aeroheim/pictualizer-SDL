@@ -1,4 +1,7 @@
+#pragma once
+
 #include "Label.h"
+#include "../config/PGlobals.h"
 
 using namespace PGlobals;
 

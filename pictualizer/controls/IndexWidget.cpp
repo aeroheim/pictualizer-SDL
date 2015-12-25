@@ -1,4 +1,7 @@
+#pragma once
+
 #include "IndexWidget.h"
+#include <cassert>
 
 IndexWidget::IndexWidget(SDL_Renderer* ren, PFontType fontType, float x, float y, float w, float h) :  
 	PControl(x, y, w, h),

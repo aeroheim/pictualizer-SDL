@@ -1,4 +1,9 @@
+#pragma once
+
 #include "PControl.h"
+#include <assert.h>
+#include <algorithm>
+#include "../config/PGlobals.h"
 
 using namespace PGlobals;
 

@@ -1,4 +1,7 @@
+#pragma once
+
 #include "GridPanelCell.h"
+#include <cassert>
 
 GridPanelCell::GridPanelCell(float x, float y, float w, float h) : 
 	PControl(x, y, w, h),

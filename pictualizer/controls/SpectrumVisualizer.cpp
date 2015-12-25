@@ -1,4 +1,8 @@
+#pragma once
+
 #include "SpectrumVisualizer.h"
+#include <cassert>
+#include <algorithm>
 
 SpectrumVisualizer::SpectrumVisualizer(float x, float y, float w, float h) :
 	PControl(x, y, w, h),

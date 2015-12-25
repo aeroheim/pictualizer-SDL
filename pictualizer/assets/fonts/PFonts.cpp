@@ -1,4 +1,9 @@
+#pragma once
+
 #include "PFonts.h"
+#include <map>
+#include <vector>
+#include <assert.h>
 
 namespace
 {

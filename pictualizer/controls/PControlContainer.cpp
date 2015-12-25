@@ -1,4 +1,7 @@
+#pragma once
+
 #include "PControlContainer.h"
+#include <cassert>
 
 PControlContainer::PControlContainer(float x, float y, float w, float h) :
 	PControl(x, y, w, h),

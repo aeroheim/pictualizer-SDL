@@ -1,17 +1,12 @@
 #pragma once
 
 #include "../io/EventObserver.h"
-#include "../io/InputListener.h"
-#include "../util/PUtils.h"
 #include "AudioPlayerStates.h"
 #include "AudioPlaylist.h"
 #include "AudioTrack.h"
 #include <bass.h>
-#include <bassflac.h>
-#include <algorithm>
 #include <string>
 #include <vector>
-#include <random>
 
 /*
  *	The AudioPlayer class serves as the main internal audio player for pictualizer. Objects may interact with

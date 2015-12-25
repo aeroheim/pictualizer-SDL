@@ -1,11 +1,6 @@
 #pragma once
 
-#include <map>
-#include <vector>
-#include <string>
-#include <assert.h>
 #include <SDL.h>
-#include <SDL_Image.h>
 #include "PTextureTypes.h"
 
 namespace PTextures

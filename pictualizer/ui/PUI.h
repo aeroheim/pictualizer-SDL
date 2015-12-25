@@ -1,10 +1,7 @@
 #pragma once
 
 #include <SDL.h>
-#include "../util/PUtils.h"
-#include "../controls/Label.h"
 #include "../controls/AudioPlayerWidget.h"
-#include "../controls/GridPanel.h"
 
 class PUI : public EventSubscriber, public EventObserver
 {

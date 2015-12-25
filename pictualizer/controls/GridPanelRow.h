@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <numeric>
-#include <cassert>
 #include "GridPanelCell.h"
 #include "GridPanelRowView.h"
 

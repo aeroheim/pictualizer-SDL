@@ -1,5 +1,10 @@
+#pragma once
+
 #include "AudioPlayerWidget.h"
-#include <iostream>
+#include <sstream>
+#include "../assets/fonts/PFonts.h"
+#include "../assets/textures/PTextures.h"
+#include "../util/PUtils.h"
 
 using namespace std;
 

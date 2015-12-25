@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GridPanelRow.h"
 #include "GridPanelRowView.h"
 

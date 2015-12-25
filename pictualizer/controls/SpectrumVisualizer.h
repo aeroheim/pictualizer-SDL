@@ -5,7 +5,6 @@
 #include <SDL.h>
 #include <bass.h>
 #include <vector>
-#include <algorithm>
 #include "PControl.h"
 
 struct FrequencyBin

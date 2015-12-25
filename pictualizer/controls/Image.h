@@ -1,11 +1,8 @@
 #pragma once
 
 #include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_thread.h>
 #include <unordered_map>
 #include <memory>
-#include <string>
 #include "PControl.h"
 #include "../io/EventObserver.h"
 

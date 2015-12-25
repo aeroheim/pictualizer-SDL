@@ -1,3 +1,5 @@
+#pragma once
+
 #include "InputListener.h"
 
 InputListener::InputListener()

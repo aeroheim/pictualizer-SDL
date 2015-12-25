@@ -1,3 +1,5 @@
+#pragma once
+
 #include "WaveformVisualizer.h"
 
 WaveformVisualizer::WaveformVisualizer(float x, float y, float w, float h) : 

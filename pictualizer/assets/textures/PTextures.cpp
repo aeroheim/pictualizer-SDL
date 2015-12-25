@@ -1,4 +1,11 @@
+#pragma once
+
 #include "PTextures.h"
+#include <map>
+#include <vector>
+#include <string>
+#include <assert.h>
+#include <SDL_Image.h>
 
 namespace
 {

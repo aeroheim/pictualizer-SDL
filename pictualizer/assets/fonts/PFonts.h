@@ -1,9 +1,5 @@
 #pragma once
 
-#include <map>
-#include <vector>
-#include <string>
-#include <assert.h>
 #include <SDL_ttf.h>
 #include "PFontTypes.h"
 

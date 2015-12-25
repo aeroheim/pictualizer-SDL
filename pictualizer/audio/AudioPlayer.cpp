@@ -1,5 +1,8 @@
+#pragma once
+
 #include "AudioPlayer.h"
-#include <iostream>
+#include <bassflac.h>
+#include <random>
 
 using namespace std;
 

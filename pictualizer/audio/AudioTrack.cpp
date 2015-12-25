@@ -1,4 +1,14 @@
+#pragma once
+
 #include "AudioTrack.h"
+#include <taglib.h>
+#include <mpegfile.h>
+#include <apefile.h>
+#include <mpcfile.h>
+#include <wavpackfile.h>
+#include <boost/filesystem.hpp>
+#include <assert.h>
+#include "../util/PUtils.h"
 
 AudioTrack::AudioTrack(std::string path) : format(AudioTrackFormat::INVALID), filePath(L""), title(L""), artist(L""), album(L""), duration(0), populated(false)
 {

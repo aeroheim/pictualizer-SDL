@@ -1,4 +1,7 @@
+#pragma once
+
 #include <SDL.h>
+#include <SDL_main.h>
 #include <SDL_syswm.h>
 #include <SDL_ttf.h>
 #include <iostream>

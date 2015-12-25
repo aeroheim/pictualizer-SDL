@@ -1,3 +1,5 @@
+#pragma once
+
 #include "PTexture.h"
 
 PTexture::PTexture(PTextureType textureType, float x, float y, float w, float h) :
@@ -6,8 +8,8 @@ PTexture::PTexture(PTextureType textureType, float x, float y, float w, float h)
 	textureType(textureType),
 	texture(nullptr)
 {
-	PTextures::requestTexture(textureType, (int) std::round(getWidth() * getHeight()), &texture);
-}
+	PTextures::requestTexture(textureType, (int) round(getWidth() * getHeight()), &texture);
+}		
 
 PTexture::PTexture(float x, float y, float w, float h) : PTexture(PTextureType::NONE, x, y, w, h) {}
 
@@ -22,7 +24,7 @@ PTexture::PTexture(const PTexture& other) :
 	textureType(other.textureType),
 	dest(other.dest)
 {
-	if (PTextures::requestTexture(textureType, (int) std::round(getWidth() * getHeight()), &texture))
+	if (PTextures::requestTexture(textureType, (int) round(getWidth() * getHeight()), &texture))
 	{
 		// Restore previous color & alpha values
 		PFloatColor color = getColor();
@@ -39,7 +41,7 @@ PTexture& PTexture::operator=(const PTexture& other)
 	setWidth(((PControl&) other).getWidth());
 	setHeight(((PControl&) other).getHeight());
 
-	if (PTextures::requestTexture(other.textureType, (int) std::round(getWidth() * getHeight()), &texture, textureType))
+	if (PTextures::requestTexture(other.textureType, (int) round(getWidth() * getHeight()), &texture, textureType))
 	{
 		// Restore previous color & alpha values
 		PFloatColor color = getColor();
@@ -56,7 +58,7 @@ PTexture& PTexture::operator=(const PTexture& other)
 
 void PTexture::setTexture(PTextureType textureType)
 {
-	if (PTextures::requestTexture(textureType, (int) std::round(getWidth() * getHeight()), &texture, this->textureType))
+	if (PTextures::requestTexture(textureType, (int) round(getWidth() * getHeight()), &texture, this->textureType))
 	{
 		// Restore previous color & alpha values
 		PFloatColor color = getColor();
@@ -94,7 +96,7 @@ void PTexture::setWidth(float w)
 	PControl::setWidth(w);
 	dest.w = getRoundedWidth();
 
-	if (PTextures::requestTexture(textureType, (int) std::round(getWidth() * getHeight()), &texture, this->textureType))
+	if (PTextures::requestTexture(textureType, (int) round(getWidth() * getHeight()), &texture, this->textureType))
 	{
 		// Restore previous color & alpha values
 		PFloatColor color = getColor();
@@ -109,7 +111,7 @@ void PTexture::setHeight(float h)
 	PControl::setHeight(h);
 	dest.h = getRoundedHeight();
 
-	if (PTextures::requestTexture(textureType, (int) std::round(getWidth() * getHeight()), &texture, this->textureType))
+	if (PTextures::requestTexture(textureType, (int) round(getWidth() * getHeight()), &texture, this->textureType))
 	{
 		// Restore previous color & alpha values
 		PFloatColor color = getColor();

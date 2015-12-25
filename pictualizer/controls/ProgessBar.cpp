@@ -1,4 +1,7 @@
+#pragma once
+
 #include "ProgressBar.h"
+#include <cassert>
 
 ProgressBar::ProgressBar(SDL_Renderer* ren, float x, float y, float w, float h) :
 	PControl(x, y, w, h),

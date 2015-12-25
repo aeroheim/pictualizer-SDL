@@ -1,12 +1,10 @@
 #pragma once               
 
 #include <SDL.h>
-#include <SDL_image.h>
 #include "ImageCamera.h"
 #include "ImageBackgroundStates.h"
 #include "../controls/Image.h"
 #include "../io/EventSubscriber.h"
-#include "../util/PUtils.h"
 
 class ImageBackground : public EventSubscriber, public EventObserver, public InputListener 
 {

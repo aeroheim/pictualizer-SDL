@@ -1,21 +1,16 @@
 #pragma once
 
 #include <iomanip>
-#include <sstream>
 #include <boost/filesystem.hpp>
 #include "PWidget.h"
 #include "IndexWidget.h"
 #include "PTextureButton.h"
-#include "ImageButton.h"
 #include "SeekBar.h"
 #include "WaveformVisualizer.h"
 #include "SpectrumVisualizer.h"
 #include "AudioPlayerWidgetStates.h"
 #include "PControlContainer.h"
 #include "../audio/AudioPlayer.h"
-#include "../assets/fonts/PFonts.h"
-#include "../assets/textures/PTextures.h"
-#include "../util/PUtils.h"
 
 class AudioPlayerWidget : public PWidget
 {

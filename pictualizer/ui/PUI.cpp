@@ -1,3 +1,5 @@
+#pragma once
+
 #include "PUI.h"
 
 PUI::PUI(SDL_Renderer* ren, AudioPlayer* audioPlayer, int ww, int hh) : 

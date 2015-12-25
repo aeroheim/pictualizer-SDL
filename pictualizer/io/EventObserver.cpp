@@ -1,4 +1,7 @@
+#pragma once
+
 #include "EventObserver.h"
+#include <algorithm>
 
 void EventObserver::addSubscriber(EventSubscriber* s)
 {

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "PCursors.h"
 
 namespace PCursors

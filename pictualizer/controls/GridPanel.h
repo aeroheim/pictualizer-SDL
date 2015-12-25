@@ -1,11 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <numeric>
-#include <cassert>
 #include "GridPanelRow.h"
 #include "../io/EventSubscriber.h"
-#include "../config/PGlobals.h"
 
 class GridPanel : public PControl, public EventSubscriber
 {

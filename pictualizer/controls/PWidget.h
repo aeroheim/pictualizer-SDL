@@ -5,7 +5,6 @@
 #include "PWidgetStates.h"
 #include "../io/InputListener.h"
 #include "../io/EventSubscriber.h"
-#include "../assets/cursors/PCursors.h"
 
 class PWidget : public PControl, public EventSubscriber, public EventObserver, public InputListener
 {

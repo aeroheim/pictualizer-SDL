@@ -1,3 +1,5 @@
+#pragma once
+
 #include "PTextureButton.h"
 
 PTextureButton::PTextureButton(PTextureType textureType, float x, float y, float w, float h) :
