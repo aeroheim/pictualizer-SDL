@@ -8,106 +8,125 @@ using namespace PGlobals;
 
 ImageBackground::ImageBackground(SDL_Renderer* ren, int ww, int wh) : 
 	ren(ren), 
-	imageCamera(ww, wh), 
-	tempCamera(ww, wh), 
-	image(0.0f, 0.0f, (float) ww, (float) wh), 
-	tempImage(0.0f, 0.0f, (float) ww, (float) wh),
-	iw(0),
-	ih(0)
+	currentImageCamera(ww, wh), fadingCamera(ww, wh), 
+	currentImage(0.0f, 0.0f, static_cast<float>(ww), static_cast<float>(wh)), fadingImage(0.0f, 0.0f, static_cast<float>(ww), static_cast<float>(wh))
 {
-	imageIndex = -1;
-	setState(ImageBackgroundState::SLIDESHOW);
-	slideshowTimer = 30;
-	frameCount = 0;
+	// Create the main background buffer where the ImageBackground will be drawn on.
+	backgroundBuffer = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, ww, wh);
+	SDL_SetTextureBlendMode(backgroundBuffer, SDL_BLENDMODE_BLEND);
 
-	background = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, ww, wh);
-	SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
+	// Configure the images used for the ImageBackground.
+	currentImage.setMaxAlpha(PConstants::IMGBG_MAX_ALPHA);
+	currentImage.setMinAlpha(PConstants::IMGBG_MIN_ALPHA);
+	currentImage.setAlpha(currentImage.getMaxAlpha());
+	currentImage.setFadeSpeed(PConstants::IMGBG_ROAM_FADE_SPEED);
 
-	image.setMaxAlpha(PConstants::IMGBG_MAX_ALPHA);
-	image.setMinAlpha(PConstants::IMGBG_MIN_ALPHA);
-	image.setAlpha(image.getMaxAlpha());
-	image.setFadeSpeed(PConstants::IMGBG_ROAM_FADE_SPEED);
+	fadingImage.setMaxAlpha(PConstants::IMGBG_MAX_ALPHA);
+	fadingImage.setMinAlpha(PConstants::IMGBG_MIN_ALPHA);
+	fadingImage.setAlpha(PConstants::IMGBG_MAX_ALPHA);
+	fadingImage.setFadeSpeed(PConstants::IMGBG_ROAM_FADE_SPEED);
 
-	tempImage.setMaxAlpha(PConstants::IMGBG_MAX_ALPHA);
-	tempImage.setMinAlpha(PConstants::IMGBG_MIN_ALPHA);
-	tempImage.setAlpha(PConstants::IMGBG_MAX_ALPHA);
-	tempImage.setFadeSpeed(PConstants::IMGBG_ROAM_FADE_SPEED);
-	tempAlpha = 0;
+	// Configure camera and camera-related variables.
+	currentImageCamera.setPanSpeed(PConstants::IMGBG_PAN_SPEED);
+	currentImageCamera.setState(ImageCameraState::ROAMING);
+	calculateFadeDistance(currentImageCamera.getPanSpeed());
 
-	fadeStyle = ImageFadeStyle::ALPHA;
-
-	subscribeTo(&image);
-	addSubscriber(&imageCamera);
+	// Event/input handling.
+	EventSubscriber::subscribeTo(&currentImage);
+	EventObserver::addSubscriber(&currentImageCamera);
 	registerKey(PVariables::IMGBG_ACCESS_KEY);
-
-	imageCamera.setPanSpeed(PConstants::IMGBG_PAN_SPEED);
-	imageCamera.setState(ImageCameraState::ROAMING);
-
-	calculateFadeDist(imageCamera.getPanSpeed());
 }
 
 ImageBackground::~ImageBackground()
 {
-	if (background)
-		SDL_DestroyTexture(background);
+	if (backgroundBuffer)
+		SDL_DestroyTexture(backgroundBuffer);
 }
 
 void ImageBackground::draw()
 {
 	if (!images.empty())
 	{
-		// Render to the background buffer instead of main Pictualizer buffer.
-		SDL_SetRenderTarget(ren, background);
+		// Switch and render to backgroundBuffer.
+		SDL_SetRenderTarget(ren, backgroundBuffer);
 
-		// Render the current image.
-		image.draw(ren, imageCamera.getView());
-
-		if (imageCamera.getState() == ImageCameraState::ROAMING)
+		switch (currentImageCamera.getState())
 		{
-			imageCamera.updateView();
-
-			// Begin fading when the roaming imageCamera hits a fade zone; tempImage is used to facilitate the fade effect.
-			if (viewInFadeZone(imageCamera, image) && tempImage.getFadeState() != PControlFadeState::FADEOUT)
-			{
-				tempCamera = imageCamera;
-				tempImage = image;
-
-				tempAlpha = tempImage.getMaxAlpha();
-				tempImage.setAlpha(tempImage.getMaxAlpha());
-				tempImage.setFadeState(PControlFadeState::FADEOUT);
-
-				imageCamera.resetPanning();
-			}
-
-			// Since both tempImage and image share the same texture, we must swap alpha values back and forth when fading out.
-			if (tempImage.getFadeState() == PControlFadeState::FADEOUT && tempImage.getImage())
-			{
-				tempImage.setAlpha(tempAlpha);
-				tempImage.draw(ren, tempCamera.getView());
-				tempCamera.updateView();
-
-				// Restore the shared texture's alpha.
-				tempAlpha = tempImage.getAlpha();
-				image.setAlpha(image.getMaxAlpha());
-			}
+			case ImageCameraState::MANUAL:
+				drawManualImage();
+			case ImageCameraState::ROAMING:
+				drawRoamingImage();
 		}
-		// Draw temp image when fading in MANUAL mode.
-		else if (tempImage.getFadeState() == PControlFadeState::FADEOUT && tempImage.getImage())
-			tempImage.draw(ren, tempCamera.getView());
 
 		// Check every frame against the slideshow timer when in slideshow mode.
-		if (state == ImageBackgroundState::SLIDESHOW)
+		if (slideshowState == ImageBackgroundState::SLIDESHOW)
 			checkSlideshowTimer();
 
-		// Reset rendering target and render the background buffer.
+		// Switch back to main buffer and render the backgroundBuffer to it.
 		SDL_SetRenderTarget(ren, nullptr);
-		SDL_RenderCopy(ren, background, nullptr, nullptr);
+		SDL_RenderCopy(ren, backgroundBuffer, nullptr, nullptr);
 	}
 }
 
+void ImageBackground::drawRoamingImage()
+{
+	// Draw the current image.
+	currentImage.draw(ren, currentImageCamera.getView());
+	currentImageCamera.updateView();
+
+	// Initialize fade out sequence when the roaming currentImageCamera hits a fade zone.
+	if (viewInFadeZone(currentImageCamera, currentImage) && fadingImage.getFadeState() != PControlFadeState::FADEOUT)
+	{
+		/*
+		* Fading out is done by assigning fadingImage to currentImage (so that they share the same texture) and then
+		* fading out fadingImage. Each frame during the fade out has currentImage drawn with max alpha and then fadingImage
+		* drawn on top using a fadingImageAlpha.
+		*
+		* Panning two separate views simultaneously while fading out is achieved by using another camera
+		* along with the main camera. fadingCamera is assigned to currentImageCamera and continues panning in
+		* the same direction, while currentImageCamera resets with a new position and trajectory.
+		*/
+
+		fadingCamera = currentImageCamera;
+		fadingImage = currentImage;
+
+		fadingImageAlpha = fadingImage.getMaxAlpha();
+		fadingImage.setFadeState(PControlFadeState::FADEOUT);
+
+		currentImageCamera.resetPanning();
+	}
+
+	// Fade out.
+	if (fadingImage.getFadeState() == PControlFadeState::FADEOUT && fadingImage.getImage())
+	{
+		// Set the texture's alpha to the fade out alpha.
+		fadingImage.setAlpha(fadingImageAlpha);
+		fadingImage.draw(ren, fadingCamera.getView());
+
+		// Store the new alpha value to use in the next frame.
+		fadingImageAlpha = fadingImage.getAlpha();
+
+		// Set the texture's alpha to a value based on the fadingImageAlpha. This allows for a smoother fade-out look.
+		currentImage.setAlpha(std::abs(fadingImageAlpha - currentImage.getMaxAlpha()));
+
+		fadingCamera.updateView();
+	}
+}
+
+void ImageBackground::drawManualImage()
+{
+	// Draw the current image.
+	currentImage.draw(ren, currentImageCamera.getView());
+
+	// Draw the fadingImage in MANUAL mode when switching to another image.
+	if (fadingImage.getFadeState() == PControlFadeState::FADEOUT && fadingImage.getImage())
+		fadingImage.draw(ren, fadingCamera.getView());
+}
+
+
 void ImageBackground::setState(ImageBackgroundState s)
 {
-	state = s;
+	slideshowState = s;
 
 	if (s == ImageBackgroundState::SLIDESHOW)
 		frameCount = 0;
@@ -115,34 +134,34 @@ void ImageBackground::setState(ImageBackgroundState s)
 
 void ImageBackground::setImage(std::string path)
 {
-	image.pollImageBuffers(ren);
-	image.asyncSetImage(path);
+	currentImage.pollImageBuffers(ren);
+	currentImage.asyncSetImage(path);
 }
 
 void ImageBackground::setImage(int index)
 {
-	if (index >= 0 && (size_t)index < images.size())
+	if (index >= 0 && static_cast<size_t>(index) < images.size())
 	{
 		setImage(images[index]);
-		imageIndex = index;
+		slideshowIndex = index;
 	}
 }
 
 void ImageBackground::nextImage()
 {
-	if (imageIndex + 1 >= 0 && (size_t) (imageIndex + 1) < images.size())
+	if (slideshowIndex + 1 >= 0 && static_cast<size_t>(slideshowIndex + 1) < images.size())
 	{
-		imageIndex += 1;
-		setImage(images[imageIndex]);
+		slideshowIndex += 1;
+		setImage(images[slideshowIndex]);
 	}
 }
 
 void ImageBackground::prevImage()
 {
-	if (imageIndex - 1 >= 0 && (size_t) (imageIndex - 1) < images.size())
+	if (slideshowIndex - 1 >= 0 && static_cast<size_t>(slideshowIndex - 1) < images.size())
 	{
-		imageIndex -= 1;
-		setImage(images[imageIndex]);
+		slideshowIndex -= 1;
+		setImage(images[slideshowIndex]);
 	}
 }
 
@@ -153,12 +172,12 @@ void ImageBackground::enqueueImage(std::string path)
 
 void ImageBackground::removeImage(int index)
 {
-	if (index >= 0 && (size_t) index < images.size())
+	if (index >= 0 && static_cast<size_t>(index) < images.size())
 	{
-		if (imageIndex == index)
+		if (slideshowIndex == index)
 			setImage(index - 1);
-		else if (imageIndex < index)
-			--imageIndex;
+		else if (slideshowIndex < index)
+			--slideshowIndex;
 
 		images.erase(images.begin() + index);
 	}
@@ -170,9 +189,9 @@ void ImageBackground::handleEvent(Event* e)
 
 	if (!e->handled)
 	{
-		if (WindowResizedEvent* windowResizedEvent = dynamic_cast<WindowResizedEvent*>(e))
+		if (auto windowResizedEvent = dynamic_cast<WindowResizedEvent*>(e))
 			OnWindowResized(windowResizedEvent);
-		else if (FileDropEvent* fileDropEvent = dynamic_cast<FileDropEvent*>(e))
+		else if (auto fileDropEvent = dynamic_cast<FileDropEvent*>(e))
 		{
 			if (PUtils::pathIsImage(fileDropEvent->path))
 			{
@@ -181,19 +200,19 @@ void ImageBackground::handleEvent(Event* e)
 				e->handled = true;
 			}
 		}
-		else if (ImageLoadReadyEvent* imageLoadReadyEvent = dynamic_cast<ImageLoadReadyEvent*>(e))
+		else if (auto imageLoadReadyEvent = dynamic_cast<ImageLoadReadyEvent*>(e))
 		{
 			OnImageReady();
 			e->handled = true;
 		}
-		else if (ImageLoadedEvent* imageLoadedEvent = dynamic_cast<ImageLoadedEvent*>(e))
+		else if (auto imageLoadedEvent = dynamic_cast<ImageLoadedEvent*>(e))
 		{
 			OnImageLoaded(imageLoadedEvent);
 			e->handled = true;
 		}
-		else  if (KeyDownEvent* keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
+		else  if (auto keyDownEvent = dynamic_cast<KeyDownEvent*>(e))
 			setKeyHeld(keyDownEvent->key);
-		else if (KeyUpEvent* keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
+		else if (auto keyUpEvent = dynamic_cast<KeyUpEvent*>(e))
 		{
 			setKeyReleased(keyUpEvent->key);
 
@@ -208,48 +227,48 @@ void ImageBackground::handleEvent(Event* e)
 	}
 }
 
-void ImageBackground::calculateFadeDist(float panSpeed)
+void ImageBackground::calculateFadeDistance(float panSpeed)
 {
-	int framesToFade = (int) std::round(PConstants::P_FRAMERATE * image.getFadeSpeed());
-	fadeDist = (int) std::round(framesToFade * panSpeed);
+	int framesToFade = static_cast<int>(std::round(PConstants::P_FRAMERATE * currentImage.getFadeSpeed()));
+	fadeDistance = static_cast<int>(std::round(framesToFade * panSpeed));
 }
 
-bool ImageBackground::viewInFadeZone(ImageCamera& camera, Image& img)
+bool ImageBackground::viewInFadeZone(ImageCamera& camera, Image& img) const
 {
 	SDL_Rect view = *camera.getView();
 
 	switch (camera.getPanningState())
 	{
 		case CameraPanningState::LEFT:
-			if (view.x <= fadeDist)
+			if (view.x <= fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::RIGHT:
-			if (view.x + view.w >= iw - fadeDist)
+			if (view.x + view.w >= iw - fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::TOP:
-			if (view.y <= fadeDist)
+			if (view.y <= fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::BOTTOM:
-			if (view.y + view.h >= ih - fadeDist)
+			if (view.y + view.h >= ih - fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::BOTTOM_RIGHT:
-			if (view.y + view.h >= ih - fadeDist || view.x + view.w >= iw - fadeDist)
+			if (view.y + view.h >= ih - fadeDistance || view.x + view.w >= iw - fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::BOTTOM_LEFT:
-			if (view.y + view.h >= ih - fadeDist || view.x <= fadeDist)
+			if (view.y + view.h >= ih - fadeDistance || view.x <= fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::TOP_RIGHT:
-			if (view.y <= fadeDist || view.x + view.w >= iw - fadeDist)
+			if (view.y <= fadeDistance || view.x + view.w >= iw - fadeDistance)
 				return true;
 			break;
 		case CameraPanningState::TOP_LEFT:
-			if (view.y <= fadeDist || view.x <= fadeDist)
+			if (view.y <= fadeDistance || view.x <= fadeDistance)
 				return true;
 			break;
 	}
@@ -264,9 +283,9 @@ void ImageBackground::checkSlideshowTimer()
 		++frameCount;
 
 		// Advance to the next image (circular) if the timer has been reached.
-		if (((float) frameCount / 60) == slideshowTimer)
+		if ((static_cast<float>(frameCount) / 60) == slideshowTimer)
 		{
-			if ((size_t) (imageIndex + 1) < images.size())
+			if (static_cast<size_t>(slideshowIndex + 1) < images.size())
 				nextImage();
 			else
 				setImage(0);
@@ -276,18 +295,18 @@ void ImageBackground::checkSlideshowTimer()
 
 void ImageBackground::OnWindowResized(WindowResizedEvent* e)
 {
-	if (background)
+	if (backgroundBuffer)
 	{
-		SDL_DestroyTexture(background);
+		SDL_DestroyTexture(backgroundBuffer);
 
-		background = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, e->ww, e->wh);
-		SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
+		backgroundBuffer = SDL_CreateTexture(ren, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, e->ww, e->wh);
+		SDL_SetTextureBlendMode(backgroundBuffer, SDL_BLENDMODE_BLEND);
 	}
 
-	image.setWidth((float) e->ww);
-	image.setHeight((float) e->wh);
-	tempImage.setWidth((float)e->ww);
-	tempImage.setHeight((float)e->wh);
+	currentImage.setWidth(static_cast<float>(e->ww));
+	currentImage.setHeight(static_cast<float>(e->wh));
+	fadingImage.setWidth(static_cast<float>(e->ww));
+	fadingImage.setHeight(static_cast<float>(e->wh));
 }
 
 void ImageBackground::OnImageReady()
@@ -295,11 +314,12 @@ void ImageBackground::OnImageReady()
 	// Initiate fading to the new image, if there exists an image to fade to.
 	if (images.size() > 1)
 	{
-		tempCamera = imageCamera;
-		tempImage = image;
+		fadingCamera = currentImageCamera;
+		fadingImage = currentImage;
 
-		tempImage.setAlpha(tempImage.getMaxAlpha());
-		tempImage.setFadeState(PControlFadeState::FADEOUT);
+		fadingImageAlpha = fadingImage.getMaxAlpha();
+		fadingImage.setAlpha(fadingImage.getMaxAlpha());
+		fadingImage.setFadeState(PControlFadeState::FADEOUT);
 	}
 
 	// Reset slideshow timer count.
@@ -310,8 +330,8 @@ void ImageBackground::OnImageLoaded(ImageLoadedEvent* e)
 {
 	iw = e->iw;
 	ih = e->ih;
-	imageCamera.setView(e->iw, e->ih);
+	currentImageCamera.setView(e->iw, e->ih);
 
 	// Reset alpha, which is necessary if the previous image did not fully fade out before setImage was called again.
-	tempImage.setAlpha(tempImage.getMaxAlpha());
+	fadingImage.setAlpha(fadingImage.getMaxAlpha());
 }

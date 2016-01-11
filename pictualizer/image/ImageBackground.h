@@ -19,35 +19,38 @@ class ImageBackground : public EventSubscriber, public EventObserver, public Inp
 		void prevImage();
 		void enqueueImage(std::string path);
 		void removeImage(int index);
-		void handleEvent(Event* e);
+		void handleEvent(Event* e) override;
 
 	private:
 		SDL_Renderer* ren;
-		SDL_Texture* background;
-		ImageCamera imageCamera;
-		ImageCamera tempCamera;
-		Image image;
-		Image tempImage;
+		SDL_Texture* backgroundBuffer;
+		ImageCamera currentImageCamera;
+		ImageCamera fadingCamera;
+		Image currentImage;
+		Image fadingImage;
 
 		std::vector<std::string> images;
-		int imageIndex;
-		int iw;
-		int ih;
+		int slideshowIndex = -1;
+		int iw = 0;
+		int ih = 0;
 		
-		ImageBackgroundState state;
-		int slideshowTimer;
-		int frameCount;
+		ImageBackgroundState slideshowState = ImageBackgroundState::SLIDESHOW;
+		int slideshowTimer = 30;
+		int frameCount = 0;
 
-		ImageFadeStyle fadeStyle;
-		float tempAlpha;
-		int fadeDist;
+		ImageFadeStyle fadeStyle = ImageFadeStyle::ALPHA;
+		float fadingImageAlpha = 0;
+		int fadeDistance;
 
-		void calculateFadeDist(float panSpeed);
-		bool viewInFadeZone(ImageCamera& camera, Image& img);
+		void drawRoamingImage();
+		void drawManualImage();
+
+		void calculateFadeDistance(float panSpeed);
+		bool viewInFadeZone(ImageCamera& camera, Image& img) const;
 
 		void checkSlideshowTimer();
 
 		void OnWindowResized(WindowResizedEvent* e);
-		void OnImageReady();
 		void OnImageLoaded(ImageLoadedEvent* e);
+		void OnImageReady();
 };
