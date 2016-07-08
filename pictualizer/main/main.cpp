@@ -14,83 +14,95 @@
 using std::cout;
 using std::endl;
 
-int main(int argc, char** argv)
+bool initSDL(SDL_Window*& window, SDL_Renderer*& renderer)
 {
-	// Init
+	// Initialize SDL.
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		cout << "SDL_Init Error: " << SDL_GetError() << endl;
-		return 1;
+		cout << "SDL Initialization Error: " << SDL_GetError() << endl;
+		return false;
 	}
 
-	// Create window
-	SDL_Window* win = SDL_CreateWindow("Pictualizer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1080, 530, SDL_WINDOW_BORDERLESS);
-	if (win == nullptr)
+	// Create SDL window.
+	// NOTE: Window size should eventually be saved and loaded from a preferences file.
+	window = SDL_CreateWindow("Pictualizer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1080, 530, SDL_WINDOW_BORDERLESS);
+	if (window == nullptr)
 	{
-		cout << "Window Error: " << SDL_GetError << endl;
-		SDL_Quit();
+		cout << "Window Initialization Error: " << SDL_GetError << endl;
 		return 1;
 	}
 
-	// Create renderer
-	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-	if (ren == nullptr)
+	// Create SDL renderer.
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+	if (renderer == nullptr)
 	{
-		SDL_DestroyWindow(win);
-		cout << "SDL_CreateRenderer Error: " << SDL_GetError() << endl;
-		SDL_Quit();
+		cout << "Renderer Initialization Error: " << SDL_GetError() << endl;
 		return 1;
 	}
 
-	// Set blend mode on renderer.
-	SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);	// Use blending to allow for alpha effects on textures.
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");		// Use linear filtering to preserve image quality when scaled.
 
-	// Initialize SDL_TTF
+	// Initialize SDL_TTF.
 	if (TTF_Init() < 0)
 	{
-		SDL_DestroyWindow(win);
-		cout << "TTF_Init Error: " << TTF_GetError() << endl;
-		SDL_Quit();
+		cout << "Font Initialization Error: " << TTF_GetError() << endl;
 		return 1;
 	}
 
-	// Init BASS
+	return true;
+}
+
+bool initBASS(SDL_Window* window)
+{
 	SDL_SysWMinfo windowInfo;
 	SDL_VERSION(&windowInfo.version);
-	SDL_GetWindowWMInfo(win, &windowInfo);
+	SDL_GetWindowWMInfo(window, &windowInfo);
 
-	if (!BASS_Init(-1, 44100, 0, windowInfo.info.win.window, NULL))
+	// Initialize BASS.
+	if (!BASS_Init(-1, 44100, 0, windowInfo.info.win.window, nullptr))
 	{
-		SDL_DestroyWindow(win);
-		cout << "BASS_Init Error: " << BASS_ErrorGetCode() << endl;
+		cout << "BASS Initialization Error: " << BASS_ErrorGetCode() << endl;
+		return false;
+	}
+
+	return true;
+}
+
+int main(int argc, char** argv)
+{
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+
+	if (!initSDL(window, renderer) || !initBASS(window))
+	{
+		SDL_DestroyWindow(window);
+		SDL_DestroyRenderer(renderer);
 		SDL_Quit();
 		return 1;
 	}
 
-	// Use linear filtering to preserve image quality when scaled.
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");
-
 	int ww, wh;
-	SDL_GetWindowSize(win, &ww, &wh);
+	SDL_GetWindowSize(window, &ww, &wh);
 
 	// Initialize fonts.
 	PFonts::initFonts();
 
 	// Initialize textures.
-	PTextures::initTextures(ren);
+	PTextures::initTextures(renderer);
 
 	// Initialize image background.
-	ImageBackground imageBackground(ren, ww, wh);
+	ImageBackground imageBackground(renderer, ww, wh);
 	
 	// Initialize audio player.
 	AudioPlayer audioPlayer;
 	audioPlayer.setVolume(0.5f);
 
 	// Initialize UI.
-	PUI ui(ren, &audioPlayer, ww, wh);
+	PUI ui(renderer, &audioPlayer, ww, wh);
 
 	// Initialize IO.
-	WindowIOController windowIOController(win);
+	WindowIOController windowIOController(window);
 
 	windowIOController.addSubscriber(&imageBackground);
 	windowIOController.addSubscriber(&ui);
@@ -101,7 +113,7 @@ int main(int argc, char** argv)
 		audioPlayer.pollStatus();
 
 		// Clear previous frame.
-		SDL_RenderClear(ren);
+		SDL_RenderClear(renderer);
 
 		// Draw background.
 		imageBackground.draw();
@@ -110,14 +122,14 @@ int main(int argc, char** argv)
 		ui.draw();
 
 		// Render current frame.
-		SDL_RenderPresent(ren);
+		SDL_RenderPresent(renderer);
 	}
 
 	// Free fonts.
 	PFonts::freeFonts();
 
-	SDL_DestroyRenderer(ren);
-	SDL_DestroyWindow(win);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
 	TTF_Quit();
 	SDL_Quit();
 	return -1;
