@@ -2,6 +2,10 @@
 
 #include "EventSubscriber.h"
 
+EventSubscriber::~EventSubscriber()
+{
+}
+
 void EventSubscriber::subscribeTo(EventObserver* o)
 {
 	o->addSubscriber(this);

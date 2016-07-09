@@ -12,6 +12,9 @@ class EventObserver
 		virtual void removeSubscriber(EventSubscriber* s);
 
 	protected:
-		std::vector<EventSubscriber*> subscribers;
+		~EventObserver();
 		virtual void notify(Event* e);
+
+	private:
+		std::vector<EventSubscriber*> subscribers;
 };

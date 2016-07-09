@@ -11,6 +11,7 @@ class EventSubscriber
 		virtual void handleEvent(Event* e) = 0;
 
 	protected:
+		~EventSubscriber();
 		virtual void subscribeTo(EventObserver* o);
 		virtual void unsubscribeFrom(EventObserver* o);
 };
