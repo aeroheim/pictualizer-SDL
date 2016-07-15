@@ -6,8 +6,6 @@ Event::Event() : handled(false) {}
 
 Event::~Event() {}
 
-WindowResizeEvent::WindowResizeEvent(int w, int h) : ww(w), wh(h) {}
-
 WindowResizedEvent::WindowResizedEvent(int w, int h) : ww(w), wh(h) {}
 
 FileDropEvent::FileDropEvent(SDL_DropEvent& e, int x, int y, bool dir) : path(e.file), dir(dir), x(x), y(y) {}
@@ -16,13 +14,15 @@ KeyDownEvent::KeyDownEvent(SDL_KeyboardEvent& e) : key(e.keysym.sym) {}
 
 KeyUpEvent::KeyUpEvent(SDL_KeyboardEvent& e) : key(e.keysym.sym) {}
 
-MouseDownEvent::MouseDownEvent(SDL_MouseButtonEvent& e) : x(e.x), y(e.y), button(e.button) {}
+MouseDownEvent::MouseDownEvent(SDL_MouseButtonEvent& e) : button(e.button), x(e.x), y(e.y) {}
 
-MouseUpEvent::MouseUpEvent(SDL_MouseButtonEvent& e) : x(e.x), y(e.y), button(e.button) {}
+MouseUpEvent::MouseUpEvent(SDL_MouseButtonEvent& e) : button(e.button), x(e.x), y(e.y) {}
 
-MouseWheelEvent::MouseWheelEvent(SDL_MouseWheelEvent& e, int mx, int my) : y(e.y), mx(mx), my(my) {}
+MouseWheelEvent::MouseWheelEvent(SDL_MouseWheelEvent& e, int mx, int my) : x(x), y(y), scrollY(e.y) {}
 
-MouseMotionEvent::MouseMotionEvent(SDL_MouseMotionEvent& e) : xrel(e.xrel), yrel(e.yrel), x(e.x), y(e.y) {}
+MouseMotionEvent::MouseMotionEvent(SDL_MouseMotionEvent& e) : x(e.x), y(e.y), xrel(e.xrel), yrel(e.yrel) {}
+
+MouseDragEvent::MouseDragEvent(SDL_MouseMotionEvent& e, int downX, int downY) : x(e.x), y(e.y), xrel(e.xrel), yrel(e.yrel), downX(downX), downY(downY) {}
 
 ImageLoadReadyEvent::ImageLoadReadyEvent() {}
 

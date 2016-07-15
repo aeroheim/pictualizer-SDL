@@ -33,6 +33,7 @@
     <ClInclude Include="controls\AudioPlayerWidgetStates.h" />
     <ClInclude Include="controls\Button.h" />
     <ClInclude Include="controls\ButtonStates.h" />
+    <ClInclude Include="controls\ControlPresenter.h" />
     <ClInclude Include="controls\GridPanelCell.h" />
     <ClInclude Include="controls\GridPanel.h" />
     <ClInclude Include="controls\GridPanelCellView.h" />
@@ -61,10 +62,10 @@
     <ClInclude Include="image\ImageCamera.h" />
     <ClInclude Include="assets\cursors\PCursors.h" />
     <ClInclude Include="io\Event.h" />
+    <ClInclude Include="io\EventManager.h" />
     <ClInclude Include="io\EventObserver.h" />
     <ClInclude Include="io\EventSubscriber.h" />
-    <ClInclude Include="io\InputListener.h" />
-    <ClInclude Include="io\WindowIOController.h" />
+    <ClInclude Include="controls\PWindow.h" />
     <ClInclude Include="ui\PUI.h" />
     <ClInclude Include="util\PUtils.h" />
   </ItemGroup>
@@ -77,6 +78,7 @@
     <ClCompile Include="config\PGlobals.cpp" />
     <ClCompile Include="controls\AudioPlayerWidget.cpp" />
     <ClCompile Include="controls\Button.cpp" />
+    <ClCompile Include="controls\ControlPresenter.cpp" />
     <ClCompile Include="controls\GridPanel.cpp" />
     <ClCompile Include="controls\GridPanelCell.cpp" />
     <ClCompile Include="controls\GridPanelCellView.cpp" />
@@ -99,10 +101,10 @@
     <ClCompile Include="image\ImageCamera.cpp" />
     <ClCompile Include="assets\cursors\PCursors.cpp" />
     <ClCompile Include="io\Event.cpp" />
+    <ClCompile Include="io\EventManager.cpp" />
     <ClCompile Include="io\EventObserver.cpp" />
     <ClCompile Include="io\EventSubscriber.cpp" />
-    <ClCompile Include="io\InputListener.cpp" />
-    <ClCompile Include="io\WindowIOController.cpp" />
+    <ClCompile Include="controls\PWindow.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="ui\PUI.cpp" />
     <ClCompile Include="util\PUtils.cpp" />

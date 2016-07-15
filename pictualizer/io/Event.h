@@ -16,14 +16,6 @@ class Event
 		bool handled;
 };
 
-class WindowResizeEvent : public Event
-{
-	public:
-		WindowResizeEvent(int w, int h);
-		int ww;
-		int wh;
-};
-
 class WindowResizedEvent : public Event
 {
 	public:
@@ -77,20 +69,32 @@ class MouseUpEvent : public Event
 class MouseWheelEvent : public Event
 {
 	public:
-		MouseWheelEvent(SDL_MouseWheelEvent& e, int mx, int my);
-		int mx;
-		int my;
+		MouseWheelEvent(SDL_MouseWheelEvent& e, int x, int y);
+		int x;
 		int y;
+		int scrollY;
 };
 
 class MouseMotionEvent : public Event
 {
 	public:
 		MouseMotionEvent(SDL_MouseMotionEvent& e);
-		int xrel;
-		int yrel;
 		int x;
 		int y;
+		int xrel;
+		int yrel;
+};
+
+class MouseDragEvent : public Event
+{
+	public:
+		MouseDragEvent(SDL_MouseMotionEvent& e, int downX, int downY);
+		int x;
+		int y;
+		int xrel;
+		int yrel;
+		int downX;
+		int downY;
 };
 
 class ImageLoadReadyEvent : public Event

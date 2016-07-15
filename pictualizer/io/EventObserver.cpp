@@ -21,13 +21,6 @@ void EventObserver::notify(Event* e)
 {
 	for (EventSubscriber* s : subscribers)
 	{
-		if (!e->handled)
-		{
-			s->handleEvent(e);
-		}
-		else
-		{
-			break;
-		}
+		s->handleEvent(e);
 	}
 }

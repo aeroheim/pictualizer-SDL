@@ -33,11 +33,12 @@
     <ClCompile Include="io\Event.cpp" />
     <ClCompile Include="io\EventObserver.cpp" />
     <ClCompile Include="io\EventSubscriber.cpp" />
-    <ClCompile Include="io\InputListener.cpp" />
-    <ClCompile Include="io\WindowIOController.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="ui\PUI.cpp" />
     <ClCompile Include="util\PUtils.cpp" />
+    <ClCompile Include="controls\ControlPresenter.cpp" />
+    <ClCompile Include="io\EventManager.cpp" />
+    <ClCompile Include="controls\PWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assets\fonts\PFonts.h" />
@@ -84,9 +85,10 @@
     <ClInclude Include="io\Event.h" />
     <ClInclude Include="io\EventObserver.h" />
     <ClInclude Include="io\EventSubscriber.h" />
-    <ClInclude Include="io\InputListener.h" />
-    <ClInclude Include="io\WindowIOController.h" />
     <ClInclude Include="ui\PUI.h" />
     <ClInclude Include="util\PUtils.h" />
+    <ClInclude Include="controls\ControlPresenter.h" />
+    <ClInclude Include="io\EventManager.h" />
+    <ClInclude Include="controls\PWindow.h" />
   </ItemGroup>
 </Project>

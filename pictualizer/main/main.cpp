@@ -5,11 +5,13 @@
 #include <SDL_syswm.h>
 #include <SDL_ttf.h>
 #include <iostream>
-#include "../io/WindowIOController.h"
+#include "../controls/PWindow.h"
 #include "../image/ImageBackground.h"
 #include "../assets/textures/PTextures.h"
 #include "../assets/fonts/PFonts.h"
 #include "../ui/PUI.h"
+#include "../io/EventManager.h"
+#include "../assets/cursors/PCursors.h"
 
 using std::cout;
 using std::endl;
@@ -23,25 +25,7 @@ bool initSDL(SDL_Window*& window, SDL_Renderer*& renderer)
 		return false;
 	}
 
-	// Create SDL window.
-	// NOTE: Window size should eventually be saved and loaded from a preferences file.
-	window = SDL_CreateWindow("Pictualizer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1080, 530, SDL_WINDOW_BORDERLESS);
-	if (window == nullptr)
-	{
-		cout << "Window Initialization Error: " << SDL_GetError << endl;
-		return 1;
-	}
-
-	// Create SDL renderer.
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-	if (renderer == nullptr)
-	{
-		cout << "Renderer Initialization Error: " << SDL_GetError() << endl;
-		return 1;
-	}
-
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);	// Use blending to allow for alpha effects on textures.
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");		// Use linear filtering to preserve image quality when scaled.
+	// 1080 x 530
 
 	// Initialize SDL_TTF.
 	if (TTF_Init() < 0)
@@ -85,10 +69,9 @@ int main(int argc, char** argv)
 	int ww, wh;
 	SDL_GetWindowSize(window, &ww, &wh);
 
-	// Initialize fonts.
+	// Initialize components.
 	PFonts::initFonts();
-
-	// Initialize textures.
+	PCursors::initCursors();
 	PTextures::initTextures(renderer);
 
 	// Initialize image background.
@@ -102,14 +85,19 @@ int main(int argc, char** argv)
 	PUI ui(renderer, &audioPlayer, ww, wh);
 
 	// Initialize IO.
-	WindowIOController windowIOController(window);
+	PWindow windowIOController(window);
 
 	windowIOController.addSubscriber(&imageBackground);
 	windowIOController.addSubscriber(&ui);
 
+	EventManager& eventManager = EventManager::getInstance();
+	// eventManager.addSubscriber(&mainWindow);
+	// mainWindow.addChild(&ui);
+
 	while (true)
 	{
-		windowIOController.pollEvents();
+		// windowIOController.pollEvents();
+		eventManager.pollEvents();
 		audioPlayer.pollStatus();
 
 		// Clear previous frame.
@@ -125,8 +113,8 @@ int main(int argc, char** argv)
 		SDL_RenderPresent(renderer);
 	}
 
-	// Free fonts.
 	PFonts::freeFonts();
+	PCursors::freeCursors();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

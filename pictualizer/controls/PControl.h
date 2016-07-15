@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include "PControlStates.h"
+#include "../io/EventSubscriber.h"
 
 struct PFloatColor
 {
@@ -17,9 +18,11 @@ struct PIntColor
 	Uint8 b;
 };
 
-class PControl
+class PControl : public EventSubscriber, public EventObserver
 {
 	public:
+		virtual ~PControl();
+
 		virtual void setX(float x);
 		virtual void setY(float y);
 		virtual void setWidth(float w);
@@ -45,8 +48,8 @@ class PControl
 
 		bool mouseInside(int x, int y) const;
 
-		void moveTo(float x, float y);
-		void resize(float w, float h);
+		virtual void moveTo(float x, float y);
+		virtual void resize(float w, float h);
 
 		/*
 		 *  PControl objects provide support for modifying its own COLOR value in the between
@@ -110,7 +113,6 @@ class PControl
 
 	protected:
 		PControl(float x, float y, float w, float h);
-		virtual ~PControl();
 
 	private:
 		float x;

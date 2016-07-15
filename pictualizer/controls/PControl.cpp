@@ -11,12 +11,12 @@ PControl::PControl(float x, float y, float w, float h) :
 	x(x), y(y), w(w), h(h), 
 	minW(0), minH(0), maxW(PConstants::PCONTROL_DEFAULT_MAXDIM), maxH(PConstants::PCONTROL_DEFAULT_MAXDIM),
 	colorState(PControlColorState::NONE), colorStyle(PControlColorStyle::LINEAR),
-	color({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }), 
-	baseColor({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }),
+	baseColor({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }), 
 	focusColor({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }),
+	color({ PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB, PConstants::PCONTROL_MAX_RGB }),
 	colorSpeed(0), rDelta(0), gDelta(0), bDelta(0),
 	fadeState(PControlFadeState::NONE), fadeStyle(PControlFadeStyle::LINEAR),
-	alpha(PConstants::PCONTROL_MAX_ALPHA), minAlpha(PConstants::PCONTROL_MIN_ALPHA), maxAlpha(PConstants::PCONTROL_MAX_ALPHA), fadeSpeed(0), fadeDelta(0)
+	minAlpha(PConstants::PCONTROL_MIN_ALPHA), maxAlpha(PConstants::PCONTROL_MAX_ALPHA), alpha(PConstants::PCONTROL_MAX_ALPHA), fadeSpeed(0), fadeDelta(0)
 {}
 
 PControl::~PControl() {};
@@ -150,14 +150,14 @@ bool PControl::mouseInside(int x, int y) const
 
 void PControl::moveTo(float x, float y)
 {
-	setX(x);
-	setY(y);
+	this->x = x;
+	this->y = y;
 }
 
 void PControl::resize(float w, float h)
 {
-	setWidth(w);
-	setHeight(h);
+	this->w = w;
+	this->h = h;
 }
 
 void PControl::setColor(float r, float g, float b)
