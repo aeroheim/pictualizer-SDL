@@ -21,6 +21,9 @@ class EventManager : public EventObserver
 		int _mouseDownY = 0;
 		bool _isLeftMouseButtonDown = false;
 
+		EventManager() = default;
+		EventManager(const EventManager& other) = delete;
+		EventManager& operator=(const EventManager& other) = delete;
 		~EventManager();
 		void OnDrop(SDL_DropEvent& e);
 		void OnKeyDown(SDL_KeyboardEvent& e);
