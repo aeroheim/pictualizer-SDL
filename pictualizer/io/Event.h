@@ -24,205 +24,180 @@ class WindowEvent : public Event
 {
 	public:
 		virtual ~WindowEvent();
-		int windowID;
+		const int windowID;
 
 	protected:
-		WindowEvent(int windowID);
+		explicit WindowEvent(int windowID);
 };
 
-class WindowResizedEvent : public Event
+struct WindowResizedEvent : Event
 {
-	public:
-		WindowResizedEvent(int w, int h);
-		int ww;
-		int wh;
+	WindowResizedEvent(int w, int h);
+	const int ww;
+	const int wh;
 };
 
-class FileDropEvent : public Event
+struct FileDropEvent : Event
 {
-	public:
-		FileDropEvent(SDL_DropEvent& e, int x, int y, bool dir = false);
-		std::string path;
-		bool dir;
-		int x;
-		int y;
+	FileDropEvent(SDL_DropEvent& e, int x, int y, bool dir = false);
+	const std::string path;
+	const bool dir;
+	const int x;
+	const int y;
 };
 
-class KeyDownEvent : public WindowEvent
+struct KeyDownEvent : WindowEvent
 {
-	public:
-		KeyDownEvent(SDL_KeyboardEvent& e);
-		SDL_Keycode key;
+	explicit KeyDownEvent(SDL_KeyboardEvent& e);
+	const SDL_Keycode key;
 };
 
-class KeyUpEvent : public WindowEvent
+struct KeyUpEvent : WindowEvent
 {
-	public:
-		KeyUpEvent(SDL_KeyboardEvent& e);
-		SDL_Keycode key;
+	explicit KeyUpEvent(SDL_KeyboardEvent& e);
+	const SDL_Keycode key;
 };
 
-class MouseDownEvent : public WindowEvent
+struct MouseDownEvent : WindowEvent
 {
-	public:
-		MouseDownEvent(SDL_MouseButtonEvent& e);
-		Uint8 button;
-		int x;
-		int y;
+	explicit MouseDownEvent(SDL_MouseButtonEvent& e);
+	const Uint8 button;
+	const int x;
+	const int y;
 };
 
-class MouseUpEvent : public WindowEvent
+struct MouseUpEvent : WindowEvent
 {
-	public:
-		MouseUpEvent(SDL_MouseButtonEvent& e);
-		Uint8 button;
-		int x;
-		int y;
+	explicit MouseUpEvent(SDL_MouseButtonEvent& e);
+	const Uint8 button;
+	const int x;
+	const int y;
 };
 
-class MouseWheelEvent : public WindowEvent
+struct MouseWheelEvent : WindowEvent
 {
-	public:
-		MouseWheelEvent(SDL_MouseWheelEvent& e, int x, int y);
-		int x;
-		int y;
-		int scrollY;
+	MouseWheelEvent(SDL_MouseWheelEvent& e, int x, int y);
+	const int x;
+	const int y;
+	const int scrollY;
 };
 
-class MouseMotionEvent : public WindowEvent
+struct MouseMotionEvent : WindowEvent
 {
-	public:
-		MouseMotionEvent(SDL_MouseMotionEvent& e);
-		int x;
-		int y;
-		int xrel;
-		int yrel;
+	explicit MouseMotionEvent(SDL_MouseMotionEvent& e);
+	const int x;
+	const int y;
+	const int xrel;
+	const int yrel;
 };
 
-class MouseDragEvent : public WindowEvent
+struct MouseDragEvent : WindowEvent
 {
-	public:
-		MouseDragEvent(SDL_MouseMotionEvent& e, int downX, int downY);
-		int x;
-		int y;
-		int xrel;
-		int yrel;
-		int downX;
-		int downY;
+	MouseDragEvent(SDL_MouseMotionEvent& e, int downX, int downY);
+	const int x;
+	const int y;
+	const int xrel;
+	const int yrel;
+	const int downX;
+	const int downY;
 };
 
-class ImageLoadReadyEvent : public Event
+struct ImageLoadReadyEvent : Event
 {
-	public:
-		ImageLoadReadyEvent();
+	ImageLoadReadyEvent();
 };
 
-class ImageLoadedEvent : public Event
+struct ImageLoadedEvent : Event
 {
-	public:
-		ImageLoadedEvent(int w, int h);
-		int iw;
-		int ih;
+	ImageLoadedEvent(int w, int h);
+	const int iw;
+	const int ih;
 };
 
-class WidgetMoveEvent : public Event
+struct WidgetMoveEvent : Event
 {
-	public:
-		WidgetMoveEvent(PWidget* widget, float x, float y);
-		PWidget* widget;
-		float x;
-		float y;
+	WidgetMoveEvent(PWidget* widget, float x, float y);
+	const PWidget* const widget;
+	const float x;
+	const float y;
 };
 
-class WidgetResizeEvent : public Event
+struct WidgetResizeEvent : Event
 {
-	public:
-		WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h);
-		PWidget* widget;
-		float x;
-		float y;
-		float w;
-		float h;
+	WidgetResizeEvent(PWidget* widget, float x, float y, float w, float h);
+	const PWidget* const widget;
+	const float x;
+	const float y;
+	const float w;
+	const float h;
 };
 
-class ButtonPressedEvent : public Event
+struct ButtonPressedEvent : Event
 {
-	public:
-		ButtonPressedEvent(Button* button);
-		Button* button;
+	explicit ButtonPressedEvent(Button* button);
+	const Button* const button;
 };
 
-class ButtonToggledEvent : public Event
+struct ButtonToggledEvent : Event
 {
-	public:
-		ButtonToggledEvent(Button* button, bool on);
-		Button* button;
-		bool on;
+	ButtonToggledEvent(Button* button, bool on);
+	const Button* const button;
+	const bool on;
 };
 
-class SeekEvent : public Event
+struct SeekEvent : Event
 {
-	public:
-		SeekEvent();
+	SeekEvent();
 };
 
-class SeekRequestEvent : public Event
+struct SeekRequestEvent : Event
 {
-	public:
-		SeekRequestEvent(int seconds);
-		int seconds;
+	explicit SeekRequestEvent(int seconds);
+	const int seconds;
 };
 
-class TrackEnqueuedEvent : public Event
+struct TrackEnqueuedEvent : Event
 {
-	public:
-		TrackEnqueuedEvent(int index);
-		int index;
+	explicit TrackEnqueuedEvent(int index);
+	const int index;
 };
 
-class TrackRemovedEvent : public Event
+struct TrackRemovedEvent : Event
 {
-	public:
-		TrackRemovedEvent(int index);
-		int index;
+	explicit TrackRemovedEvent(int index);
+	const int index;
 };
 
-class PlaylistClearedEvent : public Event
+struct PlaylistClearedEvent : Event
 {
-	public:
-		PlaylistClearedEvent(const AudioPlaylist* playlist);
-		const AudioPlaylist* const playlist;
+	explicit PlaylistClearedEvent(const AudioPlaylist* playlist);
+	const AudioPlaylist* const playlist;
 };
 
-class NewTrackEvent : public Event
+struct NewTrackEvent : Event
 {
-	public:
-		NewTrackEvent(const AudioTrack* track);
-		const AudioTrack* const track;
+	explicit NewTrackEvent(const AudioTrack* track);
+	const AudioTrack* const track;
 };
 
-class PlayerStartedEvent : public Event
+struct  PlayerStartedEvent : Event
 {
-	public:
-		PlayerStartedEvent();
+	PlayerStartedEvent();
 };
 
-class PlayerPausedEvent : public Event
+struct PlayerPausedEvent : Event
 {
-	public:
-		PlayerPausedEvent();
+	PlayerPausedEvent();
 };
 
-class PlayerStoppedEvent : public Event
+struct PlayerStoppedEvent : Event
 {
-	public:
-		PlayerStoppedEvent();
+	PlayerStoppedEvent();
 };
 
-class VolumeChangedEvent : public Event
+struct VolumeChangedEvent : Event
 {
-	public:
-		VolumeChangedEvent(float vol);
-		float vol;
+	explicit VolumeChangedEvent(float vol);
+	const float vol;
 };
 
