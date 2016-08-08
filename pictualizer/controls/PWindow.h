@@ -19,13 +19,13 @@ class PWindow : public ControlPresenter
 		void handleEvent(Event* e) override;
 
 	private:
-		const int DRAG_ZONE_DIST = 15;
+		const int DRAG_ZONE_DIST = 5;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 		SDL_Event e;
 
-		void OnMouseButtonDown(MouseDownEvent& e);
-		void OnMouseButtonUp(MouseUpEvent& e);
+		void OnMouseDown(MouseDownEvent& e);
+		void OnMouseUp(MouseUpEvent& e);
 		void OnMouseMotion(MouseMotionEvent& e) const;
 		void OnMouseDrag(MouseDragEvent& e);
 

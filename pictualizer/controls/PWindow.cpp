@@ -76,9 +76,27 @@ void PWindow::resize(float w, float h)
 
 void PWindow::handleEvent(Event* e)
 {
+	notify(e);
+
+	if (auto mouseDownEvent = dynamic_cast<MouseDownEvent*>(e))
+	{
+		OnMouseDown(*mouseDownEvent);
+	}
+	else if (auto mouseUpEvent = dynamic_cast<MouseUpEvent*>(e))
+	{
+		OnMouseUp(*mouseUpEvent);
+	}
+	else if (auto mouseMotionEvent = dynamic_cast<MouseMotionEvent*>(e))
+	{
+		OnMouseMotion(*mouseMotionEvent);
+	}
+	else if (auto mouseDragEvent = dynamic_cast<MouseDragEvent*>(e))
+	{
+		OnMouseDrag(*mouseDragEvent);
+	}
 }
 
-void PWindow::OnMouseButtonDown(MouseDownEvent& e)
+void PWindow::OnMouseDown(MouseDownEvent& e)
 {
 	if (!e.handled && e.button == SDL_BUTTON_LEFT)
 	{
@@ -96,7 +114,7 @@ void PWindow::OnMouseButtonDown(MouseDownEvent& e)
 	}
 }
 
-void PWindow::OnMouseButtonUp(MouseUpEvent& e)
+void PWindow::OnMouseUp(MouseUpEvent& e)
 {
 	if (!e.handled && e.button == SDL_BUTTON_LEFT)
 	{
