@@ -7,23 +7,23 @@
 PWindow::PWindow(std::string windowName, int windowX, int windowY, int windowWidth, int windowHeight) : ControlPresenter(windowX, windowY, windowWidth, windowHeight) 
 {
 	// Create SDL window.
-	window = SDL_CreateWindow(windowName.c_str(), windowX, windowY, windowWidth, windowHeight, SDL_WINDOW_BORDERLESS);
-	if (window == nullptr)
+	_window = SDL_CreateWindow(windowName.c_str(), windowX, windowY, windowWidth, windowHeight, SDL_WINDOW_BORDERLESS);
+	if (_window == nullptr)
 	{
 		std::string error(SDL_GetError());
 		throw "Window Initialization Error: " + error;
 	}
 
 	// Create SDL renderer.
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
-	if (renderer == nullptr)
+	_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
+	if (_renderer == nullptr)
 	{
-		SDL_DestroyWindow(window);
+		SDL_DestroyWindow(_window);
 		std::string error(SDL_GetError());
 		throw "Renderer Initialization Error: " + error;
 	}
 
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);	// Use blending to allow for alpha effects on textures.
+	SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);	// Use blending to allow for alpha effects on textures.
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "LINEAR");		// Use linear filtering to preserve image quality when scaled.
 
 	ControlPresenter::setX(windowX);
@@ -34,44 +34,49 @@ PWindow::PWindow(std::string windowName, int windowX, int windowY, int windowWid
 
 PWindow::~PWindow()
 {
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(_window);
+	SDL_DestroyRenderer(_renderer);
 }
 
 void PWindow::setX(float x)
 {
 	ControlPresenter::setX(x);
-	SDL_SetWindowPosition(window, x, ControlPresenter::getY());
+	SDL_SetWindowPosition(_window, x, ControlPresenter::getY());
 }
 
 void PWindow::setY(float y)
 {
 	ControlPresenter::setY(y);
-	SDL_SetWindowPosition(window, ControlPresenter::getX(), y);
+	SDL_SetWindowPosition(_window, ControlPresenter::getX(), y);
 }
 
 void PWindow::setWidth(float w)
 {
 	ControlPresenter::setWidth(w);
-	SDL_SetWindowSize(window, w, ControlPresenter::getHeight());
+	SDL_SetWindowSize(_window, w, ControlPresenter::getHeight());
 }
 
 void PWindow::setHeight(float h)
 {
 	ControlPresenter::setHeight(h);
-	SDL_SetWindowSize(window, ControlPresenter::getWidth(), h);
+	SDL_SetWindowSize(_window, ControlPresenter::getWidth(), h);
 }
 
 void PWindow::moveTo(float x, float y)
 {
 	ControlPresenter::moveTo(x, y);
-	SDL_SetWindowPosition(window, x, y);
+	SDL_SetWindowPosition(_window, x, y);
 }
 
 void PWindow::resize(float w, float h)
 {
 	ControlPresenter::resize(w, h);
-	SDL_SetWindowSize(window, w, h);
+	SDL_SetWindowSize(_window, w, h);
+}
+
+void PWindow::draw(SDL_Renderer* ren = nullptr)
+{
+	ControlPresenter::draw(ren == nullptr ? _renderer : ren);
 }
 
 void PWindow::handleEvent(Event* e)
@@ -152,40 +157,40 @@ void PWindow::OnMouseDrag(MouseDragEvent& e)
 
 bool PWindow::mouseDownInResizeZone(int mouseX, int mouseY) const
 {
-	return (mouseX < DRAG_ZONE_DIST || mouseX > ControlPresenter::getWidth() - DRAG_ZONE_DIST || mouseY < DRAG_ZONE_DIST || mouseX > ControlPresenter::getHeight() - DRAG_ZONE_DIST);
+	return (mouseX < _DRAG_ZONE_DIST || mouseX > ControlPresenter::getWidth() - _DRAG_ZONE_DIST || mouseY < _DRAG_ZONE_DIST || mouseX > ControlPresenter::getHeight() - _DRAG_ZONE_DIST);
 }
 
 void PWindow::setResizeCursor(MouseMotionEvent& e) const
 {
-	if ((e.x < DRAG_ZONE_DIST) && (e.y < DRAG_ZONE_DIST))
+	if ((e.x < _DRAG_ZONE_DIST) && (e.y < _DRAG_ZONE_DIST))
 	{
 		SDL_SetCursor(PCursors::SIZENW);
 	}
-	else if ((e.x > ControlPresenter::getWidth() - DRAG_ZONE_DIST) && (e.y < DRAG_ZONE_DIST))
+	else if ((e.x > ControlPresenter::getWidth() - _DRAG_ZONE_DIST) && (e.y < _DRAG_ZONE_DIST))
 	{
 		SDL_SetCursor(PCursors::SIZENE);
 	}
-	else if ((e.x < DRAG_ZONE_DIST) && (e.y > ControlPresenter::getHeight() - DRAG_ZONE_DIST))
+	else if ((e.x < _DRAG_ZONE_DIST) && (e.y > ControlPresenter::getHeight() - _DRAG_ZONE_DIST))
 	{
 		SDL_SetCursor(PCursors::SIZESW);
 	}
-	else if ((e.x > ControlPresenter::getWidth() - DRAG_ZONE_DIST) && (e.y > ControlPresenter::getHeight() - DRAG_ZONE_DIST))
+	else if ((e.x > ControlPresenter::getWidth() - _DRAG_ZONE_DIST) && (e.y > ControlPresenter::getHeight() - _DRAG_ZONE_DIST))
 	{
 		SDL_SetCursor(PCursors::SIZESE);
 	}
-	else if (e.y < DRAG_ZONE_DIST)
+	else if (e.y < _DRAG_ZONE_DIST)
 	{
 		SDL_SetCursor(PCursors::SIZEN);
 	}
-	else if (e.y > ControlPresenter::getHeight() - DRAG_ZONE_DIST)
+	else if (e.y > ControlPresenter::getHeight() - _DRAG_ZONE_DIST)
 	{
 		SDL_SetCursor(PCursors::SIZES);
 	}
-	else if (e.x < DRAG_ZONE_DIST)
+	else if (e.x < _DRAG_ZONE_DIST)
 	{
 		SDL_SetCursor(PCursors::SIZEW);
 	}
-	else if ((e.x > ControlPresenter::getWidth() - DRAG_ZONE_DIST))
+	else if ((e.x > ControlPresenter::getWidth() - _DRAG_ZONE_DIST))
 	{
 		SDL_SetCursor(PCursors::SIZEE);
 	}
