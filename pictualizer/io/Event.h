@@ -8,12 +8,26 @@ class Button;
 class AudioTrack;
 class AudioPlaylist;
 
+// Abstract base class for all events.
 class Event
 {
 	public:
-		Event();
 		virtual ~Event();
 		bool handled;
+
+	protected:
+		Event();
+};
+
+// Abstract base class for events that belong to a specific window.
+class WindowEvent : public Event
+{
+	public:
+		virtual ~WindowEvent();
+		int windowID;
+
+	protected:
+		WindowEvent(int windowID);
 };
 
 class WindowResizedEvent : public Event
@@ -34,21 +48,21 @@ class FileDropEvent : public Event
 		int y;
 };
 
-class KeyDownEvent : public Event
+class KeyDownEvent : public WindowEvent
 {
 	public:
 		KeyDownEvent(SDL_KeyboardEvent& e);
 		SDL_Keycode key;
 };
 
-class KeyUpEvent : public Event
+class KeyUpEvent : public WindowEvent
 {
 	public:
 		KeyUpEvent(SDL_KeyboardEvent& e);
 		SDL_Keycode key;
 };
 
-class MouseDownEvent : public Event
+class MouseDownEvent : public WindowEvent
 {
 	public:
 		MouseDownEvent(SDL_MouseButtonEvent& e);
@@ -57,7 +71,7 @@ class MouseDownEvent : public Event
 		int y;
 };
 
-class MouseUpEvent : public Event
+class MouseUpEvent : public WindowEvent
 {
 	public:
 		MouseUpEvent(SDL_MouseButtonEvent& e);
@@ -66,7 +80,7 @@ class MouseUpEvent : public Event
 		int y;
 };
 
-class MouseWheelEvent : public Event
+class MouseWheelEvent : public WindowEvent
 {
 	public:
 		MouseWheelEvent(SDL_MouseWheelEvent& e, int x, int y);
@@ -75,7 +89,7 @@ class MouseWheelEvent : public Event
 		int scrollY;
 };
 
-class MouseMotionEvent : public Event
+class MouseMotionEvent : public WindowEvent
 {
 	public:
 		MouseMotionEvent(SDL_MouseMotionEvent& e);
@@ -85,7 +99,7 @@ class MouseMotionEvent : public Event
 		int yrel;
 };
 
-class MouseDragEvent : public Event
+class MouseDragEvent : public WindowEvent
 {
 	public:
 		MouseDragEvent(SDL_MouseMotionEvent& e, int downX, int downY);
