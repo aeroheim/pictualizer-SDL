@@ -7,7 +7,7 @@
 
 using namespace PGlobals;
 
-PControl::PControl(float x, float y, float w, float h) : 
+PControl::PControl(PControl* parent, float x, float y, float w, float h) : 
 	x(x), y(y), w(w), h(h), 
 	minW(0), minH(0), maxW(PConstants::PCONTROL_DEFAULT_MAXDIM), maxH(PConstants::PCONTROL_DEFAULT_MAXDIM),
 	colorState(PControlColorState::NONE), colorStyle(PControlColorStyle::LINEAR),
@@ -451,5 +451,39 @@ void PControl::draw(SDL_Renderer* ren = nullptr)
 	*/
 }
 
+void PControl::addChild(PControl* child)
+{
+	_children.push_back(child);
+	addSubscriber(child);
+}
 
+void PControl::removeChild(PControl* child)
+{
+	_children.erase(std::find(_children.begin(), _children.end(), child));
+	removeSubscriber(child);
+}
 
+std::vector<PControl*> PControl::getChildren() const
+{
+	std::vector<PControl*> result;
+
+	for (auto child : _children)
+	{
+		result.push_back(child);
+	}
+
+	return result;
+}
+
+void PControl::notify(Event* e)
+{
+	for (auto child : _children)
+	{
+		child->notify(e);
+	}
+}
+
+void PControl::handleEvent(Event* e)
+{
+	notify(e);
+}

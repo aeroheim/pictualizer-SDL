@@ -111,10 +111,20 @@ class PControl : public EventSubscriber, public EventObserver
 		 */
 		virtual void draw(SDL_Renderer* ren) = 0;
 
+		void addChild(PControl* child);
+		void removeChild(PControl* child);
+		std::vector<PControl*> getChildren() const;
+
+		void notify(Event* e) override;
+		void handleEvent(Event* e) override;
+
 	protected:
-		PControl(float x, float y, float w, float h);
+		PControl(PControl* parent, float x, float y, float w, float h);
 
 	private:
+		PControl* _parent;
+		std::vector<PControl*> _children;
+
 		float x;
 		float y;
 		float w;
