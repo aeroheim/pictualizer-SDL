@@ -1,13 +1,16 @@
 #pragma once
 
 #include <SDL.h>
-#include "../controls/ControlPresenter.h"
+#include "PControl.h"
 
-class PWindow : public ControlPresenter
+class PWindow : public PControl
 {
 	public:
-		PWindow(std::string windowName, int windowX, int windowY, int windowWidth, int windowHeight);
+		// PWindow(std::string windowName, PWindow* owner, int windowX, int windowY, int windowWidth, int windowHeight);
+		static PWindow* createWindow(std::string windowName, PWindow* owner, int windowX, int windowY, int windowWidth, int windowHeight);
 		~PWindow();
+
+		PWindow* getOwner();
 
 		void setX(float x) override;
 		void setY(float y) override;
@@ -20,6 +23,9 @@ class PWindow : public ControlPresenter
 		void handleEvent(Event* e) override;
 
 	private:
+		const PWindow* _owner;
+		PWindow(std::string windowName, PWindow* owner, int windowX, int windowY, int windowWidth, int windowHeight);
+
 		const int _DRAG_ZONE_DIST = 5;
 		SDL_Window* _window;
 		SDL_Renderer* _renderer;

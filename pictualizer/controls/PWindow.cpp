@@ -4,8 +4,10 @@
 #include "../assets/cursors/PCursors.h"
 #include "../util/PUtils.h"
 
-PWindow::PWindow(std::string windowName, int windowX, int windowY, int windowWidth, int windowHeight) : ControlPresenter(windowX, windowY, windowWidth, windowHeight) 
+PWindow::PWindow(std::string windowName, PWindow* owner, int windowX, int windowY, int windowWidth, int windowHeight) : ControlPresenter(windowX, windowY, windowWidth, windowHeight) 
 {
+	_owner = owner;
+
 	// Create SDL window.
 	_window = SDL_CreateWindow(windowName.c_str(), windowX, windowY, windowWidth, windowHeight, SDL_WINDOW_BORDERLESS);
 	if (_window == nullptr)
@@ -36,6 +38,11 @@ PWindow::~PWindow()
 {
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
+}
+
+PWindow* PWindow::getOwner()
+{
+	return _owner;
 }
 
 void PWindow::setX(float x)
