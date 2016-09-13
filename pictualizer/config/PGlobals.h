@@ -5,15 +5,11 @@
 namespace PConstants
 {
 	const int FRAMERATE = 60;
-	const Uint8 P_MAX_ALPHA = SDL_ALPHA_OPAQUE;
-	const Uint8 P_MIN_ALPHA = SDL_ALPHA_TRANSPARENT;
+	const Uint8 MAX_ALPHA = SDL_ALPHA_OPAQUE;
+	const Uint8 MIN_ALPHA = SDL_ALPHA_TRANSPARENT;
 	const Uint8 P_MAX_RGB = 255;
 	const Uint8 P_MIN_RGB = 0;
 
-	const Uint8 PCONTROL_MAX_ALPHA = P_MAX_ALPHA;
-	const Uint8 PCONTROL_MIN_ALPHA = P_MIN_ALPHA;
-	const Uint8 PCONTROL_MAX_RGB = P_MAX_RGB;
-	const Uint8 PCONTROL_MIN_RGB = P_MIN_RGB;
 	const float PCONTROL_DEFAULT_MAXDIM = 2000;
 
 	const float PWIDGET_DRAG_ZONE_DIST = 12;

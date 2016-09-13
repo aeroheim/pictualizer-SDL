@@ -1,52 +1,47 @@
 #pragma once
 #include <SDL_hints.h>
+#include "PModifiers.h"
+#include <memory>
 
-enum class PControlFadeState
+enum class PFadeState
 {
 	FADEIN,
 	FADEOUT,
 	NONE
 };
 
-enum class PControlFadeStyle
-{
-	LINEAR,
-	EXPONENTIAL,
-	SQRT,
-	LOG
-};
-
 class PFadeable
 {
 	public:
-		virtual void setAlpha(float a);
+		virtual ~PFadeable();
+
+		virtual void setAlpha(float alpha);
 		float getAlpha() const;
 		Uint8 getRoundedAlpha() const;
 
-		virtual void setMinAlpha(float a);
+		virtual void setAlphaRange(float minAlpha, float maxAlpha);
 		float getMinAlpha() const;
-
-		virtual void setMaxAlpha(float a);
 		float getMaxAlpha() const;
 
-		virtual void setFadeState(PControlFadeState s);
-		virtual void setFadeStyle(PControlFadeStyle s);
-		PControlFadeState getFadeState() const;
-		PControlFadeStyle getFadeStyle() const;
+		virtual void setFadeState(PFadeState fadeState);
+		void setFader(PModifier* fader);
+		PFadeState getFadeState() const;
 
 		virtual void setFadeDuration(float seconds);
 		float getFadeDuration() const;
 
 		void fade();
 
-	private:
-		PControlFadeState fadeState;
-		PControlFadeStyle fadeStyle;
-		float minAlpha;
-		float maxAlpha;
-		float alpha;
-		float fadeSpeed;
-		float fadeDelta;
+	protected:
+		PFadeable();
+		virtual void OnFadeFinished(PFadeState previousFadeState);
 
-		void setFadeDelta();
+	private:
+		std::unique_ptr<PModifier> _fader;
+		PFadeState _fadeState;
+		float _minAlpha;
+		float _maxAlpha;
+		float _currentAlpha;
+		float _fadeDurationInSeconds;
+		void resetFader() const;
 };
