@@ -15,7 +15,6 @@ class PModifier
 		float getEndValue() const;
 
 		bool isFinished() const;
-		void invert();
 
 	protected:
 		int _durationInSeconds;

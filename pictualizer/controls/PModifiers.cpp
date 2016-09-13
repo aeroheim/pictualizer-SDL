@@ -11,16 +11,7 @@ PModifier::~PModifier()
 
 void PModifier::setCurrentValue(float currentValue)
 {
-	if (_startValue < _endValue)
-	{
-		_currentValue = std::max(currentValue, _startValue);
-		_currentValue = std::min(_currentValue, _endValue);
-	}
-	else if (_startValue >= _endValue)
-	{
-		_currentValue = std::min(currentValue, _startValue);
-		_currentValue = std::max(currentValue, _endValue);
-	}
+	_currentValue = _startValue < _endValue ? std::min(std::max(currentValue, _startValue), _endValue) : std::max(std::min(currentValue, _startValue), _endValue);
 }
 
 float PModifier::getCurrentValue() const
@@ -64,12 +55,6 @@ bool PModifier::isFinished() const
 {
 	return _currentValue == _endValue;
 }
-
-void PModifier::invert()
-{
-	setRange(_endValue, _startValue);
-}
-
 
 PModifier::PModifier(int durationInSeconds, float startValue, float endValue) : _durationInSeconds(durationInSeconds), _startValue(startValue), _endValue(endValue), _currentValue(startValue)
 {
