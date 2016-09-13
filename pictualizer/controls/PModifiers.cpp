@@ -31,6 +31,9 @@ float PModifier::getCurrentValue() const
 void PModifier::setDuration(int seconds)
 {
 	_durationInSeconds = seconds;
+
+	// Always reset the modifier progress back to the beginning whenever the duration has changed.
+	setCurrentValue(_startValue);
 }
 
 float PModifier::getDuration() const
@@ -42,16 +45,9 @@ void PModifier::setRange(float startValue, float endValue)
 {
 	_startValue = startValue;
 	_endValue = endValue;
-}
 
-void PModifier::setStartValue(float startValue)
-{
-	_startValue = startValue;
-}
-
-void PModifier::setEndValue(float endValue)
-{
-	_endValue = endValue;
+	// Always reset the modifier progress back to the beginning whenever the range has changed.
+	setCurrentValue(_startValue);
 }
 
 float PModifier::getStartValue() const
@@ -107,18 +103,6 @@ void LinearModifier::setRange(float startValue, float endValue)
 	setDelta();
 }
 
-void LinearModifier::setStartValue(float startValue)
-{
-	PModifier::setStartValue(startValue);
-	setDelta();
-}
-
-void LinearModifier::setEndValue(float endValue)
-{
-	PModifier::setEndValue(endValue);
-	setDelta();
-}
-
 void LinearModifier::setDelta()
 {
 	_delta = (_startValue - _endValue) / (_durationInSeconds * PConstants::FRAMERATE);
@@ -153,6 +137,13 @@ void SmoothModifier::setDuration(int seconds)
 {
 	PModifier::setDuration(seconds);
 	setDomain();
+	_currentPoint = 0;
+}
+
+void SmoothModifier::setRange(float startValue, float endValue)
+{
+	PModifier::setRange(startValue, endValue);
+	_currentPoint = 0;
 }
 
 void SmoothModifier::setDomain()

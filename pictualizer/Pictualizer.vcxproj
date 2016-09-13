@@ -33,7 +33,6 @@
     <ClInclude Include="controls\AudioPlayerWidgetStates.h" />
     <ClInclude Include="controls\Button.h" />
     <ClInclude Include="controls\ButtonStates.h" />
-    <ClInclude Include="controls\ControlPresenter.h" />
     <ClInclude Include="controls\GridPanelCell.h" />
     <ClInclude Include="controls\GridPanel.h" />
     <ClInclude Include="controls\GridPanelCellView.h" />
@@ -43,11 +42,13 @@
     <ClInclude Include="controls\ImageButton.h" />
     <ClInclude Include="controls\Label.h" />
     <ClInclude Include="controls\LabelStates.h" />
+    <ClInclude Include="controls\PColorable.h" />
     <ClInclude Include="controls\PControl.h" />
     <ClInclude Include="controls\IndexWidget.h" />
     <ClInclude Include="controls\PControlContainer.h" />
     <ClInclude Include="controls\PControlContainerStates.h" />
-    <ClInclude Include="controls\PControlStates.h" />
+    <ClInclude Include="controls\PFadeable.h" />
+    <ClInclude Include="controls\PModifiers.h" />
     <ClInclude Include="controls\ProgressBar.h" />
     <ClInclude Include="controls\PTexture.h" />
     <ClInclude Include="controls\PTextureButton.h" />
@@ -66,6 +67,8 @@
     <ClInclude Include="io\EventObserver.h" />
     <ClInclude Include="io\EventSubscriber.h" />
     <ClInclude Include="controls\PWindow.h" />
+    <ClInclude Include="io\FocusManager.h" />
+    <ClInclude Include="io\WindowManager.h" />
     <ClInclude Include="ui\PUI.h" />
     <ClInclude Include="util\PUtils.h" />
   </ItemGroup>
@@ -78,7 +81,6 @@
     <ClCompile Include="config\PGlobals.cpp" />
     <ClCompile Include="controls\AudioPlayerWidget.cpp" />
     <ClCompile Include="controls\Button.cpp" />
-    <ClCompile Include="controls\ControlPresenter.cpp" />
     <ClCompile Include="controls\GridPanel.cpp" />
     <ClCompile Include="controls\GridPanelCell.cpp" />
     <ClCompile Include="controls\GridPanelCellView.cpp" />
@@ -88,8 +90,11 @@
     <ClCompile Include="controls\ImageButton.cpp" />
     <ClCompile Include="controls\IndexWidget.cpp" />
     <ClCompile Include="controls\Label.cpp" />
+    <ClCompile Include="controls\PColorable.cpp" />
     <ClCompile Include="controls\PControl.cpp" />
     <ClCompile Include="controls\PControlContainer.cpp" />
+    <ClCompile Include="controls\PFadeable.cpp" />
+    <ClCompile Include="controls\PModifiers.cpp" />
     <ClCompile Include="controls\ProgessBar.cpp" />
     <ClCompile Include="controls\PTexture.cpp" />
     <ClCompile Include="controls\PTextureButton.cpp" />
@@ -105,6 +110,8 @@
     <ClCompile Include="io\EventObserver.cpp" />
     <ClCompile Include="io\EventSubscriber.cpp" />
     <ClCompile Include="controls\PWindow.cpp" />
+    <ClCompile Include="io\FocusManager.cpp" />
+    <ClCompile Include="io\WindowManager.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="ui\PUI.cpp" />
     <ClCompile Include="util\PUtils.cpp" />

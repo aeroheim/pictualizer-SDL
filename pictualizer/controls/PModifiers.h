@@ -1,20 +1,16 @@
 #pragma once
-#include <tuple>
 
 class PModifier
 {
 	public:
 		virtual ~PModifier();
 		virtual float getNextValue() = 0;
-		void setCurrentValue(float currentValue);
 		float getCurrentValue() const;
 
 		virtual void setDuration(int seconds);
 		float getDuration() const;
 
 		virtual void setRange(float startValue, float endValue);
-		virtual void setStartValue(float startValue);
-		virtual void setEndValue(float endValue);
 		float getStartValue() const;
 		float getEndValue() const;
 
@@ -22,11 +18,12 @@ class PModifier
 		void invert();
 
 	protected:
-		PModifier(int durationInSeconds, float startValue, float endValue);
 		int _durationInSeconds;
 		float _startValue;
 		float _endValue;
 		float _currentValue;
+		PModifier(int durationInSeconds, float startValue, float endValue);
+		virtual void setCurrentValue(float currentValue);
 };
 
 class LinearModifier final : public PModifier
@@ -36,8 +33,6 @@ class LinearModifier final : public PModifier
 		float getNextValue() override;
 		void setDuration(int seconds) override;
 		void setRange(float startValue, float endValue) override;
-		void setStartValue(float startValue) override;
-		void setEndValue(float endValue) override;
 
 	private:
 		float _delta;
@@ -50,9 +45,10 @@ class SmoothModifier final : public PModifier
 		SmoothModifier(int durationInSeconds, float startValue, float endValue);
 		float getNextValue() override;
 		void setDuration(int seconds) override;
+		void setRange(float startValue, float endValue) override;
 
 	private:
 		float _domain;
-		float _currentPoint;
+		int _currentPoint;
 		void setDomain();
 };
