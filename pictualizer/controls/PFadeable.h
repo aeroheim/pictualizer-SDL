@@ -14,6 +14,8 @@ class PFadeable
 {
 	public:
 		virtual ~PFadeable();
+		explicit PFadeable(const PFadeable& other);
+		PFadeable& operator=(const PFadeable& other);
 
 		virtual void setAlpha(float alpha);
 		float getAlpha() const;

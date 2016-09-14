@@ -9,6 +9,23 @@ PFadeable::~PFadeable()
 {
 }
 
+PFadeable::PFadeable(const PFadeable& other) : _fadeState(other._fadeState), _minAlpha(other._minAlpha), _maxAlpha(other._maxAlpha), _currentAlpha(other._currentAlpha), _fadeDurationInSeconds(other._fadeDurationInSeconds)
+{
+	_fader.reset(other._fader.get()->clone());
+}
+
+PFadeable& PFadeable::operator=(const PFadeable& other)
+{
+	_fader.reset(other._fader.get()->clone());
+	_fadeState = other._fadeState;
+	_minAlpha = other._minAlpha;
+	_maxAlpha = other._maxAlpha;
+	_currentAlpha = other._currentAlpha;
+	_fadeDurationInSeconds = other._fadeDurationInSeconds;
+
+	return *this;
+}
+
 void PFadeable::setAlpha(float alpha)
 {
 	_currentAlpha = std::min(std::max(_minAlpha, alpha), _maxAlpha);
