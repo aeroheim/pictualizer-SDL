@@ -88,6 +88,11 @@ void LinearModifier::setRange(float startValue, float endValue)
 	setDelta();
 }
 
+LinearModifier* LinearModifier::clone() const
+{
+	return new LinearModifier(*this);
+}
+
 void LinearModifier::setDelta()
 {
 	_delta = (_startValue - _endValue) / (_durationInSeconds * PConstants::FRAMERATE);
@@ -129,6 +134,11 @@ void SmoothModifier::setRange(float startValue, float endValue)
 {
 	PModifier::setRange(startValue, endValue);
 	_currentPoint = 0;
+}
+
+SmoothModifier* SmoothModifier::clone() const
+{
+	return new SmoothModifier(*this);
 }
 
 void SmoothModifier::setDomain()
