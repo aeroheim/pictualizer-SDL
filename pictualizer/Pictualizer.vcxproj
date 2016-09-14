@@ -57,6 +57,7 @@
     <ClInclude Include="controls\SeekBar.h" />
     <ClInclude Include="controls\SpectrumVisualizer.h" />
     <ClInclude Include="controls\WaveformVisualizer.h" />
+    <ClInclude Include="general\Cloneable.h" />
     <ClInclude Include="image\ImageBackground.h" />
     <ClInclude Include="image\ImageBackgroundStates.h" />
     <ClInclude Include="image\ImageCameraStates.h" />
